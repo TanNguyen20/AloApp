@@ -1,19 +1,35 @@
-<div class="mt-4">
-    <div class="row">
-
-        {{#each cources}}
-        <div class="col-sm-6 col-lg-4">
-            <div class="card">
-                <a href="/cources/{{this.slug}}">
-                <img class="card-img-top" src="{{this.image}}" alt="error"></a>
-                <div class="card-body">
-                    <a href="/cources/{{this.slug}}"><h5 class="card-title">{{this.name}}</h5></a>
-                    <p class="card-text">{{this.description}}</p>
-                    <a href="" class="btn btn-primary">link</a>
+    <div class="containerBody">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm border itemFunctions">
+                    <i class="fas iconFunctions fa-video"></i><br>
+                    Gọi videocall
+                </div>
+                <div class="col-sm border itemFunctions">
+                    <i class="fas iconFunctions fa-phone-volume"></i><br>
+                    Gọi thoại
+                </div>
+                <div class="col-sm border itemFunctions">
+                    <i class="far iconFunctions fa-comments"></i></i><br>
+                    Nhắn tin
                 </div>
             </div>
         </div>
-        {{/each}}
-        
+
+        <div class="container">
+            <div class="row">
+                <div class="col-sm border itemFunctions">
+                    <i class="fas iconFunctions fa-user-friends"></i><br>
+                    Nhắn tin nhóm
+                </div>
+                <div class="col-sm border itemFunctions">
+                    <i class="fas iconFunctions fa-tv"></i><br>
+                    Chia sẻ màn hình
+                </div>
+                <div class="col-sm border itemFunctions">
+                    <i class="fas iconFunctions fa-search-location"></i><br>
+                    Tìm bạn bè xung quanh
+                </div>
+            </div>
+        </div>
     </div>
-</div>
