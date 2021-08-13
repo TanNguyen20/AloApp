@@ -1,5 +1,50 @@
-h1 {
-  color: red; }
+.signUp
+{
+    margin:4px auto; 
+    width: 98%; 
+    padding: 5px;
+}
 
-#test {
-  color: hotpink; }
+.signIn
+{
+    margin: 0 auto; 
+/*	width: 50%; */
+	padding: 5px;
+}
+/* .faceGg
+{
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center;
+} */
+.facebook
+{
+    background-color: #0e6ae2;
+    color: white; 
+    font-size: 15px; 
+    text-decoration: none; 
+    padding: 7px 8px;
+    border-radius: 5px;
+	margin-right: 5px;
+}
+.google
+{
+    background-color: #fa3232; 
+    color: white; 
+    font-size: 15px;
+    text-decoration: none;
+    padding: 7px 8px;
+    border-radius: 5px;
+}
+.btnBack
+{
+	margin-right: 5px;
+}
+
+
+.btnBackAndRegister
+{
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center;
+}
