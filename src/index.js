@@ -31,9 +31,6 @@ app.get('/videoCall', (req, res) => {
 //     res.render('videoChat/room', {roomId: req.params.room})
 // })
 
-const route = require('./routes');
-route(app);
-
 // app.get('/', (req, res) => {
 //         res.render('signIn')
 //      })
