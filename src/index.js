@@ -1,6 +1,7 @@
 //Create our express and socket.io servers
 const express = require('express');
 const app = express();
+const route = require('./routes');
 const path = require('path');
 const server = require('http').Server(app);
 const io = require('socket.io')(server);
@@ -22,9 +23,9 @@ app.set('view engine', 'hbs') // Tell Express we are using EJS
 app.use(express.static(path.join(__dirname, 'public/')));
 app.set('views', path.join(__dirname, 'resources/views'));
 // If they join the base link, generate a random UUID and send them to a new room with said UUID
-// app.get('/', (req, res) => {
-//     res.redirect(`/${uuidV4()}`)
-// })
+app.get('/videoCall', (req, res) => {
+    res.redirect(`/${uuidV4()}`)
+})
 // If they join a specific room, then render that room
 // app.get('/:room', (req, res) => {
 //     res.render('videoChat/room', {roomId: req.params.room})
@@ -51,7 +52,5 @@ io.on('connection', socket => {
     })
 })
 
-//server.listen(3000) // Run the server on the 3000 port
-app.listen(port, () => {
-    console.log(`App listening at http://localhost:${port}`);
-});
+server.listen(3000) // Run the server on the 3000 port
+route(app);
