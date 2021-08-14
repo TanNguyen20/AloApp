@@ -25,6 +25,14 @@
     background-color: rgb(216, 216, 216);
 }
 .containerBody{
-    padding-top: 10px;
+    padding: 20px 0;
     background-color: rgb(245, 245, 245);
+}
+footer{
+    position: absolute;
+    width: 100%;
+    bottom: 0;
+}
+.nav-link{
+    color: black !important;
 }

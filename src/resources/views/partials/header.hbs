@@ -1,26 +1,23 @@
 <header class="containerHeader">
     <div class="container">
         <nav class="navbar navbar-expand-lg navbar-light ">
-            <div class="container-fluid">
+            <div class="container-fluid d-flex align-items-center">
                 <i class="fab fa-facebook-messenger logoApp"></i>
-                <a class="navbar-brand" href="#">AloApp</a>
+                <a class="nav-link navbar-brand" href="/">AloApp</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
+
                 <div class="collapse navbar-collapse" id="navbarNav">
-                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <ul class="navbar-nav me-auto">
                         <li class="nav-item">
-                            <a class="nav-link active" aria-current="page" href="#">Home</a>
+                            <a class="nav-link active" aria-current="page" href="/">Home</a>
                         </li>
                     </ul>
-                    <div class="d-flex nav-item dropdown">
-                        <div class="dropdown-toggle" id="navbarScrollingDropdown"  data-bs-toggle="dropdown" >
-                            Đăng nhập hoặc đăng kí
-                        </div>
-                        <ul class="dropdown-menu" aria-labelledby="navbarScrollingDropdown">
-                            <li><a class="dropdown-item" href="#">Đăng nhập</a></li>
-                            <li><a class="dropdown-item" href="#">Đăng kí</a></li>
-                        </ul>
+
+                    <div class="d-flex">
+                        <a class="nav-link nav-item" href="/login">Đăng nhập</a>
+                        <a class="nav-link nav-item" href="/registers">Đăng kí</a>
                     </div>
                 </div>
             </div>
