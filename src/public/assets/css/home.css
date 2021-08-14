@@ -25,11 +25,10 @@
     background-color: rgb(216, 216, 216);
 }
 .containerBody{
-    padding: 20px 0;
     background-color: rgb(245, 245, 245);
 }
 footer{
-    position: absolute;
+    position: relative;
     width: 100%;
     bottom: 0;
 }
