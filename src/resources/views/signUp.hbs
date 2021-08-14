@@ -1,72 +1,55 @@
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>AloApp</title>
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-        <link rel="stylesheet" href="/assets/css/app.css">
-        <link rel="stylesheet" href="/assets/css/widthResponsive.css">
-        <link rel="shortcut icon" href="#">
-    </head>
-    <body >
-        <div class="border border-primaryer signUp container" >
-            <form class="">
 
-                <div style="font-size: 30px; text-align: center;" class="row-lg">Tạo tài khoản mới</div>
+<div class="border border-primaryer rounded signUp container mt-4 w-sm-100 w-md-75 w-lg-50 w-xl-50 w-xs-100" >
+    <form class="container">
 
-                <div class="form-group row">
-                    <div class="col-sm">
-                        <label for="surname">Họ</label>
-                        <input type="text" class="form-control" id="surname" name="surname">
-                    </div>
-                    <div class="col-sm">
-                        <label for="name">Tên</label>
-                        <input type="text" class="form-control" id="name" name="name">
-                    </div>
-                </div>
+        <div style="font-size: 30px; text-align: center;" class="row-lg">Tạo tài khoản mới</div>
 
-                <div class="form-group row">
-                    <div class="col-sm">
-                        <label for="user">Tên đăng nhập</label>
-                        <input type="text" class="form-control" id="user" name="user">
-                    </div>
-                    <div class="col-sm">
-                        <label for="password">Mật khẩu</label>
-                        <input type="password" class="form-control" id="password" name="password">
-                    </div>
-                </div>
-                
-                <div class="form-group row">
-                    <div class="col-sm">
-                        <label for="email">Email</label>
-                        <input type="email" class="form-control" id="email" aria-describedby="emailHelp" name="email">
-                    </div>
-                    <div class="col-sm">
-                        <label for="file">Ảnh đại diện</label>
-                        <input type="file" class="form-control-file" id="file" name="file"> 
-                    </div>
-                </div>
-
-                <div class="wrapBtnRegister row">
-                    <div class="faceGg col-sm d-sm-flex align-items-center justify-content-between">
-                        <a href="" class="facebook btn w-100 mb-2">
-                            <i class="fab fa-facebook"></i>&nbsp;Đăng nhập với Facebook
-                        </a>
-                        <a href="" class="google btn w-100 mb-2">
-                            <i class="fab fa-google"></i>&nbsp;Đăng nhập với Google
-                        </a>
-                    </div>
-                    <div class="d-sm-flex align-items-center justify-content-between col-sm">
-                        <a type="button" class="btn btn-secondary btnBack w-100 mb-2" href="/">Trở về</a>
-                        <button type="submit" class="btn btn-primary w-100 mb-2">Đăng kí</button>
-                    </div>
-                </div>
-            </form>
+        <div class="form-group row">
+            <div class="col-sm mb-2">
+                <label for="surname">Họ</label>
+                <input type="text" class="form-control" id="surname" name="surname">
+            </div>
+            <div class="col-sm mb-2">
+                <label for="name">Tên</label>
+                <input type="text" class="form-control" id="name" name="name">
+            </div>
         </div>
-        <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-    </body>
-</html>
+
+        <div class="form-group row">
+            <div class="col-sm mb-2">
+                <label for="user">Tên đăng nhập</label>
+                <input type="text" class="form-control" id="user" name="user">
+            </div>
+            <div class="col-sm mb-2">
+                <label for="password">Mật khẩu</label>
+                <input type="password" class="form-control" id="password" name="password">
+            </div>
+        </div>
+        
+        <div class="form-group row">
+            <div class="col-sm mb-2">
+                <label for="email">Email</label>
+                <input type="email" class="form-control" id="email" aria-describedby="emailHelp" name="email">
+            </div>
+            <div class="col-sm mb-2">
+                <label for="file">Ảnh đại diện</label>
+                <input type="file" class="form-control-file form-control" id="file" name="file"> 
+            </div>
+        </div>
+
+        <div class="wrapBtnRegister container">
+            <div class="faceGg col-sm d-sm-flex align-items-center justify-content-between row">
+                <a href="" class="facebook btn mb-2 col-sm me-md-2">
+                    <i class="fab fa-facebook"></i>&nbsp;Đăng nhập với Facebook
+                </a>
+                <a href="" class="google btn mb-2 col-sm ms-md-2">
+                    <i class="fab fa-google"></i>&nbsp;Đăng nhập với Google
+                </a>
+            </div>
+            <div class="d-sm-flex align-items-center justify-content-between row">
+                <a type="button" class="btn btn-secondary btnBack mb-2 col-sm me-md-2" href="/">Trở về</a>
+                <button type="submit" class="btn btn-primary mb-2 col-sm btnRegister ms-md-2">Đăng kí</button>
+            </div>
+        </div>
+    </form>
+</div>

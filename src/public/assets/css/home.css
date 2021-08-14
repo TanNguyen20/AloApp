@@ -1,3 +1,6 @@
+a{
+    text-decoration: none!important;
+}
 .containerFooter{
     padding:40px 0;
     background-color: rgb(216, 216, 216);
@@ -25,13 +28,10 @@
     background-color: rgb(216, 216, 216);
 }
 .containerBody{
+    padding: 20px 0;
     background-color: rgb(245, 245, 245);
 }
-footer{
-    position: relative;
-    width: 100%;
-    bottom: 0;
-}
+
 .nav-link{
     color: black !important;
 }

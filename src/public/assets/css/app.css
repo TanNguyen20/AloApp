@@ -19,21 +19,19 @@
 } */
 .facebook
 {
-    background-color: #0e6ae2;
-    color: white; 
+    background-color: #0e6ae2!important;
+    color: white!important; 
     font-size: 15px; 
     text-decoration: none; 
-    padding: 7px 8px;
     border-radius: 5px;
-	margin-right: 5px;
+	
 }
 .google
 {
-    background-color: #fa3232; 
-    color: white; 
+    background-color: #fa3232!important; 
+    color: white!important; 
     font-size: 15px;
     text-decoration: none;
-    padding: 7px 8px;
     border-radius: 5px;
 }
 .btnBack
@@ -43,8 +41,4 @@
 .ulLogIn
 {
     display: none;
-}
-.dropdownLogIn:hover .ulLogIn
-{
-    display: block;
 }
