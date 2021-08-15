@@ -28,7 +28,6 @@ a{
 }
 .containerBody{
     padding: 20px 0;
-    background-color: rgb(245, 245, 245);
 }
 
 .nav-link{
@@ -36,4 +35,7 @@ a{
 }
 footer{
     text-align: center;
+}
+body{
+    background-color: rgb(245, 245, 245)!important;
 }
