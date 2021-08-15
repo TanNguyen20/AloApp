@@ -1,5 +1,66 @@
 
 <div class="containerBody">
+
+    <!-- Modal login -->
+    <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="login">Đăng nhập</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    {{>login}}
+                </div>
+                <div class="modal-footer">
+                    <div class="wrapBtnRegister container">
+                        <div class="faceGg row">
+                            <a href="#" class="facebook btn mb-2">
+                                <i class="fab fa-facebook"></i>&nbsp;Đăng nhập với Facebook
+                            </a>
+                            <a href="#" class="google btn mb-2">
+                                <i class="fab fa-google"></i>&nbsp;Đăng nhập với Google
+                            </a>
+                        </div>
+                        <div class=" d-sm-flex align-items-center justify-content-between row">
+                            <button type="button" class="btn btn-secondary btnBack mb-2 col-sm" data-bs-dismiss="modal">Trở về</button>
+                            <button type="submit" class="btn btn-primary mb-2 col-sm">Đăng kí</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {{!-- Modal registers --}}
+    <div class="modal fade" id="registersModal" tabindex="-1" aria-labelledby="registersModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="registersModalLabel">Đăng kí tài khoản mới</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    {{>registers}}
+                </div>
+                <div class="modal-footer">
+                    <div class="wrapBtnRegister container">
+                        <div class="faceGg row">
+                            <a href="#" class="facebook btn mb-2">
+                                <i class="fab fa-facebook"></i>&nbsp;Đăng kí với Facebook
+                            </a>
+                            <a href="#" class="google btn mb-2">
+                                <i class="fab fa-google"></i>&nbsp;Đăng kí với Google
+                            </a>
+                        </div>
+                        <div class=" d-sm-flex align-items-center justify-content-between row">
+                            <button type="button" class="btn btn-secondary btnBack mb-2 col-sm" data-bs-dismiss="modal">Trở về</button>
+                            <button type="submit" class="btn btn-primary mb-2 col-sm">Đăng kí</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="container">
         <div class="row">
             <div class="col-sm border itemFunctions">
