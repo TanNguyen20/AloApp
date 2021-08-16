@@ -7,7 +7,7 @@ const server = require('http').Server(app);
 const io = require('socket.io')(server);
 const {v4: uuidV4} = require('uuid');
 const handlebars = require('express-handlebars');
-const port = 3000;
+const port = process.env.PORT ||3000;
 
 app.engine(
     'hbs',
@@ -49,5 +49,5 @@ io.on('connection', socket => {
     })
 })
 
-server.listen(3000) // Run the server on the 3000 port
+server.listen(port) // Run the server on the 3000 port
 route(app);
