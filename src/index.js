@@ -23,9 +23,9 @@ app.set('view engine', 'hbs') // Tell Express we are using EJS
 app.use(express.static(path.join(__dirname, 'public/')));
 app.set('views', path.join(__dirname, 'resources/views'));
 // If they join the base link, generate a random UUID and send them to a new room with said UUID
-app.get('/videoCall', (req, res) => {
-    res.redirect(`/${uuidV4()}`)
-})
+// app.get('/videoCall', (req, res) => {
+//     res.redirect(`/${uuidV4()}`)
+// })
 // If they join a specific room, then render that room
 // app.get('/:room', (req, res) => {
 //     res.render('videoChat/room', {roomId: req.params.room})

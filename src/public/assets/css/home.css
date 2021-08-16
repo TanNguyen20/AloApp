@@ -39,3 +39,9 @@ footer{
 body{
     background-color: rgb(245, 245, 245)!important;
 }
+.iconTripleDotted{
+    padding: 3px 4px 2px 3px;
+}
+.borderIcon{
+    padding: 3px 3px;
+}
