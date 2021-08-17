@@ -45,3 +45,29 @@ body{
 .borderIcon{
     padding: 3px 3px;
 }
+.green{
+    color: rgb(0, 221, 0);
+}
+.wrapColumn3{
+    display: block;
+    text-align: center;
+}
+.avatarMediumSize{
+    width:25%;
+    height: 25%;
+}
+.avatarSmallSize{
+    width:8%;
+    height: 8%;
+}
+.avatarCol1{
+    width: 18%;
+    height: 18%;
+}
+.avatarMe{
+    width: 18%;
+    height: 18%;
+}
+.iconFooterCol2{
+    font-size: 20px;
+}
