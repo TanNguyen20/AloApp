@@ -1,20 +1,37 @@
 const socket = io('/') // Create our socket
 const videoGrid = document.getElementById('video-grid') // Find the Video-Grid element
-
-const myPeer = new Peer({config:{iceServers: [{
-    urls: [ "stun:ss-turn1.xirsys.com" ]
- }, {
-    username: "YX5ln94dST7Kw3Sfs8h6oO1GApjoofmAlOUA8BTPwLc3ShgqLQMlxL_75dpSqVeOAAAAAGEaYEluaWVubHVhbm5nYW5oY3Q0NjY=",
-    credential: "40ff7ba8-fe91-11eb-8e5b-0242ac140004",
-    urls: [
-        "turn:ss-turn1.xirsys.com:80?transport=udp",
-        "turn:ss-turn1.xirsys.com:3478?transport=udp",
-        "turn:ss-turn1.xirsys.com:80?transport=tcp",
-        "turn:ss-turn1.xirsys.com:3478?transport=tcp",
-        "turns:ss-turn1.xirsys.com:443?transport=tcp",
-        "turns:ss-turn1.xirsys.com:5349?transport=tcp"
-    ]
- }]}}) // Creating a peer element which represents the current user
+// const options = {
+//     // host: "global.xirsys.net",
+//     // path: "/_token/channelpath?k=user1&expire=30",
+//     // method: "PUT",
+//     // headers: {
+//     //   "Authorization": "Basic " + Buffer.from("testaccount:092ad88c-e96d-11e6-8a3b-b0db56058b9f").toString("base64")
+//     // }
+//   };
+const myPeer = new Peer({
+    config:{
+        iceServers: [
+            {
+                urls: [ "stun:ss-turn1.xirsys.com" ]
+            }, 
+            {
+                username: "YX5ln94dST7Kw3Sfs8h6oO1GApjoofmAlOUA8BTPwLc3ShgqLQMlxL_75dpSqVeOAAAAAGEaYEluaWVubHVhbm5nYW5oY3Q0NjY=",
+                credential: "40ff7ba8-fe91-11eb-8e5b-0242ac140004",
+                urls: [
+                    "turn:ss-turn1.xirsys.com:80?transport=udp",
+                    "turn:ss-turn1.xirsys.com:3478?transport=udp",
+                    "turn:ss-turn1.xirsys.com:80?transport=tcp",
+                    "turn:ss-turn1.xirsys.com:3478?transport=tcp",
+                    "turns:ss-turn1.xirsys.com:443?transport=tcp",
+                    "turns:ss-turn1.xirsys.com:5349?transport=tcp"
+                ]
+            }
+        ]
+    },
+    host: "global.xirsys.net",
+    path: "/_turn/MyFirstApp",
+    debug:2,
+}) // Creating a peer element which represents the current user
 const myVideo = document.createElement('video') // Create a new video tag to show our video
 myVideo.muted = true // Mute ourselves on our end so there is no feedback loop
 
