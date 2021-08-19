@@ -71,3 +71,17 @@ body{
 .iconFooterCol2{
     font-size: 20px;
 }
+.marginEndRow-0
+{
+    margin-right: 0px !important;
+}
+.dropdownCol3{
+    /* border: 2px solid pink;
+    display: block; */
+}
+.dropdownShow{
+    display: block;
+}
+.dropdownHidden{
+    display: none;
+}
