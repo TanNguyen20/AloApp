@@ -85,3 +85,16 @@ body{
 .dropdownHidden{
     display: none;
 }
+.wrapItemsCol3:hover{
+    cursor: pointer;
+}
+.itemsContent{
+    width: fit-content;
+    padding: 6px 12px !important;
+}
+.contentCol2{
+    overflow-y: scroll;
+}
+::-webkit-scrollbar {
+    display: none;
+}
