@@ -98,3 +98,27 @@ body{
 ::-webkit-scrollbar {
     display: none;
 }
+.heightBackground{
+    height: 40vh !important;
+}
+.heightAvatar{
+    height: 25vh !important;
+}
+.wrapAvatarAndIconProfile{
+    position: relative;
+}
+.avatarProfile
+{
+    position: absolute;
+    left: 30%;
+    right: 30%;
+    border: 5px solid white;
+    bottom: 0;
+}
+.iconPhoto{
+    position: absolute;
+    left: 52%;
+    padding: 8px;
+    bottom: 20%;
+    background-color: rgb(207, 207, 207);
+}

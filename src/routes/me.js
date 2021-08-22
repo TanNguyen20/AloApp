@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const Mecontroller = require('../app/controllers/MeControllers');
 
-router.get('/', Mecontroller.me);
+router.get('/chat', Mecontroller.chat);
+router.get('/profile', Mecontroller.profile);
 
 module.exports = router;

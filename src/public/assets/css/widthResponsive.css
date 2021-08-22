@@ -13,9 +13,14 @@
   .w-xs-50 {
     width: 50% !important;
   }
-
+  .w-xs-30 {
+    width: 30% !important;
+  }
   .w-xs-25 {
     width: 25% !important;
+  }
+  .w-xs-15 {
+    width: 15% !important;
   }
 }
 
@@ -34,9 +39,14 @@
   .w-sm-50 {
     width: 50% !important;
   }
-
+  .w-sm-30 {
+    width: 30% !important;
+  }
   .w-sm-25 {
     width: 25% !important;
+  }
+  .w-sm-15 {
+    width: 15% !important;
   }
 }
 
@@ -57,6 +67,9 @@
 
   .w-md-25 {
     width: 25% !important;
+  }
+  .w-md-15 {
+    width: 15% !important;
   }
 }
 
@@ -83,7 +96,9 @@
   .w-lg-25 {
     width: 25% !important;
   }
-
+  .w-lg-15 {
+    width: 15% !important;
+  }
 
 }
 
@@ -110,7 +125,9 @@
   .w-xl-25 {
     width: 25% !important;
   }
-
+  .w-xl-15 {
+    width: 15% !important;
+  }
 }
 
 

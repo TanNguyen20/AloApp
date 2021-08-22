@@ -4,8 +4,11 @@
 
 //const {MongooseToObject} = require('../../util/mongoose')
 class MeControllers {
-    me(req, res, next) {
-        res.render('me');
+    chat(req, res, next) {
+        res.render('chat');
+    }
+    profile(req, res, next) {
+        res.render('profile');
     }
 }
 
