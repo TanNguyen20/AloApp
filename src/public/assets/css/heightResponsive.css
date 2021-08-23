@@ -23,7 +23,7 @@
     height: 25vh !important;
   }
   .h-xs-15 {
-    height: 15vh !important;
+    height: auto !important;
   }
 }
 
