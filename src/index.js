@@ -15,13 +15,13 @@ var httpsOptions = {
     key: fs.readFileSync('./src/app/cert/server.key')
     , cert: fs.readFileSync('./src/app/cert/server.crt')
 };
-// const serverHttp = require('http').Server(app);
+const serverHttp = require('http').Server(app);
 const server = require('https').Server(httpsOptions, app);
 const io = require('socket.io')(server);
 const { v4: uuidV4 } = require('uuid');
 const handlebars = require('express-handlebars');
-// const portHttp = process.env.PORT || 3000;
-const portHttps = process.env.PORT || 3443;
+const portHttp = process.env.PORT || 3000;
+const portHttps = process.env.SECURE_PORT || 3443;
 const MONGO_STRING_CONNECT_CLUSTER = process.env.MONGO_STRING_CONNECT_CLUSTER;
 const db = require('./config/db');
 app.use(methodOverride('_method'));
@@ -85,6 +85,6 @@ io.on('connection', socket => {
     })
 });
 
-// serverHttp.listen(portHttp); // Run the server on the 3000 port
+serverHttp.listen(portHttp); // Run the server on the 3000 port
 server.listen(portHttps); // Run the server on the 3443 port
 route(app);
