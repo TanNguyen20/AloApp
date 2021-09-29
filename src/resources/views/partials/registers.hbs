@@ -5,35 +5,42 @@
         {{!-- <div style="font-size: 30px; text-align: center;" class="row-lg">Tạo tài khoản mới</div> --}}
 
         <div class="form-group row">
-            <div class="col-sm mb-2">
+            <div class="col-sm mb-2 auth-form__group">
                 <label for="surname">Tên hiển thị</label>
-                <input type="text" class="form-control" id="surname" name="surname">
+                <input type="text" class="form-control" id="surname" name="surname" rules="required" value="{{info.displayName}}">
+                <span class="form-message"></span>
             </div>
-            <div class="col-sm mb-2">
+            <div class="col-sm mb-2 auth-form__group">
                 <label for="user">Tên đăng nhập</label>
-                <input type="text" class="form-control" id="user" name="user">
+                <input type="text" class="form-control" id="user" name="user" rules="required|exist" value="{{info.googleId}}">
+                <span class="form-message"></span>
             </div>
         </div>
 
         <div class="form-group row">
-            <div class="col-sm mb-2">
+            <div class="col-sm mb-2 auth-form__group">
                 <label for="password">Mật khẩu</label>
-                <input type="password" class="form-control" id="password" name="password">
+                <input type="password" class="form-control" id="password" name="password" rules="required|min:8|alphaNum">
+                <span class="form-message"></span>
             </div>
-            <div class="col-sm mb-2">
+            <div class="col-sm mb-2 auth-form__group">
                 <label for="password">Nhập lại mật khẩu</label>
-                <input type="password" class="form-control" id="rePassword" name="password">
+                <input type="password" class="form-control" id="repassword" name="password" rules="required|min:8|alphaNum|equal">
+                <span class="form-message"></span>
             </div>
         </div>
         
         <div class="form-group row">
-            <div class="col-sm mb-2">
+            <div class="col-sm mb-2 auth-form__group">
                 <label for="email">Email</label>
-                <input type="email" class="form-control" id="email" aria-describedby="emailHelp" name="email">
+                <input type="text" class="form-control" id="email" aria-describedby="emailHelp" name="email" 
+                rules="required|email" value="{{info.email}}">
+                <span class="form-message"></span>
             </div>
-            <div class="col-sm mb-2">
+            <div class="col-sm mb-2 auth-form__group">
                 <label for="file">Ảnh đại diện</label>
-                <input type="file" class="form-control-file form-control" id="file" name="file"> 
+                <input type="file" class="form-control-file form-control" id="file" name="file" accept="image/gif, image/jpeg, image/png" value="{{info.image}}"> 
+                <span class="form-message"></span>
             </div>
         </div>
 

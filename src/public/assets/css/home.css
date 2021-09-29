@@ -147,3 +147,7 @@ body{
 .itemsInfomation:hover{
     cursor: pointer;
 }
+.form-message{
+    color: red;
+    font-weight: bold;
+}

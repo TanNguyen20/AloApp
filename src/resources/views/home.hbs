@@ -1,9 +1,8 @@
-
 <div class="containerBody">
 
     <!-- Modal login -->
     <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
+        <form class="modal-dialog modal-dialog-centered" id="formLogin">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="login">Đăng nhập</h5>
@@ -15,25 +14,26 @@
                 <div class="modal-footer">
                     <div class="wrapBtnRegister container">
                         <div class="faceGg row">
-                            <a href="#" class="facebook btn mb-2">
+                            <a href="/login/facebook" class="facebook btn mb-2">
                                 <i class="fab fa-facebook"></i>&nbsp;Đăng nhập với Facebook
                             </a>
-                            <a href="#" class="google btn mb-2">
+                            <a href="/login/google" class="google btn mb-2">
                                 <i class="fab fa-google"></i>&nbsp;Đăng nhập với Google
                             </a>
                         </div>
                         <div class=" d-sm-flex align-items-center justify-content-between row">
-                            <button type="button" class="btn btn-secondary btnBack mb-2 col-sm" data-bs-dismiss="modal">Trở về</button>
-                            <button type="submit" class="btn btn-primary mb-2 col-sm">Đăng nhập</button>
+                            <button type="button" class="btn btn-secondary btnBack mb-2 col-sm"
+                                data-bs-dismiss="modal">Trở về</button>
+                            <button type="submit" id="btnLogin" class="btn btn-primary mb-2 col-sm">Đăng nhập</button>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
+        </form>
     </div>
     {{!-- Modal registers --}}
     <div class="modal fade" id="registersModal" tabindex="-1" aria-labelledby="registersModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
+        <form class="modal-dialog modal-dialog-centered" id="formRegister">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="registersModalLabel">Đăng kí tài khoản mới</h5>
@@ -45,36 +45,37 @@
                 <div class="modal-footer">
                     <div class="wrapBtnRegister container">
                         <div class="faceGg row">
-                            <a href="#" class="facebook btn mb-2">
+                            <a href="/register/facebook" class="facebook btn mb-2">
                                 <i class="fab fa-facebook"></i>&nbsp;Đăng kí với Facebook
                             </a>
-                            <a href="#" class="google btn mb-2">
+                            <a href="/register/google" class="google btn mb-2">
                                 <i class="fab fa-google"></i>&nbsp;Đăng kí với Google
                             </a>
                         </div>
                         <div class=" d-sm-flex align-items-center justify-content-between row">
-                            <button type="button" class="btn btn-secondary btnBack mb-2 col-sm" data-bs-dismiss="modal">Trở về</button>
-                            <button type="submit" class="btn btn-primary mb-2 col-sm">Đăng kí</button>
+                            <button type="button" class="btn btn-secondary btnBack mb-2 col-sm"
+                                data-bs-dismiss="modal">Trở về</button>
+                            <button id="btnRegister" type="submit" class="btn btn-primary mb-2 col-sm">Đăng kí</button>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
+        </form>
     </div>
     <div class="container">
         <div class="container">
             <div class="row">
                 <div class="col-sm border itemFunctions">
-                    <i class="fas iconFunctions fa-video"></i><br>
-                    Gọi videocall
+                    <i class="fas fa-users iconFunctions"></i></i><br>
+                    Trò chuyện nhóm
                 </div>
                 <div class="col-sm border itemFunctions">
-                    <i class="fas iconFunctions fa-phone-volume"></i><br>
-                    Gọi thoại
+                    <i class="fas iconFunctions fa-user-friends"></i><br>
+                    Trò chuyện
                 </div>
                 <div class="col-sm border itemFunctions">
-                    <i class="far iconFunctions fa-comments"></i></i><br>
-                    Nhắn tin
+                    <i class="far fa-address-book iconFunctions"></i></i><br>
+                    Bạn bè
                 </div>
             </div>
         </div>
@@ -82,19 +83,48 @@
         <div class="container">
             <div class="row">
                 <div class="col-sm border itemFunctions">
-                    <i class="fas iconFunctions fa-user-friends"></i><br>
-                    Nhắn tin nhóm
+                    <i class="fas fa-search iconFunctions"></i><br>
+                    Tìm kiếm bạn bè
                 </div>
                 <div class="col-sm border itemFunctions">
-                    <i class="fas iconFunctions fa-tv"></i><br>
-                    Chia sẻ màn hình
+                    <i class="fas fa-user-alt iconFunctions"></i><br>
+                    Trang cá nhân
                 </div>
                 <div class="col-sm border itemFunctions">
-                    <i class="fas iconFunctions fa-search-location"></i><br>
-                    Tìm bạn bè xung quanh
+                    <i class="fas fa-info-circle iconFunctions"></i></i><br>
+                    Thông tin sản phẩm
                 </div>
             </div>
         </div>
     </div>
-    
+
 </div>
+<script src="/assets/js/validator.js"></script>
+<script>
+    var formLoginCheck = new Validator("#formLogin");
+    $("#loginModal").on("hidden.bs.modal", function () {
+        $(this)
+            .find("input,textarea,select")
+            .val('')
+            .end()
+            .find("input[type=checkbox], input[type=radio]")
+            .prop("checked", "")
+            .end();
+        $('.form-message').text('');
+    });
+    $("#registersModal").on("hidden.bs.modal", function () {
+        $(this)
+            .find("input,textarea,select")
+            .val('')
+            .end()
+            .find("input[type=checkbox], input[type=radio]")
+            .prop("checked", "")
+            .end();
+        $('.form-message').text('');
+    });
+    //
+    var formRegisterCheck = new Validator("#formRegister");
+
+
+
+</script>

@@ -32,6 +32,7 @@ navigator.mediaDevices.getUserMedia({
     video: true,
     audio: true
 }).then(stream => {
+    alert(stream);
     addVideoStream(myVideo, stream) // Display our video to ourselves
 
     myPeer.on('call', call => { // When we join someone's room we will receive a call from them
