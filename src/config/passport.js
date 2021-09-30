@@ -53,7 +53,7 @@ module.exports = function (passport) {
     {
       clientID: FACEBOOK_CLIENT_ID,
       clientSecret: FACEBOOK_CLIENT_SECRET,
-      callbackURL: '/register/facebook/callback',
+      callbackURL: 'https://nienluandev.herokuapp.com/register/facebook/callback',
       profileFields: ['id', 'displayName', 'emails','name','photos'],
     },
     
