@@ -21,7 +21,7 @@ const io = require('socket.io')(server);
 const { v4: uuidV4 } = require('uuid');
 const handlebars = require('express-handlebars');
 // const portHttp = process.env.PORT || 3000;
-const portHttps = process.env.SECURE_PORT || 3443;
+const portHttps = process.env.PORT || 3443;
 const MONGO_STRING_CONNECT_CLUSTER = process.env.MONGO_STRING_CONNECT_CLUSTER;
 const db = require('./config/db');
 app.use(methodOverride('_method'));
