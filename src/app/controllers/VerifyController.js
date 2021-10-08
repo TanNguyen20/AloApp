@@ -28,8 +28,8 @@ class VerifyControllers {
         let transporter = nodemailer.createTransport({
             service: 'gmail',
             auth: {
-                user: EMAIL_USER_NAME,
-                pass: EMAIL_PASSWORD
+                user: '	nienluannganhct466@gmail.com',
+                pass: 'tanphong123'
             },
         });
 
