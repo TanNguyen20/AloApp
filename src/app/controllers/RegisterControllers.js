@@ -1,6 +1,8 @@
 const passport = require('passport');
 const { mutipleMongooseToObject } = require('../../util/mongoose');
-const User = require('../models/user')
+const User = require('../models/user');
+const md5 = require('md5');
+const Account = require('../models/account');
 const { mongooseToObject } = require('../../util/mongoose');
 const { mulMgToObject } = require('../../util/mongoose');
 const accountSid = process.env.TWILIO_ACCOUNT_SID;
@@ -37,6 +39,20 @@ class RegisterControllers {
     testENV(req, res) {
         res.send(process.env.CLOUDINARY_KEY);
     }
+    registerDefault(req,res){
+        const formData = req.body;
+        formData.password = md5(formData.password);
+        const account = new Account(formData);
+        account.save()
+        .then(() =>{
+            res.send('thanhcong');
+        })
+        .catch(error =>{
+            res.send('error');
+        });
+    }
+
+
     facebook(req, res, next) {
         res.send("Register with facebook");
     }
@@ -88,53 +104,53 @@ class RegisterControllers {
         });
         res.json('Đã gửi mail xác thực vui lòng kiểm tra hộp thư');
     }
-    verifySMS(req, res) {
-        const NUMBER_PHONE_SEND = process.env.TWILIO_NUMBER_PHONE;
-        const MESSAGING_SERVICE_SID =process.env.TWILIO_MESSAGING_SERVICE_SID;
-        client.messages
-            .create({
-                body: 'Chao mung ban den voi AloApp',
-                messagingServiceSid: MESSAGING_SERVICE_SID,
-                from: NUMBER_PHONE_SEND,
-                to: '+84912813450'
-            })
-            .then(message => {
-                res.send('Tin nhan da duoc gui den: ' + message.to);
-            })
-            .done();
-    }
-    verifyMail(req, res) {
-        var token = req.query.id;
-        if (token) {
-            try {
-                jwt.verify(token, SECRET_KEY_EMAIL, (e, decoded) => {
-                    if (e) {
-                        console.log(e)
-                        return res.sendStatus(403);
-                    } else {
-                        var id = decoded.id;
-                        //Update your database here with whatever the verification flag you are using 
-                        User.findOneAndUpdate({ googleId: id }, { isVerified: true })
-                            .then(() => {
-                                res.json('xac thuc email thanh cong');
-                            })
-                            .catch(err => {
-                                res.json('co loi xay ra khi xac thuc email');
-                            })
+    // verifySMS(req, res) {
+    //     const NUMBER_PHONE_SEND = process.env.TWILIO_NUMBER_PHONE;
+    //     const MESSAGING_SERVICE_SID =process.env.TWILIO_MESSAGING_SERVICE_SID;
+    //     client.messages
+    //         .create({
+    //             body: 'Chao mung ban den voi AloApp',
+    //             messagingServiceSid: MESSAGING_SERVICE_SID,
+    //             from: NUMBER_PHONE_SEND,
+    //             to: '+84912813450'
+    //         })
+    //         .then(message => {
+    //             res.send('Tin nhan da duoc gui den: ' + message.to);
+    //         })
+    //         .done();
+    // }
+    // verifyMail(req, res) {
+    //     var token = req.query.id;
+    //     if (token) {
+    //         try {
+    //             jwt.verify(token, SECRET_KEY_EMAIL, (e, decoded) => {
+    //                 if (e) {
+    //                     console.log(e)
+    //                     return res.sendStatus(403);
+    //                 } else {
+    //                     var id = decoded.id;
+    //                     //Update your database here with whatever the verification flag you are using 
+    //                     User.findOneAndUpdate({ googleId: id }, { isVerified: true })
+    //                         .then(() => {
+    //                             res.json('xac thuc email thanh cong');
+    //                         })
+    //                         .catch(err => {
+    //                             res.json('co loi xay ra khi xac thuc email');
+    //                         })
 
-                    }
+    //                 }
 
-                });
-            } catch (err) {
-                console.log(err);
-                return res.sendStatus(403);
-            }
-        } else {
-            res.json('khong ton tai token');
-            return res.sendStatus(403).redirect('/');
+    //             });
+    //         } catch (err) {
+    //             console.log(err);
+    //             return res.sendStatus(403);
+    //         }
+    //     } else {
+    //         res.json('khong ton tai token');
+    //         return res.sendStatus(403).redirect('/');
 
-        }
-    }
+    //     }
+    // }
     ensureAuth(req, res, next) {
         next();
     }
@@ -156,9 +172,38 @@ class RegisterControllers {
     itOk(req, res, next) {
         res.json(req.user);
     }
-    checkUserName(req, res, next) {
+    async checkUserName(req, res, next) {
         const checkUserName = req.body.checkUserName;
-        res.send('1');
+        try{
+            var account = await Account.findOne({ username: checkUserName });
+            if (account) {
+                res.send('1');
+            }
+            else{
+                res.send('0');
+            }
+        
+        }
+        catch(err){
+            res.json('Có lỗi xảy ra!');
+        }
+        
+    }
+    async checkEmail(req, res, next) {
+        const checkEmail = req.body.checkEmail;
+        try{
+            var email = await Account.findOne({ email: checkEmail });
+            if (email) {
+                res.send('1');
+            }
+            else{
+                res.send('0');
+            }
+        
+        }
+        catch(err){
+            res.json('Có lỗi xảy ra!');
+        }
     }
     // logout facebook google
     logout(req, res) {

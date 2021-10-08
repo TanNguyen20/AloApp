@@ -33,7 +33,7 @@
     </div>
     {{!-- Modal registers --}}
     <div class="modal fade" id="registersModal" tabindex="-1" aria-labelledby="registersModalLabel" aria-hidden="true">
-        <form class="modal-dialog modal-dialog-centered" id="formRegister">
+        <form class="modal-dialog modal-dialog-centered" id="formRegister" method="POST" action="/register">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="registersModalLabel">Đăng kí tài khoản mới</h5>
@@ -65,18 +65,18 @@
     <div class="container">
         <div class="container">
             <div class="row">
-                <div class="col-sm border itemFunctions">
+                <a class="col-sm border itemFunctions" href="/me/groupChat">
                     <i class="fas fa-users iconFunctions"></i></i><br>
                     Trò chuyện nhóm
-                </div>
-                <div class="col-sm border itemFunctions">
+                </a>
+                <a class="col-sm border itemFunctions" href="/me/chat">
                     <i class="fas iconFunctions fa-user-friends"></i><br>
                     Trò chuyện
-                </div>
-                <div class="col-sm border itemFunctions">
+                </a>
+                <a class="col-sm border itemFunctions" href="/me/friends">
                     <i class="far fa-address-book iconFunctions"></i></i><br>
                     Bạn bè
-                </div>
+                </a>
             </div>
         </div>
 
@@ -86,19 +86,20 @@
                     <i class="fas fa-search iconFunctions"></i><br>
                     Tìm kiếm bạn bè
                 </div>
-                <div class="col-sm border itemFunctions">
+                <a class="col-sm border itemFunctions" href="/me/profile">
                     <i class="fas fa-user-alt iconFunctions"></i><br>
                     Trang cá nhân
-                </div>
-                <div class="col-sm border itemFunctions">
+                </a>
+                <a class="col-sm border itemFunctions" href="/about">
                     <i class="fas fa-info-circle iconFunctions"></i></i><br>
                     Thông tin sản phẩm
-                </div>
+                </a>
             </div>
         </div>
     </div>
 
 </div>
+<script src="https://upload-widget.cloudinary.com/global/all.js" type="text/javascript"></script>  
 <script src="/assets/js/validator.js"></script>
 <script>
     var formLoginCheck = new Validator("#formLogin");
@@ -123,8 +124,40 @@
         $('.form-message').text('');
     });
     //
-    var formRegisterCheck = new Validator("#formRegister");
-
-
-
+    $(document).ready( function(){
+        var formRegisterCheck = Validator("#formRegister");
+        $('#btnRegister').click(function(ev){
+            var formRegisterCheck1 = Validator("#formRegister");
+            if(formRegisterCheck1) {
+                ev.preventDefault();
+                var displayName = $('#displayName').val();
+                var usernameRegister = $('#usernameRegister').val();
+                var passwordRegister = $('#passwordRegister').val();
+                var email = $('#email').val();
+                var numberPhone = $('#numberPhone').val();
+                var formData ={displayName,username: usernameRegister,password: passwordRegister, numberPhone,email};
+                $.post('/register',formData,async function(data, status){
+                    if(data == 'thanhcong' && status == 'success'){
+                        await swal({
+                            title: "Thông báo",
+                            text: "Bạn đã đăng kí thành công tài khoản\nKiểm tra email để hoàn thành việc đăng kí!",
+                            icon: "success",
+                            button: "Hoàn thành",
+                        });
+                        $.post('/verify/sendEmail',{email});
+                        $("#registersModal").modal("hide");
+                    }
+                    else{
+                        swal({
+                            title: "Thông báo",
+                            text: "Đăng kí thất bại!",
+                            icon: "error",
+                            button: "Trở lại",
+                        });
+                    }
+                });
+            }
+        });
+    });
+    
 </script>

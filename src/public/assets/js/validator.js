@@ -12,8 +12,10 @@ function Validator(formSelector){
 
     function getDataResponseFromUrl(method, url,value){
         var httpRequest = new XMLHttpRequest();
+        value = JSON.stringify(value);
         httpRequest.open(method,url,false);
-        httpRequest.send({checkUserName: value});
+        httpRequest.setRequestHeader('Content-Type','application/json');
+        httpRequest.send(value);
         return httpRequest.responseText;
     }
     /*
@@ -26,6 +28,10 @@ function Validator(formSelector){
         required: function(value){
             return value? undefined:"Vui lòng nhập trường này";
         },
+        notSpace: function(value){
+            var regex =/^([A-z0-9!@#$%^&*().,<>{}[\]<>?_=+\-|;:\'\"\/])*[^\s]\1*$/
+            return value.match(regex)? undefined : "Không được chứa khoảng trắng";
+        },
         min:function(min){
             return function(value){
                 return value.length>=min? undefined:`Vui lòng nhập ít nhất ${min} kí tự`;
@@ -37,21 +43,27 @@ function Validator(formSelector){
             }
         },
         equal:function(value){
-            var password = $("#password").val();
-            return password!==value? "Nhập lại mật khẩu không khớp": undefined;
+            var password = $("#passwordRegister").val();
+            return password!==value && password!=''? "Nhập lại mật khẩu không khớp": undefined;
             // if(password<repassword) return "Nhập lại mật khẩu không khớp";
             // return undefined;
         },
-        exist: function(value){
-           var data = getDataResponseFromUrl("POST","/register/checkUserName",value);
-           return data=='1' ? undefined : "Tên tài khoản đã tồn tại";
+        existName: function(value){
+            var obj = {'checkUserName': value};
+            var data = getDataResponseFromUrl("POST","/register/checkUserName",obj);
+            return data=='0' ? undefined : "Tên tài khoản đã tồn tại";
+        },
+        existEmail: function(value){
+            var obj = {'checkEmail': value};
+            var data = getDataResponseFromUrl("POST","/register/checkEmail",obj);
+            return data=='0' ? undefined : "Email đã được dùng";
         },
         alphaNum: function(value){
-            var regex = /(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/;
-            return value.match(regex)? undefined : "Mật khẩu phải có ít nhất 1 kí tự hoa, 1 kí tự thường và 1 số";
+            var regex =  /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{3,}$/;
+            return value.match(regex)? undefined : "Phải có ít nhất 1 kí tự hoa, 1 kí tự thường và 1 số";
         },
         email: function(value){
-            var regex = /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+            var regex = /(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/;
             return value.match(regex)? undefined : "Email không hợp lệ";
         }
     }
@@ -172,4 +184,28 @@ function Validator(formSelector){
         }
         else return false;
     }
+    //kiem tra co the submit hay khong
+    function checkSubmit(event){
+        var rules = formRules[event.target.name];
+        var errMess="";
+        for(var rule of rules){
+            errMess = rule(event.target.value);
+            if(errMess) break;
+        }
+        
+        // Neu co loi thi hien thong bao
+        if(errMess){
+            return false;
+        }
+        else return true;
+    }
+    //
+    var inputs1 = formElement.querySelectorAll('[name][rules]');
+    var isValid1 = true;// co the kha dung khi submit hay khong
+    for(var input of inputs1){
+        if(!checkSubmit({ target: input })){
+            isValid1 = false;
+        }
+    }
+    return isValid1;
 }

@@ -27,7 +27,7 @@
             <div class="logoAndMessagePreview ms-2 d-flex">
                 <img src="/assets/images/picachu.jpg" alt="logoGroup" class="avatarCol1 rounded-circle">
                 <div class="">
-                    <h6>Ten nhom</h6>
+                    <h6>Người nhận</h6>
                     <span>Tin gan nhat</span>
                 </div>
             </div>
@@ -45,7 +45,7 @@
             <div class="logoAndMessagePreview ms-2 d-flex">
                 <img src="/assets/images/picachu.jpg" alt="logoGroup" class="avatarCol1 rounded-circle">
                 <div class="">
-                    <h6>Ten nhom</h6>
+                    <h6>Người nhận</h6>
                     <span>Tin gan nhat</span>
                 </div>
             </div>
@@ -63,7 +63,7 @@
             <div class="logoAndMessagePreview ms-2 d-flex">
                 <img src="/assets/images/picachu.jpg" alt="logoGroup" class="avatarCol1 rounded-circle">
                 <div class="">
-                    <h6>Ten nhom</h6>
+                    <h6>Người nhận</h6>
                     <span>Tin gan nhat</span>
                 </div>
             </div>
@@ -81,7 +81,7 @@
             <div class="logoAndMessagePreview ms-2 d-flex">
                 <img src="/assets/images/picachu.jpg" alt="logoGroup" class="avatarCol1 rounded-circle">
                 <div class="">
-                    <h6>Ten nhom</h6>
+                    <h6>Người nhận</h6>
                     <span>Tin gan nhat</span>
                 </div>
             </div>
@@ -99,7 +99,7 @@
             <div class="logoAndMessagePreview ms-2 d-flex">
                 <img src="/assets/images/picachu.jpg" alt="logoGroup" class="avatarCol1 rounded-circle">
                 <div class="">
-                    <h6>Ten nhom</h6>
+                    <h6>Người nhận</h6>
                     <span>Tin gan nhat</span>
                 </div>
             </div>
@@ -117,7 +117,7 @@
             <div class="logoAndMessagePreview ms-2 d-flex">
                 <img src="/assets/images/picachu.jpg" alt="logoGroup" class="avatarCol1 rounded-circle">
                 <div class="">
-                    <h6>Ten nhom</h6>
+                    <h6>Người nhận</h6>
                     <span>Tin gan nhat</span>
                 </div>
             </div>
@@ -184,7 +184,7 @@
             <i class="far fa-file-image me-2 iconFooterCol2"></i>
             <i class="fas fa-file-upload me-2 iconFooterCol2"></i>
             <form class="form-inline mt-2 mb-1 w-100">
-                <input class="form-control mr-sm-2 rounded-pill shadow-none" type="search" placeholder="Search" aria-label="Search">
+                <textarea class="form-control shadow-none rounded-pill me-sm-2" id="inputMessage" rows="1"></textarea>
             </form>
             <i class="fas fa-thumbs-up ms-2 iconFooterCol2"></i>
         </footer>
@@ -206,7 +206,7 @@
         </header>
 
         <div class="">
-            <div class="wrapContentCol3">
+            <div class="wrapContentCol3 ms-2 me-2">
 
                 <div class="wrapItemsCol3">
                      <div class="itemsCol3 d-flex justify-content-between align-items-center mt-3 mb-3">
@@ -263,10 +263,20 @@
 
 </div>
 <script>
+    $(document).ready(function(){
+        $('#headerMain').css('display','none');
+        $('#footerMain').css('display','none');
+    });
     var heightHeader = $('.headerCol2').outerHeight();
+    //alert(heightHeader);
     var heightFooter = $('.footerCol2').outerHeight();
+    var heightInputMessage = $('#inputMessage').outerHeight();
     var heightBrowser = $(window).outerHeight();
-    var heightContenCol2 = heightBrowser - heightHeader - heightFooter - 10;
+    var heightContenCol2 = heightBrowser - heightHeader - heightFooter-10;
+    
+    $(".contentCol2").animate({
+        scrollTop: $('.contentCol2').get(0).scrollHeight
+    }, 1);
     $('.contentCol2').css("height", heightContenCol2+'px');
     //alert(heightContenCol2);
     //console.log($('.dropdownShow'));
@@ -287,6 +297,8 @@
                 statusDropdown=0;
             }
         })
+    });
+    $('#inputMessage').on('mouseover', function(e){
+        $('#inputMessage').attr('rows','3');
     })
-    
 </script>

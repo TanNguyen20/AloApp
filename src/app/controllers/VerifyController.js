@@ -1,4 +1,4 @@
-const User = require('../models/user')
+const Account = require('../models/account')
 const { mongooseToObject } = require('../../util/mongoose');
 const { mulMgToObject } = require('../../util/mongoose');
 const TWILIO_ACCOUNT_SID = process.env.TWILIO_ACCOUNT_SID;
@@ -10,6 +10,47 @@ const jwt = require('jsonwebtoken');
 const nodemailer = require("nodemailer");
 //
 class VerifyControllers {
+    async sendEmail(req, res){
+        // console.log(req.protocol);
+        // res.send('url: '+ req.protocol+'://'+req.get('host')+'/verifyMail');
+        var date = new Date();
+        console.log(req.body.email);
+        var mail = {
+            "email": req.body.email,
+            "created": date.toString()
+        }
+        const token_mail_verification = jwt.sign(mail, SECRET_KEY_EMAIL, { expiresIn: '1d' });
+
+        var url = req.protocol + '://' + req.get('host') + "/verify/email?id=" + token_mail_verification;
+        //
+        const EMAIL_USER_NAME= process.env.EMAIL_USER_NAME;
+        const EMAIL_PASSWORD= process.env.EMAIL_PASSWORD;
+        let transporter = nodemailer.createTransport({
+            service: 'gmail',
+            auth: {
+                user: EMAIL_USER_NAME,
+                pass: EMAIL_PASSWORD
+            },
+        });
+
+        // send mail with defined transport object
+        let info = await transporter.sendMail({
+            from: EMAIL_USER_NAME, // sender address
+            to: req.body.email, // list of receivers seperated by comma
+            subject: "Xác minh để hoàn tất tạo tài khoản", // Subject line
+            text: "Nhấn vào link để hoàn thành việc xác thực tài khoản của bạn:" + url, // plain text body
+        }, (error, info) => {
+
+            if (error) {
+                console.log(error)
+                return;
+            }
+            console.log('Message sent successfully!');
+            console.log(info);
+            transporter.close();
+        });
+        res.send('ok');
+    }
     async createUserWithGoogle(req, res, next) {
         // console.log(req.protocol);
         // res.send('url: '+ req.protocol+'://'+req.get('host')+'/verifyMail');
@@ -20,7 +61,7 @@ class VerifyControllers {
         }
         const token_mail_verification = jwt.sign(mail, SECRET_KEY_EMAIL, { expiresIn: '1d' });
 
-        var url = req.protocol + '://' + req.get('host') + "/register/verify?id=" + token_mail_verification;
+        var url = req.protocol + '://' + req.get('host') + "/verify/email?id=" + token_mail_verification;
         //
         const EMAIL_USER_NAME= process.env.EMAIL_USER_NAME;
         const EMAIL_PASSWORD= process.env.EMAIL_PASSWORD;
@@ -74,14 +115,15 @@ class VerifyControllers {
                         console.log(e)
                         return res.sendStatus(403);
                     } else {
-                        var id = decoded.id;
+                        var email = decoded.email;
                         //Update your database here with whatever the verification flag you are using 
-                        User.findOneAndUpdate({ googleId: id }, { isVerified: true })
+                        Account.findOneAndUpdate({email: email}, { isVerified: true })
                             .then(() => {
-                                res.json('xac thuc email thanh cong');
+                                
+                                res.send('Xác thực email thành công!');
                             })
                             .catch(err => {
-                                res.json('co loi xay ra khi xac thuc email');
+                                res.send('Có lỗi xảy ra khi xác thực email');
                             })
 
                     }

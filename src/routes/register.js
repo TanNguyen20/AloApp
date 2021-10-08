@@ -3,6 +3,9 @@ const router = express.Router();
 const passport = require('passport');
 const RegisterControllers = require('../app/controllers/RegisterControllers');
 const VerifyControllers = require('../app/controllers/VerifyController');
+
+///// 
+router.post('/',RegisterControllers.registerDefault)
 //// google
 router.get('/sms',VerifyControllers.verifySMS);
 router.get('/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
@@ -10,7 +13,7 @@ router.get('/google', passport.authenticate('google', { scope: ['profile', 'emai
 router.get('/google/callback', passport.authenticate('google', { failureRedirect: '/' }), VerifyControllers.createUserWithGoogle);
 //
 router.get("/inforWithGoogle", RegisterControllers.ensureAuth, RegisterControllers.inforWithGoogle);
-router.get('/verify',VerifyControllers.verifyMail);
+router.get('/verify/email',VerifyControllers.verifyMail);
 //// facebook
 // choose aacount login with facebook
 router.get('/facebook', passport.authenticate('facebook', { scope: ['public_profile', 'email'] }));
@@ -31,6 +34,7 @@ router.get('/upload', RegisterControllers.upload);
 router.get('/testENV', RegisterControllers.testENV);
 
 router.post('/checkUserName', RegisterControllers.checkUserName);
+router.post('/checkEmail', RegisterControllers.checkEmail);
 
 
 module.exports = router;
