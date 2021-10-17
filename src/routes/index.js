@@ -5,8 +5,12 @@ const loginRouter = require('./login');
 const registerRouter = require('./register');
 const verifyRouter = require('./verify');
 const aboutRouter = require('./about');
+const authRouter = require('./auth');
+const findFriendsRouter = require('./findFriends');
 function route(app) {
     app.use('/login', loginRouter);
+    app.use('/findFriends', findFriendsRouter);
+    app.use('/auth', authRouter);
     app.use('/verify', verifyRouter);
     app.use('/register', registerRouter);
     app.use('/me',meRouter);

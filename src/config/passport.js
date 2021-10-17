@@ -1,9 +1,8 @@
 // import all the things we need  
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const FacebookStrategy  = require('passport-facebook').Strategy;
-
 const mongoose = require('mongoose');
-const User = require('../app/models/user');
+const Account = require('../app/models/account');
 
 module.exports = function (passport) {
   const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
@@ -16,29 +15,28 @@ module.exports = function (passport) {
       {
         clientID: GOOGLE_CLIENT_ID,
         clientSecret: GOOGLE_CILENT_SECRET,
-        callbackURL: '/register/google/callback',
+        callbackURL: '/auth/google/callback',
       },
       async (accessToken, refreshToken, profile, done) => {
         //get the user data from google 
         const newUser = {
           googleId: profile.id,
           displayName: profile.displayName,
-          firstName: profile.name.givenName,
-          lastName: profile.name.familyName,
-          image: profile.photos[0].value,
+          // firstName: profile.name.givenName,
+          // lastName: profile.name.familyName,
+          avatar: profile.photos[0].value,
           email: profile.emails[0].value
         }
 
         try {
           //find the user in our database 
-          let user = await User.findOne({ googleId: profile.id })
-
+          let user = await Account.findOne({ googleId: profile.id });
           if (user) {
             //If user present in our database.
             done(null, user)
           } else {
             // if user is not preset in our database save user data to database.
-            user = await User.create(newUser)
+            user = new Account(newUser);
             done(null, user)
           }
         } catch (err) {
@@ -53,9 +51,9 @@ module.exports = function (passport) {
     {
       clientID: FACEBOOK_CLIENT_ID,
       clientSecret: FACEBOOK_CLIENT_SECRET,
-      // neu khong chi ro https thi se bi loi
-      callbackURL: 'https://aloapp.software/register/facebook/callback',
-      profileFields: ['id', 'displayName', 'emails','name','photos'],
+      // neu khong chi ro https://example.com thi se bi loi https
+      callbackURL: '/auth/facebook/callback',
+      profileFields: ['id', 'displayName', 'emails','name','picture.type(large)'],
     },
     
     async (accessToken, refreshToken, profile, done) => {
@@ -63,22 +61,21 @@ module.exports = function (passport) {
       const newUser1 = {
         facebookId: profile.id,
         displayName: profile.displayName,
-        firstName: profile.name.givenName,
-        lastName: profile.name.familyName,
+        // firstName: profile.name.givenName,
+        //lastName: profile.name.familyName,
         email: profile.emails[0].value,
-        image: profile.photos[0].value,
+        avatar: profile.photos[0].value,
       }
 
       try {
         //find the user in our database 
-        let user = await User.findOne({ facebookId: profile.id })
-
+        let user = await Account.findOne({ facebookId: profile.id });
         if (user) {
           //If user present in our database.
           done(null, user)
         } else {
           // if user is not preset in our database save user data to database.
-          user = await User.create(newUser1)
+          user = new Account(newUser1);
           done(null, user)
         }
       } catch (err) {
@@ -93,6 +90,6 @@ module.exports = function (passport) {
 
   // used to deserialize the user
   passport.deserializeUser((id, done) => {
-    User.findById(id, (err, user) => done(err, user))
+    Account.findById(id, (err, user) => done(err, user))
   })
 } 

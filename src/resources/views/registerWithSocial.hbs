@@ -1,0 +1,27 @@
+<div class="">
+    <script>
+        var status ={{status}};
+        if(status==1){
+             swal({
+                title: "Thông báo",
+                text: "Bạn đã đăng kí thành công tài khoản",
+                icon: "success",
+                button: "Hoàn thành",
+            })
+            .then(()=>{
+                window.location.href = "/";
+            })
+        }
+        else{
+             swal({
+                title: "Thông báo",
+                text: "Tài khoản đã tồn tại hoặc có lỗi khi đăng kí",
+                icon: "error",
+                button: "Đóng",
+            })
+            .then(()=>{
+                window.location.href = "/";
+            })
+        }
+    </script>
+</div>

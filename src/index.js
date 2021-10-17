@@ -51,6 +51,7 @@ app.engine(
         }
     }),
 );
+//tao session cho fb va google
 app.use(
     session({
         secret: 'keyboard cat',

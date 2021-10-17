@@ -1,17 +1,28 @@
-
-// const { mutipleMongooseToObject } = require('../../util/mongoose');
-// const Cource = require('../models/Cource')
-
-//const {MongooseToObject} = require('../../util/mongoose')
+const Account = require('../models/account');
+const {mongooseToObject, mulMgToObject} = require('../../util/mongoose');
+const jwt = require('jsonwebtoken');
+var md5 = require('md5');
 class SiteControllers {
-    homePage(req, res, next) {
-        res.render('home');
-    }
-    registers(req, res, next) {
-        res.render('signUp');
-    }
-    login(req, res, next) {
-        res.render('signIn');
+    async homePage(req, res, next) {
+        var token = req.cookies.token;
+        if(token){
+            var decoded = jwt.verify(token, 'mk');
+            try {
+                var user = await Account.findById(decoded._id);
+                if(user){
+                    res.render('home', {user: mongooseToObject(user)});
+                }
+                else{
+                    res.render('home');
+                }
+            } catch (error) {
+                res.json('Co loi khi render home, khong tim duoc user');
+            }
+
+        }
+        else{
+            res.render('home');
+        }
     }
 }
 

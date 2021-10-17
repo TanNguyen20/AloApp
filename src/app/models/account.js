@@ -5,7 +5,7 @@ const slug = require('mongoose-slug-generator');
 
 const accountSchema = new Schema({
     username: {type: String, required: true, unique: true},
-    password: {type: String, required: true},
+    password: {type: String, default: ""},
     displayName: {type: String, required: true},
     email: {type: String, default:""},
     numberPhone: {type: String, default:""},
@@ -16,7 +16,11 @@ const accountSchema = new Schema({
         type: Boolean,
         default: false,
     },
-
+    arrayIdChat1v1: [{type: ObjectId, ref: 'messages1v1'}],
+    arrayIdChatGroup: [{type: ObjectId, ref: 'messagesGroup'}],
+    friends: [{idFriend:{type: ObjectId}, displayNameFriend: String, avatarFriend: String}],
+    requestFriends: [{idRequestFriend:{type: ObjectId}, displayNameRequestFriend: String, avatarRequestFriend: String, statusRequestFriend:String}],
+    waitAcceptFriends: [{idWaitAcceptFriend:{type: ObjectId}, displayNameWaitAcceptFriend: String, avatarWaitAcceptFriend: String, statusWaitAcceptFriend:String}],
 }, {
     collection: 'account',
     timestamps: true,

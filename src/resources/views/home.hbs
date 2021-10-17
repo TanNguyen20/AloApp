@@ -2,7 +2,7 @@
 
     <!-- Modal login -->
     <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
-        <form class="modal-dialog modal-dialog-centered" id="formLogin">
+        <form class="modal-dialog modal-dialog-centered" id="formLogin" method="POST" action="/login">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="login">Đăng nhập</h5>
@@ -14,10 +14,10 @@
                 <div class="modal-footer">
                     <div class="wrapBtnRegister container">
                         <div class="faceGg row">
-                            <a href="/login/facebook" class="facebook btn mb-2">
+                            <a href="/auth/facebook" class="facebook btn mb-2">
                                 <i class="fab fa-facebook"></i>&nbsp;Đăng nhập với Facebook
                             </a>
-                            <a href="/login/google" class="google btn mb-2">
+                            <a href="/auth/google" class="google btn mb-2">
                                 <i class="fab fa-google"></i>&nbsp;Đăng nhập với Google
                             </a>
                         </div>
@@ -45,10 +45,10 @@
                 <div class="modal-footer">
                     <div class="wrapBtnRegister container">
                         <div class="faceGg row">
-                            <a href="/register/facebook" class="facebook btn mb-2">
+                            <a href="/auth/facebook" class="facebook btn mb-2">
                                 <i class="fab fa-facebook"></i>&nbsp;Đăng kí với Facebook
                             </a>
-                            <a href="/register/google" class="google btn mb-2">
+                            <a href="/auth/google" class="google btn mb-2">
                                 <i class="fab fa-google"></i>&nbsp;Đăng kí với Google
                             </a>
                         </div>
@@ -82,10 +82,10 @@
 
         <div class="container">
             <div class="row">
-                <div class="col-sm border itemFunctions">
+                <a class="col-sm border itemFunctions" href="/findFriends">
                     <i class="fas fa-search iconFunctions"></i><br>
                     Tìm kiếm bạn bè
-                </div>
+                </a>
                 <a class="col-sm border itemFunctions" href="/me/profile">
                     <i class="fas fa-user-alt iconFunctions"></i><br>
                     Trang cá nhân

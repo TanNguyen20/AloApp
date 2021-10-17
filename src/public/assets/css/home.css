@@ -173,6 +173,43 @@ body{
 .cursor{
     cursor: pointer;
 }
+.wrapPreview:hover{
+    border-radius: 4px;
+    background-color: rgb(220, 220, 220);
+    cursor: pointer;
+}
+.backGroundWhite{
+    background-color: white;
+}
 .swal-text {
     text-align: center;
+}
+.message__container{
+    margin: 0 4px;
+    margin-bottom: -8px;
+    display:flex;
+    justify-content: flex-end;
+}
+.message__container-1{
+    margin: 0 4px;
+    margin-bottom: -8px;
+    display:flex;
+}
+.content-message{
+    word-break: break-word;
+    border-radius: 20px;
+    border:2px solid rgba(228,128,100,0.1);
+    padding: 6px;
+    color:white;
+    background-color:orangered;
+    display: block;
+}
+.content-message-1{
+    word-break: break-word;
+    border-radius: 20px;
+    border:2px solid rgba(228,128,100,0.1);
+    padding: 6px;
+    color:white;
+    background-color:orangered;
+    display: block;
 }

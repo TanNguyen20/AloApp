@@ -58,6 +58,10 @@ function Validator(formSelector){
             var data = getDataResponseFromUrl("POST","/register/checkEmail",obj);
             return data=='0' ? undefined : "Email đã được dùng";
         },
+        allAlpha: function(value){
+            var regex = /^[a-zA-Z]+$/;
+            return value.match(regex)? undefined : "Chỉ bao gồm kí tự chữ cái";
+        },
         alphaNum: function(value){
             var regex =  /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{3,}$/;
             return value.match(regex)? undefined : "Phải có ít nhất 1 kí tự hoa, 1 kí tự thường và 1 số";

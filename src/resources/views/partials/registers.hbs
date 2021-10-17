@@ -7,12 +7,12 @@
         <div class="form-group row">
             <div class="col-sm mb-2 auth-form__group">
                 <label for="surname">Tên hiển thị</label>
-                <input type="text" class="form-control" id="displayName" name="displayName" rules="required" value="{{info.displayName}}">
+                <input type="text" class="form-control" id="displayName" name="displayName" rules="required">
                 <span class="form-message"></span>
             </div>
             <div class="col-sm mb-2 auth-form__group">
                 <label for="user">Tên đăng nhập</label>
-                <input type="text" class="form-control" id="usernameRegister" name="usernameRegister" rules="required|notSpace|existName" value="{{info.googleId}}">
+                <input type="text" class="form-control" id="usernameRegister" name="usernameRegister" rules="required|allAlpha|notSpace|existName">
                 <span class="form-message"></span>
             </div>
         </div>
@@ -34,7 +34,7 @@
             <div class="col-sm mb-2 auth-form__group">
                 <label for="email">Email</label>
                 <input type="text" class="form-control" id="email" aria-describedby="emailHelp" name="email" 
-                rules="required|email|existEmail" value="{{info.email}}">
+                rules="required|email|existEmail">
                 <span class="form-message"></span>
             </div>
             <div class="col-sm mb-2 auth-form__group">

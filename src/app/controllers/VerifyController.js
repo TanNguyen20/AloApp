@@ -1,4 +1,5 @@
-const Account = require('../models/account')
+const Account = require('../models/account');
+const mailgun = require("mailgun-js");
 const { mongooseToObject } = require('../../util/mongoose');
 const { mulMgToObject } = require('../../util/mongoose');
 const TWILIO_ACCOUNT_SID = process.env.TWILIO_ACCOUNT_SID;
@@ -23,75 +24,54 @@ class VerifyControllers {
 
         var url = req.protocol + '://' + req.get('host') + "/verify/email?id=" + token_mail_verification;
         //
-        const EMAIL_USER_NAME= process.env.EMAIL_USER_NAME;
-        const EMAIL_PASSWORD= process.env.EMAIL_PASSWORD;
-        let transporter = nodemailer.createTransport({
-            service: 'gmail',
-            auth: {
-                user: '	nienluannganhct466@gmail.com',
-                pass: 'tanphong123'
-            },
-        });
+        if(req.get('host')=='localhost:3443'){
+            const EMAIL_USER_NAME= process.env.EMAIL_USER_NAME;
+            const EMAIL_PASSWORD= process.env.EMAIL_PASSWORD;
+            let transporter = nodemailer.createTransport({
+                service: 'gmail',
+                auth: {
+                    user: EMAIL_USER_NAME,
+                    pass: EMAIL_PASSWORD
+                },
+            });
 
-        // send mail with defined transport object
-        let info = await transporter.sendMail({
-            from: EMAIL_USER_NAME, // sender address
-            to: req.body.email, // list of receivers seperated by comma
-            subject: "Xác minh để hoàn tất tạo tài khoản", // Subject line
-            text: "Nhấn vào link để hoàn thành việc xác thực tài khoản của bạn:" + url, // plain text body
-        }, (error, info) => {
+            // send mail with defined transport object
+            let info = await transporter.sendMail({
+                from: EMAIL_USER_NAME, // sender address
+                to: req.body.email, // list of receivers seperated by comma
+                subject: "Xác minh để hoàn tất tạo tài khoản", // Subject line
+                text: "Nhấn vào link để hoàn thành việc xác thực tài khoản của bạn:" + url, // plain text body
+            }, (error, info) => {
 
-            if (error) {
-                console.log(error)
-                return;
-            }
-            console.log('Message sent successfully!');
-            console.log(info);
-            transporter.close();
-        });
+                if (error) {
+                    console.log(error)
+                    return;
+                }
+                console.log('Message sent successfully!');
+                console.log(info);
+                transporter.close();
+            });
+        }
+        else{
+            //mailgun
+            const DOMAIN = process.env.DOMAIN_MAILGUN;
+            var api_key =process.env.API_KEY_MAILGUN;
+            const mg = mailgun({apiKey: api_key, domain: DOMAIN});
+            const data = {
+                from: 'AloApp <admin@aloapp.software>',
+                to: req.body.email,
+                subject: 'Xác minh để hoàn tất tạo tài khoản',
+                html: "<html><p>Để hoàn thành việc kích hoạt tài khoản hãy nhấn <a href='" +url+ "'" +">Vào đây</a></p></html>",
+            };
+            mg.messages().send(data, function (error, body) {
+                console.log(body);
+            });
+            //
+        }
+        
         res.send('ok');
     }
-    async createUserWithGoogle(req, res, next) {
-        // console.log(req.protocol);
-        // res.send('url: '+ req.protocol+'://'+req.get('host')+'/verifyMail');
-        var date = new Date();
-        var mail = {
-            "id": req.user.googleId,
-            "created": date.toString()
-        }
-        const token_mail_verification = jwt.sign(mail, SECRET_KEY_EMAIL, { expiresIn: '1d' });
-
-        var url = req.protocol + '://' + req.get('host') + "/verify/email?id=" + token_mail_verification;
-        //
-        const EMAIL_USER_NAME= process.env.EMAIL_USER_NAME;
-        const EMAIL_PASSWORD= process.env.EMAIL_PASSWORD;
-        let transporter = nodemailer.createTransport({
-            service: 'gmail',
-            auth: {
-                user: EMAIL_USER_NAME,
-                pass: EMAIL_PASSWORD
-            }
-        });
-
-        // send mail with defined transport object
-        let info = await transporter.sendMail({
-            from: EMAIL_USER_NAME, // sender address
-            to: req.user.email, // list of receivers seperated by comma
-            subject: "Xác minh để hoàn tất tạo tài khoản", // Subject line
-            text: "Nhấn vào link để hoàn thành việc xác thực tài khoản của bạn:" + url, // plain text body
-        }, (error, info) => {
-
-            if (error) {
-                console.log(error)
-                return;
-            }
-            console.log('Message sent successfully!');
-            console.log(info);
-            transporter.close();
-        });
-        res.json('Đã gửi mail xác thực vui lòng kiểm tra hộp thư');
-    }
-    verifySMS(req, res) {
+    sendSMS(req, res) {
         const NUMBER_PHONE_SEND = process.env.TWILIO_NUMBER_PHONE;
         const MESSAGING_SERVICE_SID =process.env.TWILIO_MESSAGING_SERVICE_SID;
         client.messages
