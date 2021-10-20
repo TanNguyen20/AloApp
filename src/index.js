@@ -48,6 +48,165 @@ app.engine(
                 }
                 return strMess;
             },
+            renderFindFriendWithFacebook:(listFriends)=>{
+                var strTotal=`<div class="row mb-lg-4 mb-md-4 mb-0 mb-sm-0">`;
+                listFriends.forEach(function (friend, i) {
+                    strTotal+=`<div class="friendItems d-flex align-items-center col-md-6 mb-lg-0 mb-md-0 mb-sm-4 mb-4 justify-content-between">
+                                <div class="d-flex align-items-center">
+                                    <img src="${friend.avatar}" alt="" style="width:80px;height:80px;" class="rounded">
+                                    <div class="ms-3">
+                                        <div class="displayName">
+                                            ${friend.displayName}
+                                        </div>`;
+                    if(friend.statusFriend == 0){
+                        strTotal+=`<div class="statusFriend">
+                                        Chưa là bạn bè
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="btnRequestAddFriend" id="${friend._id}">
+                                <i class="fas fa-user-plus cursor"></i>
+                            </div>
+                        </div>`;
+                    }
+                    else if(friend.statusFriend == 2){
+                        strTotal+=`<div class="statusFriend">
+                                        Đã gửi yêu cầu kết bạn
+                                    </div>
+                                </div>
+                            </div>
+                            <i class="fas fa-user-clock"></i>
+                        </div>`;
+                    }
+                    else{
+                        strTotal+=`<div class="statusFriend">
+                                        Đã là bạn bè
+                                    </div>
+                                </div>
+                            </div>
+                            <i class="fas fa-user-check"></i>
+                        </div>`;
+                    }
+
+                    if(i%2!=0 && i!=listFriends.length-1){
+                        strTotal+=`</div>`;
+                        strTotal+=`<div class="row mb-lg-4 mb-md-4 mb-0 mb-sm-0">`;
+                    }
+                    else if(i==listFriends.length-1){
+                        strTotal+=`</div>`;
+                    }
+                });
+                return strTotal;
+            },
+            renderListFriends: (listFriends)=>{
+                var strTotal=``;
+                if(listFriends.length>0) strTotal=`<div class="row mb-4">`;
+                listFriends.forEach(function (friend, i) {
+                    
+                    if(i%2==0 && i!=listFriends.length-1){
+                        strTotal+=`<div class="friendItems mb-4 mb-md-0 mb-lg-0 d-flex align-items-center col-md-6 justify-content-between">
+                            <div class="d-flex align-items-center">
+                                <img src="${friend.avatarFriend}" alt="" style="width:80px;height:80px;" class="rounded">
+                                <div class="ms-3">
+                                    <div class="displayName">
+                                        ${friend.displayNameFriend}
+                                    </div>
+                                    <div class="statusOnline">
+                                        Bạn bè
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="wrapDeleteFriend">
+                                <i class="fas fa-ellipsis-h iconTripleDotted cursor"></i>
+                                <div id=${friend.idFriend} class="btnDeleteFriend cursor dropdownHidden fw-bold text-danger">Xóa bạn</div>
+                            </div>
+                        </div>`;
+                    }
+                    else if(i%2==0 && i==listFriends.length-1){
+                        strTotal+=`<div class="friendItems mb-4 mb-md-0 mb-lg-0 d-flex align-items-center col-md-6 justify-content-between">
+                            <div class="d-flex align-items-center">
+                                <img src="${friend.avatarFriend}" alt="" style="width:80px;height:80px;" class="rounded">
+                                <div class="ms-3">
+                                    <div class="displayName">
+                                        ${friend.displayNameFriend}
+                                    </div>
+                                    <div class="statusOnline">
+                                        Bạn bè
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="wrapDeleteFriend">
+                                <i class="fas fa-ellipsis-h iconTripleDotted cursor"></i>
+                                <div id=${friend.idFriend} class="btnDeleteFriend cursor dropdownHidden fw-bold text-danger">Xóa bạn</div>
+                            </div>
+                        </div>
+                        </div>`;
+                    }
+                    else if(i==listFriends.length-1){
+                        strTotal+=`<div class="friendItems d-flex align-items-center col-md-6 justify-content-between">
+                                    <div class="d-flex align-items-center">
+                                        <img src="${friend.avatarFriend}" alt="" style="width:80px;height:80px;" class="rounded">
+                                        <div class="ms-3">
+                                            <div class="displayName">
+                                                ${friend.displayNameFriend}
+                                            </div>
+                                            <div class="statusOnline">
+                                                Bạn bè
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="wrapDeleteFriend">
+                                        <i class="fas fa-ellipsis-h iconTripleDotted cursor"></i>
+                                        <div id=${friend.idFriend} class="btnDeleteFriend cursor dropdownHidden fw-bold text-danger">Xóa bạn</div>
+                                    </div>
+                                </div>
+                            </div>`;
+                    }
+                    else{
+                        strTotal+=`<div class="friendItems d-flex align-items-center col-md-6 justify-content-between">
+                                    <div class="d-flex align-items-center">
+                                        <img src="${friend.avatarFriend}" alt="" style="width:80px;height:80px;" class="rounded">
+                                        <div class="ms-3">
+                                            <div class="displayName">
+                                                ${friend.displayNameFriend}
+                                            </div>
+                                            <div class="statusOnline">
+                                                Bạn bè
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="wrapDeleteFriend">
+                                        <i class="fas fa-ellipsis-h iconTripleDotted cursor"></i>
+                                        <div id=${friend.idFriend} class="btnDeleteFriend cursor dropdownHidden fw-bold text-danger">Xóa bạn</div>
+                                    </div>
+                                </div>
+                            </div>`;
+                        strTotal+=`<div class="row mb-4">`;
+                    }
+                    
+                });
+                return strTotal;
+            },
+            renderRequestFriends: (listRequest)=>{
+                var strTotal=``;
+                listRequest.forEach(function (request, i) {
+                    strTotal+=`<div class="mb-4 friendItems">
+                                    <div class="d-flex justify-content-md-evenly justify-content-lg-start">
+                                        <img src="${request.avatarWaitAcceptFriend}" alt="hinh anh" style="width:80px;height:80px;" class="rounded">
+                                        <div class="ms-3">
+                                            <div class="displayName">
+                                                ${request.displayNameWaitAcceptFriend}
+                                            </div>
+                                            <div class="d-flex wrapBtnRequest">
+                                                <button type="submit" class="btnAccept btn btn-primary mt-3 me-3" id="${request.idWaitAcceptFriend}">Chấp nhận</button>
+                                                <button type="button" class="btnDelete btn btn-secondary mt-3" id1="${request.idWaitAcceptFriend}">Xóa lời mời</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>`;
+                });
+                return strTotal;
+            }
         }
     }),
 );

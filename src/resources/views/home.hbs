@@ -62,6 +62,53 @@
             </div>
         </form>
     </div>
+    {{!--  --}}
+    <!-- Modal forgot password -->
+    <div class="modal fade" id="forgotPasswordModal" tabindex="-1" aria-labelledby="forgotPasswordModalLabel" aria-hidden="true">
+        <form class="modal-dialog modal-dialog-centered" id="formForgotPassword" method="POST" action="/forgotPassword">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="login">Quên mật khẩu</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    {{>forgotPassword}}
+                </div>
+                <div class="modal-footer">
+                    <div class="wrapBtnForgotPassword container">
+                        <div class=" d-sm-flex align-items-center justify-content-between row">
+                            <button type="button" class="btn btn-secondary btnBack mb-2 col-sm"
+                                data-bs-dismiss="modal">Trở về</button>
+                            <button type="submit" id="btnForgotPassword" class="btn btn-primary mb-2 col-sm">Gửi yêu cầu</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    {{!-- Modal change password --}}
+    <div class="modal fade" id="changePasswordModal" tabindex="-1" aria-labelledby="changePasswordModalLabel" aria-hidden="true">
+        <form class="modal-dialog modal-dialog-centered" id="formChangePassword" method="POST" action="/changePassword">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="changePassword">Thay đổi mật khẩu</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    {{>changePassword}}
+                </div>
+                <div class="modal-footer">
+                    <div class="wrapBtnChangePassword container">
+                        <div class=" d-sm-flex align-items-center justify-content-between row">
+                            <button type="button" class="btn btn-secondary btnBack mb-2 col-sm"
+                                data-bs-dismiss="modal">Trở về</button>
+                            <button type="submit" id="btnChangePassword" class="btn btn-primary mb-2 col-sm">Đổi mật khẩu</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
     <div class="container">
         <div class="container">
             <div class="row">
@@ -103,6 +150,8 @@
 <script src="/assets/js/validator.js"></script>
 <script>
     var formLoginCheck = new Validator("#formLogin");
+    var formForgotPasswordCheck = new Validator("#formForgotPassword");
+    var formChangePasswordCheck = new Validator("#formChangePassword");
     $("#loginModal").on("hidden.bs.modal", function () {
         $(this)
             .find("input,textarea,select")

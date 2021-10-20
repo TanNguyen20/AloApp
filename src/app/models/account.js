@@ -18,9 +18,9 @@ const accountSchema = new Schema({
     },
     arrayIdChat1v1: [{type: ObjectId, ref: 'messages1v1'}],
     arrayIdChatGroup: [{type: ObjectId, ref: 'messagesGroup'}],
-    friends: [{idFriend:{type: ObjectId}, displayNameFriend: String, avatarFriend: String}],
-    requestFriends: [{idRequestFriend:{type: ObjectId}, displayNameRequestFriend: String, avatarRequestFriend: String, statusRequestFriend:String}],
-    waitAcceptFriends: [{idWaitAcceptFriend:{type: ObjectId}, displayNameWaitAcceptFriend: String, avatarWaitAcceptFriend: String, statusWaitAcceptFriend:String}],
+    friends: [{ _id:false,idFriend:{type: ObjectId}, displayNameFriend: String, avatarFriend: String}],
+    requestFriends: [{ _id:false, idRequestFriend:{type: ObjectId}, displayNameRequestFriend: String, avatarRequestFriend: String}],
+    waitAcceptFriends: [{ _id:false, idWaitAcceptFriend:{type: ObjectId}, displayNameWaitAcceptFriend: String, avatarWaitAcceptFriend: String}],
 }, {
     collection: 'account',
     timestamps: true,

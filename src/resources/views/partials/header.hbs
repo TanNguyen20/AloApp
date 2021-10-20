@@ -17,6 +17,9 @@
                                 <a class="nav-link" href="/me/profile">{{user.displayName}}</a>
                             </li>
                             <li class="nav-item">
+                                <a class="nav-link" href="/changePassword" data-bs-toggle="modal" data-bs-target="#changePasswordModal">Đổi mật khẩu</a>
+                            </li>
+                            <li class="nav-item">
                                 <a class="nav-link" href="/login/logout">Đăng xuất</a>
                             </li>
                         {{else}}
@@ -25,6 +28,9 @@
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" href="/registers" data-bs-toggle="modal" data-bs-target="#registersModal">Đăng kí</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/forgotPassword" data-bs-toggle="modal" data-bs-target="#forgotPasswordModal">Quên mật khẩu</a>
                             </li>
                         {{/if}}
                         

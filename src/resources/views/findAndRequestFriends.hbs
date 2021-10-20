@@ -1,233 +1,23 @@
 <div class="container">
       <div class="container-fluid">
         <div class="d-md-flex justify-content-between align-items-center text-center">
-            <form action="" id="formSearch">
+            <div id="formSearch">
                 <input class="form-control mr-sm-2 rounded-pill shadow-none d-none d-md-block" type="search" 
-                   id="inputSeach" placeholder="Tìm kiếm" aria-label="Search">
-            </form>
+                   id="inputSeach" placeholder="Tìm kiếm yêu cầu kết bạn" aria-label="Search">
+            </div>
             <div class="d-flex justify-content-between d-lg-none">
                 <a href="" class="me-4" id="requestAddFriend">Yêu cầu kết bạn</a>
-                <a href="" id="findFriends">Tìm kiếm bạn bè</a>
+                <a href="" id="findRequestFriend">Tìm kiếm yêu cầu kết bạn</a>
             </div>
         </div>
     </div>
     <div class="row border-top">
         <div class="col-xs-12 col-lg-4 scrollable-col" id="colLeft">
-            <div class="mb-4 friendItems">
-                <div class="d-flex justify-content-md-evenly justify-content-lg-start">
-                    <img src="/assets/images/picachu.jpg" alt="hinh anh" style="width:80px;height:80px;" class="rounded">
-                    <div class="ms-3">
-                        <div class="displayName">
-                            Nguyễn Nhật Tân
-                        </div>
-                        <div class="d-flex">
-                            <button type="submit" class="btn btn-primary mt-3 me-3">Chấp nhận</button>
-                            <button type="button" class="btn btn-secondary mt-3">Xóa lời mời</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="mb-4 friendItems">
-                <div class="d-flex justify-content-md-evenly justify-content-lg-start">
-                    <img src="/assets/images/picachu.jpg" alt="hinh anh" style="width:80px;height:80px;" class="rounded">
-                    <div class="ms-3">
-                        <div class="displayName">
-                            Nguyễn Nhật Tân
-                        </div>
-                        <div class="d-flex">
-                            <button type="submit" class="btn btn-primary mt-3 me-3">Chấp nhận</button>
-                            <button type="button" class="btn btn-secondary mt-3">Xóa lời mời</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="mb-4 friendItems">
-                <div class="d-flex justify-content-md-evenly justify-content-lg-start">
-                    <img src="/assets/images/picachu.jpg" alt="hinh anh" style="width:80px;height:80px;" class="rounded">
-                    <div class="ms-3">
-                        <div class="displayName">
-                            Nguyễn Nhật Tân
-                        </div>
-                        <div class="d-flex">
-                            <button type="submit" class="btn btn-primary mt-3 me-3">Chấp nhận</button>
-                            <button type="button" class="btn btn-secondary mt-3">Xóa lời mời</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="mb-4 friendItems">
-                <div class="d-flex justify-content-md-evenly justify-content-lg-start">
-                    <img src="/assets/images/picachu.jpg" alt="hinh anh" style="width:80px;height:80px;" class="rounded">
-                    <div class="ms-3">
-                        <div class="displayName">
-                            Nguyễn Nhật Tân
-                        </div>
-                        <div class="d-flex">
-                            <button type="submit" class="btn btn-primary mt-3 me-3">Chấp nhận</button>
-                            <button type="button" class="btn btn-secondary mt-3">Xóa lời mời</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="mb-4 friendItems">
-                <div class="d-flex justify-content-md-evenly justify-content-lg-start">
-                    <img src="/assets/images/picachu.jpg" alt="hinh anh" style="width:80px;height:80px;" class="rounded">
-                    <div class="ms-3">
-                        <div class="displayName">
-                            Nguyễn Nhật Tân
-                        </div>
-                        <div class="d-flex">
-                            <button type="submit" class="btn btn-primary mt-3 me-3">Chấp nhận</button>
-                            <button type="button" class="btn btn-secondary mt-3">Xóa lời mời</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="mb-4 friendItems">
-                <div class="d-flex justify-content-md-evenly justify-content-lg-start">
-                    <img src="/assets/images/picachu.jpg" alt="hinh anh" style="width:80px;height:80px;" class="rounded">
-                    <div class="ms-3">
-                        <div class="displayName">
-                            Nguyễn Nhật Tân
-                        </div>
-                        <div class="d-flex">
-                            <button type="submit" class="btn btn-primary mt-3 me-3">Chấp nhận</button>
-                            <button type="button" class="btn btn-secondary mt-3">Xóa lời mời</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="mb-4 friendItems">
-                <div class="d-flex justify-content-md-evenly justify-content-lg-start">
-                    <img src="/assets/images/picachu.jpg" alt="hinh anh" style="width:80px;height:80px;" class="rounded">
-                    <div class="ms-3">
-                        <div class="displayName">
-                            Nguyễn Nhật Tân
-                        </div>
-                        <div class="d-flex">
-                            <button type="submit" class="btn btn-primary mt-3 me-3">Chấp nhận</button>
-                            <button type="button" class="btn btn-secondary mt-3">Xóa lời mời</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
+            {{{renderRequestFriends listRequest}}}
         </div>
         <div class="col-lg-8 col-md-12 scrollable-col d-none d-lg-block" id="colRight">
-           <div class="friendItems d-flex align-items-center justify-content-between border-bottom pb-2 pt-2">
-                <div class="d-flex align-items-center">
-                    <img src="/assets/images/picachu.jpg" alt="" style="width:80px;height:80px;" class="rounded-circle">
-                    <div class="ms-3">
-                        <div class="displayName">
-                            Nguyễn Nhật Tân
-                        </div>
-                        <div class="statusOnline">
-                            Đã kết bạn hay chưa
-                        </div>
-                    </div>
-                </div>
-                <i class="fas fa-user-plus cursor"></i>
-            </div>
-            <div class="friendItems d-flex align-items-center justify-content-between border-bottom pb-2 pt-2">
-                <div class="d-flex align-items-center">
-                    <img src="/assets/images/picachu.jpg" alt="" style="width:80px;height:80px;" class="rounded-circle">
-                    <div class="ms-3">
-                        <div class="displayName">
-                            Nguyễn Nhật Tân
-                        </div>
-                        <div class="statusOnline">
-                            Đã kết bạn hay chưa
-                        </div>
-                    </div>
-                </div>
-                <i class="fas fa-user-plus cursor"></i>
-            </div>
-            <div class="friendItems d-flex align-items-center justify-content-between border-bottom pb-2 pt-2">
-                <div class="d-flex align-items-center">
-                    <img src="/assets/images/picachu.jpg" alt="" style="width:80px;height:80px;" class="rounded-circle">
-                    <div class="ms-3">
-                        <div class="displayName">
-                            Nguyễn Nhật Tân
-                        </div>
-                        <div class="statusOnline">
-                            Đã kết bạn hay chưa
-                        </div>
-                    </div>
-                </div>
-                <i class="fas fa-user-plus cursor"></i>
-            </div>
-            <div class="friendItems d-flex align-items-center justify-content-between border-bottom pb-2 pt-2">
-                <div class="d-flex align-items-center">
-                    <img src="/assets/images/picachu.jpg" alt="" style="width:80px;height:80px;" class="rounded-circle">
-                    <div class="ms-3">
-                        <div class="displayName">
-                            Nguyễn Nhật Tân
-                        </div>
-                        <div class="statusOnline">
-                            Đã kết bạn hay chưa
-                        </div>
-                    </div>
-                </div>
-                <i class="fas fa-user-plus cursor"></i>
-            </div>
-            <div class="friendItems d-flex align-items-center justify-content-between border-bottom pb-2 pt-2">
-                <div class="d-flex align-items-center">
-                    <img src="/assets/images/picachu.jpg" alt="" style="width:80px;height:80px;" class="rounded-circle">
-                    <div class="ms-3">
-                        <div class="displayName">
-                            Nguyễn Nhật Tân
-                        </div>
-                        <div class="statusOnline">
-                            Đã kết bạn hay chưa
-                        </div>
-                    </div>
-                </div>
-                <i class="fas fa-user-plus cursor"></i>
-            </div>
-            <div class="friendItems d-flex align-items-center justify-content-between border-bottom pb-2 pt-2">
-                <div class="d-flex align-items-center">
-                    <img src="/assets/images/picachu.jpg" alt="" style="width:80px;height:80px;" class="rounded-circle">
-                    <div class="ms-3">
-                        <div class="displayName">
-                            Nguyễn Nhật Tân
-                        </div>
-                        <div class="statusOnline">
-                            Đã kết bạn hay chưa
-                        </div>
-                    </div>
-                </div>
-                <i class="fas fa-user-plus cursor"></i>
-            </div>
-            <div class="friendItems d-flex align-items-center justify-content-between border-bottom pb-2 pt-2">
-                <div class="d-flex align-items-center">
-                    <img src="/assets/images/picachu.jpg" alt="" style="width:80px;height:80px;" class="rounded-circle">
-                    <div class="ms-3">
-                        <div class="displayName">
-                            Nguyễn Nhật Tân
-                        </div>
-                        <div class="statusOnline">
-                            Đã kết bạn hay chưa
-                        </div>
-                    </div>
-                </div>
-                <i class="fas fa-user-plus cursor"></i>
-            </div>
-            <div class="friendItems d-flex align-items-center justify-content-between border-bottom pb-2 pt-2">
-                <div class="d-flex align-items-center">
-                    <img src="/assets/images/picachu.jpg" alt="" style="width:80px;height:80px;" class="rounded-circle">
-                    <div class="ms-3">
-                        <div class="displayName">
-                            Nguyễn Nhật Tân
-                        </div>
-                        <div class="statusOnline">
-                            Đã kết bạn hay chưa
-                        </div>
-                    </div>
-                </div>
-                <i class="fas fa-user-plus cursor"></i>
-            </div>
+           
         </div>
-        
     </div>
 </div>
 <script>
@@ -235,7 +25,7 @@
         //$('header').css('display','none');
         $('footer').css('display','none');
     });
-    $("#findFriends").on("click",function(e){
+    $("#findRequestFriend").on("click",function(e){
         e.preventDefault();
         $('#inputSeach').removeClass('d-none');
         $("#colRight").removeClass("d-none");
@@ -249,6 +39,82 @@
         $('#inputSeach').addClass('d-none');
         $("#colRight").css("display","none");
         $("#colLeft").css("display","block");
+    });
+    $('.btnAccept').click(function(e){
+        var wrapBtnThis = $(this).parent();
+        var idRequest = $(this).attr('id');
+        $.post('/me/acceptRequestFriend',{idRequest:idRequest}, function(data,status){
+            if(data!='err'){
+                wrapBtnThis.html('<p>Đã chấp nhận yêu cầu kết bạn</p>');
+            }
+            else{
+                wrapBtnThis.html('<p>Có lỗi xảy ra, thử lại sau!</p>');
+            }
+        });
+    });
+    $('.btnDelete').click(function(e){
+        var wrapBtnThis = $(this).parent();
+        var idRequest = $(this).attr('id1');
+        swal({
+            title: "Cảnh báo!",
+            text: "Bạn có chắc muốn xóa lời mời?",
+            icon: "warning",
+            buttons: ["Hủy bỏ", "Xóa"],
+            dangerMode: true,
+        })
+        .then((willDelete) => {
+            if (willDelete) {
+                $.post('/me/deleteRequestFriend',{idRequest:idRequest},function(data,status){
+                    if(data!='err'){
+                        swal("Đã xóa thành công!", {
+                            icon: "success",
+                        })
+                        .then(()=>{
+                            wrapBtnThis.html('<p>Đã xóa lời mời kết bạn</p>');
+                        })
+                    }
+                    else{
+                        swal("Có lỗi xảy ra khi xóa!", {
+                            icon: "error",
+                        });
+                    }
+                });
+            } 
+            else {
+                swal("Đã hủy xóa!");
+            }
+        });
+    });
+    $('#inputSeach').keyup(function(e){
+        if(e.keyCode == 13){
+            var findRequestFriend = $(this).val();
+            $('#colRight').html('');
+            $.post('/me/findRequestFriend',{findRequestFriend}, function(data,status){
+                if(status == 'success' && data.length > 0){
+                    var strTotal=``;
+                    data.forEach(function(element){
+                        strTotal+=`<div class="friendItems d-flex align-items-center justify-content-between border-bottom pb-2 pt-2">
+                                    <div class="d-flex align-items-center">
+                                        <img src="${element.avatarWaitAcceptFriend}" alt="hinh anh" style="width:80px;height:80px;" class="rounded">
+                                        <div class="ms-3">
+                                            <div class="displayName">
+                                                ${element.displayNameWaitAcceptFriend}
+                                            </div>
+                                            <div class="d-flex wrapBtnRequest">
+                                                <button type="submit" class="btnAccept btn btn-primary mt-3 me-3" id="${element.idWaitAcceptFriend}">Chấp nhận</button>
+                                                <button type="button" class="btnDelete btn btn-secondary mt-3" id1="${element.idWaitAcceptFriend}">Xóa lời mời</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>`;
+                    });
+                    $('#colRight').html(strTotal);
+                }
+                else{
+                    $('#colRight').html('<h2 class="text-center">Không tìm thấy yêu cầu khớp với tìm kiếm!</h2>');
+                }
+            });
+        }
     });
     
 </script>

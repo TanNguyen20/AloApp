@@ -1,9 +1,8 @@
-
 const {mulMgToObject, mongooseToObject} = require('../../util/mongoose');
 const Account = require('../models/account');
 const Message = require('../models/messages');
 const jwt = require('jsonwebtoken');
-
+const mongoose = require('mongoose');
 //const {MongooseToObject} = require('../../util/mongoose')
 class MeControllers {
     changeInfo(req, res, next){
@@ -53,11 +52,164 @@ class MeControllers {
     groupChat(req, res, next) {
         res.render('groupChat');
     }
-    friends(req, res, next) {
-        res.render('friends');
+    async friends(req, res, next) {
+        var token = req.cookies.token;
+        var dataToken = jwt.verify(token,'mk');
+        var listFriends = await Account.findById(dataToken._id);
+        // console.log(listFriends);
+        res.render('friends',{
+            listFriends:listFriends.friends,
+            totalFriends: listFriends.friends.length,
+            totalWaitAcceptFriends: listFriends.waitAcceptFriends.length
+        });
     }
-    findFriends(req, res, next) {
-        res.render('findAndRequestFriends');
+    async findFriends(req, res, next) {
+
+        var token = req.cookies.token;
+        var dataToken = jwt.verify(token,'mk');
+        var acc = await Account.findById(dataToken._id);
+        var listRequest =acc.waitAcceptFriends;
+        // console.log(listRequest);
+        res.render('findAndRequestFriends',{
+            listRequest
+        });
+    }
+    async deleteFriend(req,res, next) {
+        var token = req.cookies.token;
+        var dataToken = jwt.verify(token,'mk');
+        var idFriend = req.body.idFriendDelete;
+        const friendObjectId = new mongoose.Types.ObjectId(idFriend);
+        var accFind = await Account.findById(idFriend);
+        var accFind1 = await Account.findById(dataToken._id);
+        var infoDelete ={};
+        infoDelete.idFriend=friendObjectId;
+        infoDelete.displayNameFriend=accFind.displayName;
+        infoDelete.avatarFriend=accFind.avatar;
+        var infoDelete1 ={};
+        infoDelete1.idFriend=accFind1._id;
+        infoDelete1.displayNameFriend=accFind1.displayName;
+        infoDelete1.avatarFriend=accFind1.avatar;
+        // console.log(infoDelete);
+        try {
+            var accUpdate = await Account.findByIdAndUpdate(dataToken._id, {$pull: {friends: infoDelete}});
+            var accUpdate1 = await Account.findByIdAndUpdate(idFriend, {$pull: {friends: infoDelete1}});
+            // console.log(friendObjectId);
+            res.send(idFriend);
+        } catch (error) {
+            res.send('err')
+        }
+    }
+    async acceptRequestFriend(req, res){
+        var token = req.cookies.token;
+        var dataToken = jwt.verify(token,'mk');
+        var idRequestFriend = req.body.idRequest;
+        const requestFriendObjectId = new mongoose.Types.ObjectId(idRequestFriend);
+        var accFind = await Account.findById(idRequestFriend);
+        var accFind1 = await Account.findById(dataToken._id);
+        
+        var infoWait ={};
+        var infoFriend = {};
+        infoWait.idWaitAcceptFriend=requestFriendObjectId;
+        infoWait.displayNameWaitAcceptFriend=accFind.displayName;
+        infoWait.avatarWaitAcceptFriend=accFind.avatar;
+        //
+        infoFriend.idFriend=requestFriendObjectId;
+        infoFriend.displayNameFriend=accFind.displayName;
+        infoFriend.avatarFriend=accFind.avatar;
+        //
+        var infoRequest ={};
+        var infoFriend1 = {};
+        infoRequest.idRequestFriend=accFind1._id;
+        infoRequest.displayNameRequestFriend=accFind1.displayName;
+        infoRequest.avatarRequestFriend=accFind1.avatar;
+        //
+        infoFriend1.idFriend=accFind1._id;
+        infoFriend1.displayNameFriend=accFind1.displayName;
+        infoFriend1.avatarFriend=accFind1.avatar;
+        try{
+            var accUpdate = await Account.findByIdAndUpdate(dataToken._id, {$push: {friends: infoFriend},$pull: {waitAcceptFriends: infoWait}});
+            var accUpdate2 = await Account.findByIdAndUpdate(idRequestFriend, {$pull:{requestFriends: infoRequest},$push: {friends: infoFriend1}});
+            console.log(requestFriendObjectId);
+            res.send(idRequestFriend);
+        }
+        catch{
+            res.send('err');
+        }
+
+    }
+    async deleteRequestFriend(req, res){
+        var token = req.cookies.token;
+        var dataToken = jwt.verify(token,'mk');
+        var idRequestFriend = req.body.idRequest;
+        const requestFriendObjectId = new mongoose.Types.ObjectId(idRequestFriend);
+        var accFind = await Account.findById(idRequestFriend);
+        var accFind1 = await Account.findById(dataToken._id);
+        
+        var infoWait ={};
+        var infoFriend = {};
+        infoWait.idWaitAcceptFriend=requestFriendObjectId;
+        infoWait.displayNameWaitAcceptFriend=accFind.displayName;
+        infoWait.avatarWaitAcceptFriend=accFind.avatar;
+        //
+        infoFriend.idFriend=requestFriendObjectId;
+        infoFriend.displayNameFriend=accFind.displayName;
+        infoFriend.avatarFriend=accFind.avatar;
+        //
+        var infoRequest ={};
+        var infoFriend1 = {};
+        infoRequest.idRequestFriend=accFind1._id;
+        infoRequest.displayNameRequestFriend=accFind1.displayName;
+        infoRequest.avatarRequestFriend=accFind1.avatar;
+        //
+        infoFriend1.idFriend=accFind1._id;
+        infoFriend1.displayNameFriend=accFind1.displayName;
+        infoFriend1.avatarFriend=accFind1.avatar;
+        try{
+            var accUpdate = await Account.findByIdAndUpdate(dataToken._id, {$pull: {waitAcceptFriends: infoWait}});
+            var accUpdate2 = await Account.findByIdAndUpdate(idRequestFriend, {$pull:{requestFriends: infoRequest}});
+            console.log(requestFriendObjectId);
+            res.send(idRequestFriend);
+        }
+        catch{
+            res.send('err');
+        }
+    }
+    async findRequestFriend(req, res, next) {
+        var token = req.cookies.token;
+        var dataToken = jwt.verify(token,'mk');
+        var findRequestFriend = req.body.findRequestFriend;
+        var regexFindRequestFriends = new RegExp(findRequestFriend, "i");
+        try{
+            var acc = await Account.findById(dataToken._id);
+            var listRequest =acc.waitAcceptFriends;
+            var arrData=[];
+            listRequest.forEach(element => {
+                if(regexFindRequestFriends.test(element)) arrData.push(element);
+            });
+            res.send(arrData);
+        }
+        catch{
+            res.send([]);
+        }
+    }
+    async findFriendInListFriends(req, res, next) {
+        var token = req.cookies.token;
+        var dataToken = jwt.verify(token,'mk');
+        var findFriend = req.body.findFriend;
+        var regexFindFriend = new RegExp(findFriend, "i");
+        try{
+            var acc = await Account.findById(dataToken._id);
+            var listFriends =acc.friends;
+            var arrData=[];
+            listFriends.forEach(element => {
+                if(regexFindFriend.test(element)) arrData.push(element);
+            });
+            console.log(arrData);
+            res.send(arrData);
+        }
+        catch{
+            res.send([]);
+        }
     }
 }
 
