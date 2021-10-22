@@ -7,3 +7,154 @@
         </div>
     </div>
 </footer>
+<script>
+    
+    //
+    $(document).ready( function(){
+        {{#if user}}
+            {{#if isSocialAccount}}
+            {{else}}
+        $("#changePasswordModal").on("hidden.bs.modal", function () {
+            $(this)
+                .find("input,textarea,select")
+                .val('')
+                .end()
+                .find("input[type=checkbox], input[type=radio]")
+                .prop("checked", "")
+                .end();
+            $('.form-message').text('');
+        });
+
+        var formChangePasswordCheck = Validator("#formChangePassword");
+        $('#btnChangePassword').click(function(ev){
+            var formChangePasswordCheck =  Validator("#formChangePassword");
+            if(formChangePasswordCheck) {
+                ev.preventDefault();
+                var passwordRegister = $('#passwordNew').val();
+                var hashPassword = CryptoJS.MD5(passwordRegister).toString();   
+                //alert(hashPassword);
+                var formData ={password: hashPassword};
+                $.post('/login/changePassword',formData,async function(data, status){
+                    if(data == 'thanhcong' && status == 'success'){
+                        await swal({
+                            title: "Thông báo",
+                            text: "Bạn đã thay đổi mật khẩu thành công",
+                            icon: "success",
+                            button: "Đăng nhập lại",
+                        });
+                        $("#registersModal").modal("hide");
+                        window.location.href = '/login/logout';
+                    }
+                    else{
+                        swal({
+                            title: "Thông báo",
+                            text: "Bạn đang sử dụng tài khoản google hoặc facebook \nHoặc có lỗi xảy ra khi thay đổi mật khẩu!",
+                            icon: "error",
+                            button: "Trở lại",
+                        });
+                    }
+                });
+            }
+        });
+        {{/if}}
+        {{/if}}
+        {{#if user}}    
+        {{else}} 
+        var formRegisterCheck = Validator("#formRegister");
+        $('#btnRegister').click(function(ev){
+            var formRegisterCheck1 = Validator("#formRegister");
+            if(formRegisterCheck1) {
+                ev.preventDefault();
+                var displayName = $('#displayName').val();
+                var usernameRegister = $('#usernameRegister').val();
+                var passwordRegister = $('#passwordRegister').val();
+                var email = $('#email').val();
+                var numberPhone = $('#numberPhone').val();
+                var formData ={displayName,username: usernameRegister,password: passwordRegister, numberPhone,email};
+                $.post('/register',formData,async function(data, status){
+                    if(data == 'thanhcong' && status == 'success'){
+                        await swal({
+                            title: "Thông báo",
+                            text: "Bạn đã đăng kí thành công tài khoản\nKiểm tra email để hoàn thành việc đăng kí!",
+                            icon: "success",
+                            button: "Hoàn thành",
+                        });
+                        $.post('/verify/sendEmail',{email});
+                        $("#registersModal").modal("hide");
+                    }
+                    else{
+                        swal({
+                            title: "Thông báo",
+                            text: "Đăng kí thất bại!",
+                            icon: "error",
+                            button: "Trở lại",
+                        });
+                    }
+                });
+            }
+        });
+        var formLoginCheck = new Validator("#formLogin");
+        $("#loginModal").on("hidden.bs.modal", function () {
+            $(this)
+                .find("input,textarea,select")
+                .val('')
+                .end()
+                .find("input[type=checkbox], input[type=radio]")
+                .prop("checked", "")
+                .end();
+            $('.form-message').text('');
+        });
+        $("#registersModal").on("hidden.bs.modal", function () {
+            $(this)
+                .find("input,textarea,select")
+                .val('')
+                .end()
+                .find("input[type=checkbox], input[type=radio]")
+                .prop("checked", "")
+                .end();
+            $('.form-message').text('');
+        });
+      
+        $("#forgotPasswordModal").on("hidden.bs.modal", function () {
+            $(this)
+                .find("input,textarea,select")
+                .val('')
+                .end()
+                .find("input[type=checkbox], input[type=radio]")
+                .prop("checked", "")
+                .end();
+            $('.form-message').text('');
+        });
+        var formForgotPasswordCheck = Validator("#formForgotPassword");
+        $('#btnForgotPassword').click(function(ev){
+            var formForgotPasswordCheck = Validator("#formForgotPassword");
+            if(formForgotPasswordCheck) {
+                ev.preventDefault();
+                var username = $('#usernameForgotPassword').val();
+                var email = $('#emailForgotPassword').val();
+                var formData ={username,email};
+                $.post('/verify/sendEmailForgotPassword',formData,async function(data, status){
+                    if(data == 'thanhcong' && status == 'success'){
+                        await swal({
+                            title: "Thông báo",
+                            text: "Kiểm tra email để thay đổi mật khẩu",
+                            icon: "success",
+                            button: "Hoàn thành",
+                        });
+                        $("#forgotPasswordModal").modal("hide");
+                    }
+                    else{
+                        swal({
+                            title: "Thông báo",
+                            text: "Thông tin không khớp hoặc có lỗi, hãy thử lại!",
+                            icon: "error",
+                            button: "Trở lại",
+                        });
+                    }
+                });
+            }
+        });
+        {{/if}}
+    });
+    
+</script>

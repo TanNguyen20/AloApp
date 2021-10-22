@@ -33,7 +33,7 @@
             <div class="headerInfoRight">
                 Chỉnh sửa thông tin cá nhân
             </div>
-            <div class="contentInfo contentInfoRight d-table form-group">
+            <div class="contentInfo contentInfoRight d-table form-group" style="display: none;">
                 <div class="d-table-row auth-form__group">
                     <label for="displayName" class="d-table-cell pe-2">Tên người dùng: </label>
                     <input type="text" name="displayName" rules="required" id="displayName" class="form-control shadow-none d-table-cell" value="{{info.displayName}}">
@@ -101,7 +101,7 @@
                 else{
                     swal({
                         title: "Thông báo",
-                        text: "Đăng kí thất bại!",
+                        text: "Cập nhật thông tin thất bại!",
                         icon: "error",
                         button: "Đóng",
                     });

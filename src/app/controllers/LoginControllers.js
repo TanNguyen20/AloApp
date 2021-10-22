@@ -22,11 +22,11 @@ class LoginControllers {
                 
             }
             else{
-                return res.send('<p>Đăng nhập thất bại</p><a style="text-decoration:none" href="/user/Login">Về trang đăng nhập</a>');
+                return res.send('<p>Đăng nhập thất bại</p><a style="text-decoration:none" href="/">Về trang chủ</a>');
             }
         })
         .catch(err =>{
-            res.status(500).json('loi server');
+            res.status(500).send('loi server');
         })
     }
     logout(req, res, next){
@@ -34,6 +34,71 @@ class LoginControllers {
         res.clearCookie('token');
         res.clearCookie('userid');
         res.redirect('/');
+    }
+    async changePassword(req, res, next){
+        var password = req.body.password;
+        var token = req.cookies.token;
+        var dataToken = jwt.verify(token,'mk');
+        try{
+            var accFind = await Account.findById(dataToken._id);
+            if(accFind.facebookId=='' && accFind.googleId==''){
+                var userUpdate = await Account.findByIdAndUpdate(dataToken._id,{password});
+                if(userUpdate){
+                    res.send('thanhcong');
+                }
+                else{
+                    res.send('thatbai');
+                }
+                
+            }
+            else{
+                res.send('thatbai');
+            }
+        }
+        catch{
+            res.status(500).send('loi server');
+        }
+        res.send(req.body.password);
+    }
+    async checkPassword(req, res, next){
+        var token = req.cookies.token;
+        var dataToken = jwt.verify(token,'mk');
+        try{
+            var user = await Account.findById(dataToken._id);
+            if(user.password == md5(req.body.password)){
+                res.send('0');
+            }
+            else{
+                res.send('1');
+            }
+        }
+        catch{
+            res.status(500).send('loi server');
+        }
+    }
+    async changeAfterVerifyForgotPassword(req, res, next){
+        var username = req.body.username;
+        var password = req.body.password;
+        var email = req.body.email;
+        // console.log(data);
+        try{
+            var accFind = await Account.findOne({username: username, email: email});
+            if(accFind.facebookId=='' && accFind.googleId==''){
+                var accUpdate = await Account.findOneAndUpdate({username,email},{password});
+                if(accUpdate){
+                    res.send('thanhcong');
+                }
+                else{
+                    res.send('thatbai');
+                }
+            }
+            else{
+                res.send('thatbai');
+            }
+        }
+        catch{
+            res.send('err');
+        }
     }
 }
 

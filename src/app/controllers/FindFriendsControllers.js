@@ -4,8 +4,21 @@ const {mulMgToObject, mongooseToObject} = require('../../util/mongoose');
 
 class FindFriendsControllers {
     //status=2 dang cho duoc dong y, bang 1 da ket ban, bang 0 chua ket ban
-    findFriends(req, res, next){
-        res.render('findFriends');
+    async findFriends(req, res, next){
+        var token = req.cookies.token;
+        var dataToken = jwt.verify(token,'mk');
+        var acc = await Account.findById(dataToken._id);
+        var isSocialAccount =false;
+        if(acc.googleId!='' || acc.facebookId!='') isSocialAccount = true;
+        if(acc){
+            res.render('findFriends',{
+                user: mongooseToObject(acc),
+                isSocialAccount
+            });
+        }
+        else{
+            res.send('Khong tim thay thong tin tai khoan');
+        }
     }
     async sendRequestFriends(req, res, next) {
         try{
@@ -84,6 +97,7 @@ class FindFriendsControllers {
         var listAccFacebook = [];
         var token = req.cookies.token;
         var decode = jwt.verify(token,'mk');
+        var accToken = await Account.findById(decode._id);
         for(var element of acc){
             if(element.facebookId.toString() != '' && element._id.toString() != decode._id){
                 var isFriend = element.friends.some( item => item['idFriend'].toString() == decode._id);
@@ -107,9 +121,18 @@ class FindFriendsControllers {
             }
         }
         console.log(listAccFacebook);
-        res.render('findFriends',{
-            listUserFacebook: listAccFacebook
-        });
+        var isSocialAccount =false;
+        if(acc.googleId!='' || acc.facebookId!='') isSocialAccount = true;
+        if(acc){
+            res.render('findFriends',{
+                user: mongooseToObject(accToken),
+                isSocialAccount,
+                listUserFacebook: listAccFacebook
+            });
+        }
+        else{
+            res.render('findFriends');
+        }
         
     }
 }

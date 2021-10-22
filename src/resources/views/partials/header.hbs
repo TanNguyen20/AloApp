@@ -16,9 +16,12 @@
                             <li class="nav-item">
                                 <a class="nav-link" href="/me/profile">{{user.displayName}}</a>
                             </li>
+                            {{#if isSocialAccount}}
+                            {{else}}
                             <li class="nav-item">
                                 <a class="nav-link" href="/changePassword" data-bs-toggle="modal" data-bs-target="#changePasswordModal">Đổi mật khẩu</a>
                             </li>
+                            {{/if}}
                             <li class="nav-item">
                                 <a class="nav-link" href="/login/logout">Đăng xuất</a>
                             </li>
@@ -40,3 +43,119 @@
         </nav>
     </div>
 </header>
+<div class="">
+    <!-- Modal login -->
+    <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+        <form class="modal-dialog modal-dialog-centered" id="formLogin" method="POST" action="/login">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="login">Đăng nhập</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    {{>login}}
+                </div>
+                <div class="modal-footer">
+                    <div class="wrapBtnRegister container">
+                        <div class="faceGg row">
+                            <a href="/auth/facebook" class="facebook btn mb-2">
+                                <i class="fab fa-facebook"></i>&nbsp;Đăng nhập với Facebook
+                            </a>
+                            <a href="/auth/google" class="google btn mb-2">
+                                <i class="fab fa-google"></i>&nbsp;Đăng nhập với Google
+                            </a>
+                        </div>
+                        <div class=" d-sm-flex align-items-center justify-content-between row">
+                            <button type="button" class="btn btn-secondary btnBack mb-2 col-sm"
+                                data-bs-dismiss="modal">Trở về</button>
+                            <button type="submit" id="btnLogin" class="btn btn-primary mb-2 col-sm">Đăng nhập</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    {{!-- Modal registers --}}
+    <div class="modal fade" id="registersModal" tabindex="-1" aria-labelledby="registersModalLabel" aria-hidden="true">
+        <form class="modal-dialog modal-dialog-centered" id="formRegister" method="POST" action="/register">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="registersModalLabel">Đăng kí tài khoản mới</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    {{>registers}}
+                </div>
+                <div class="modal-footer">
+                    <div class="wrapBtnRegister container">
+                        <div class="faceGg row">
+                            <a href="/auth/facebook" class="facebook btn mb-2">
+                                <i class="fab fa-facebook"></i>&nbsp;Đăng kí với Facebook
+                            </a>
+                            <a href="/auth/google" class="google btn mb-2">
+                                <i class="fab fa-google"></i>&nbsp;Đăng kí với Google
+                            </a>
+                        </div>
+                        <div class=" d-sm-flex align-items-center justify-content-between row">
+                            <button type="button" class="btn btn-secondary btnBack mb-2 col-sm"
+                                data-bs-dismiss="modal">Trở về</button>
+                            <button id="btnRegister" type="submit" class="btn btn-primary mb-2 col-sm">Đăng kí</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    {{!--  --}}
+    <!-- Modal forgot password -->
+    {{#if user}}
+    {{else}}
+    <div class="modal fade" id="forgotPasswordModal" tabindex="-1" aria-labelledby="forgotPasswordModalLabel" aria-hidden="true">
+        <form class="modal-dialog modal-dialog-centered" id="formForgotPassword" method="POST" action="/forgotPassword">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="login">Quên mật khẩu</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    {{>forgotPassword}}
+                </div>
+                <div class="modal-footer">
+                    <div class="wrapBtnForgotPassword container">
+                        <div class=" d-sm-flex align-items-center justify-content-between row">
+                            <button type="button" class="btn btn-secondary btnBack mb-2 col-sm"
+                                data-bs-dismiss="modal">Trở về</button>
+                            <button type="submit" id="btnForgotPassword" class="btn btn-primary mb-2 col-sm">Gửi yêu cầu</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    {{/if}}
+    {{!-- Modal change password --}}
+    {{#if user}}
+    <div class="modal fade" id="changePasswordModal" tabindex="-1" aria-labelledby="changePasswordModalLabel" aria-hidden="true">
+        <form class="modal-dialog modal-dialog-centered" id="formChangePassword" method="POST" action="/login/changePassword">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="changePassword">Thay đổi mật khẩu</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    {{>changePassword}}
+                </div>
+                <div class="modal-footer">
+                    <div class="wrapBtnChangePassword container">
+                        <div class=" d-sm-flex align-items-center justify-content-between row">
+                            <button type="button" class="btn btn-secondary btnBack mb-2 col-sm"
+                                data-bs-dismiss="modal">Trở về</button>
+                            <button type="submit" id="btnChangePassword" class="btn btn-primary mb-2 col-sm">Đổi mật khẩu</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    {{/if}}
+</div>

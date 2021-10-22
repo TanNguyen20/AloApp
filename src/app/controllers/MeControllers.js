@@ -24,8 +24,21 @@ class MeControllers {
         })
         
     }
-    chat(req, res, next) {
-        res.render('chat');
+    async chat(req, res, next) {
+        var token = req.cookies.token;
+        var dataToken = jwt.verify(token,'mk');
+        var acc = await Account.findById(dataToken._id);
+        var isSocialAccount =false;
+        if(acc.googleId!='' || acc.facebookId!='') isSocialAccount = true;
+        if(acc){
+            res.render('chat',{
+                user: mongooseToObject(acc),
+                isSocialAccount
+            });
+        }
+        else{
+            res.render('chat');
+        }
     }
     chat1v1(req, res, next) {
         var idChat1v1 = req.params.idChat1v1;
@@ -37,8 +50,12 @@ class MeControllers {
         Account.findById(dataToken._id)
         .then((data)=>{
             if(data){
+                var isSocialAccount =false;
+                if(data.googleId!='' || data.facebookId!='') isSocialAccount = true;
                 res.render('profile',{
-                    info:mongooseToObject(data)
+                    info:mongooseToObject(data),
+                    user: mongooseToObject(data),
+                    isSocialAccount
                 });
             }
             else{
@@ -49,18 +66,35 @@ class MeControllers {
             res.redirect('/');
         })
     }
-    groupChat(req, res, next) {
-        res.render('groupChat');
+    async groupChat(req, res, next) {
+        var token = req.cookies.token;
+        var dataToken = jwt.verify(token,'mk');
+        var acc = await Account.findById(dataToken._id);
+        var isSocialAccount =false;
+        if(acc.googleId!='' || acc.facebookId!='') isSocialAccount = true;
+        if(acc){
+            res.render('groupChat',{
+                user: mongooseToObject(acc),
+                isSocialAccount
+            });
+        }
+        else{
+            res.render('groupChat');
+        }
     }
     async friends(req, res, next) {
         var token = req.cookies.token;
         var dataToken = jwt.verify(token,'mk');
         var listFriends = await Account.findById(dataToken._id);
+        var isSocialAccount =false;
+        if(listFriends.googleId!='' || listFriends.facebookId!='') isSocialAccount = true;
         // console.log(listFriends);
         res.render('friends',{
             listFriends:listFriends.friends,
             totalFriends: listFriends.friends.length,
-            totalWaitAcceptFriends: listFriends.waitAcceptFriends.length
+            totalWaitAcceptFriends: listFriends.waitAcceptFriends.length,
+            isSocialAccount,
+            user: mongooseToObject(listFriends)
         });
     }
     async findFriends(req, res, next) {
@@ -69,9 +103,13 @@ class MeControllers {
         var dataToken = jwt.verify(token,'mk');
         var acc = await Account.findById(dataToken._id);
         var listRequest =acc.waitAcceptFriends;
+        var isSocialAccount =false;
+        if(acc.googleId!='' || acc.facebookId!='') isSocialAccount = true;
         // console.log(listRequest);
         res.render('findAndRequestFriends',{
-            listRequest
+            listRequest,
+            isSocialAccount,
+            user: mongooseToObject(acc)
         });
     }
     async deleteFriend(req,res, next) {

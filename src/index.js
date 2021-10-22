@@ -206,7 +206,7 @@ app.engine(
                                 </div>`;
                 });
                 return strTotal;
-            }
+            },
         }
     }),
 );

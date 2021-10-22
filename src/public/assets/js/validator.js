@@ -43,7 +43,13 @@ function Validator(formSelector){
             }
         },
         equal:function(value){
-            var password = $("#passwordRegister").val();
+            var password = $("#passwordRegister").val() || $("#passwordCurrent").val();
+            return password!==value && password!=''? "Nhập lại mật khẩu không khớp": undefined;
+            // if(password<repassword) return "Nhập lại mật khẩu không khớp";
+            // return undefined;
+        },
+        equalNewPassword:function(value){
+            var password =  $("#passwordNew").val();
             return password!==value && password!=''? "Nhập lại mật khẩu không khớp": undefined;
             // if(password<repassword) return "Nhập lại mật khẩu không khớp";
             // return undefined;
@@ -52,6 +58,11 @@ function Validator(formSelector){
             var obj = {'checkUserName': value};
             var data = getDataResponseFromUrl("POST","/register/checkUserName",obj);
             return data=='0' ? undefined : "Tên tài khoản đã tồn tại";
+        },
+        checkPassword: function(value){
+            var obj = {'password': value};
+            var data = getDataResponseFromUrl("POST","/login/checkPassword",obj);
+            return data=='0' ? undefined : "Không phải là mật khẩu hiện tại";
         },
         existEmail: function(value){
             var obj = {'checkEmail': value};
