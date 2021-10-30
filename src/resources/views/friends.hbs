@@ -16,7 +16,10 @@
     <div class="container contentCol2 border-top  w-sm-100 w-xs-100 w-md-100 w-lg-75 w-xl-75 d-block mx-auto mb-auto" id="findFriendInList">
         {{{renderListFriends listFriends}}}
     </div>
+    <div class="container contentCol2 border-top  w-sm-100 w-xs-100 w-md-100 w-lg-75 w-xl-75 d-block mx-auto mb-auto" id="findFriendInListAfterEnter">
+    </div>
 </div>
+<script src="/assets/js/validator.js"></script>
 <script>
     
     $('.wrapDeleteFriend').each(function(){
@@ -71,9 +74,15 @@
     })
     
     $('#inputFindFriend').keyup(function(e){
+        $('#findFriendInListAfterEnter').html('');
+        var findFriend = $(this).val();
+        if(findFriend.length>0){
+            $('#findFriendInList').addClass('d-none');
+        }
+        else{
+            $('#findFriendInList').removeClass('d-none');
+        }
         if(e.keyCode == 13){
-            var findFriend = $(this).val();
-            $('#findFriendInList').html('');
             $.post('/me/findFriendInListFriends',{findFriend}, function(listFriends,status){
                 //alert(listFriends);
                 if(status == 'success' && listFriends.length > 0){
@@ -84,10 +93,10 @@
                             if(i%2==0 && i!=listFriends.length-1){
                                 strTotal+=`<div class="friendItems mb-4 mb-md-0 mb-lg-0 d-flex align-items-center col-md-6 justify-content-between">
                                     <div class="d-flex align-items-center">
-                                        <img src="${friend.avatarFriend}" alt="" style="width:80px;height:80px;" class="rounded">
+                                        <img src="${friend.avatar}" alt="" style="width:80px;height:80px;" class="rounded">
                                         <div class="ms-3">
                                             <div class="displayName">
-                                                ${friend.displayNameFriend}
+                                                ${friend.displayName}
                                             </div>
                                             <div class="statusOnline">
                                                 Bạn bè
@@ -96,17 +105,17 @@
                                     </div>
                                     <div class="wrapDeleteFriend">
                                         <i class="fas fa-ellipsis-h iconTripleDotted cursor"></i>
-                                        <div id=${friend.idFriend} class="btnDeleteFriend cursor dropdownHidden fw-bold text-danger">Xóa bạn</div>
+                                        <div id=${friend._id} class="btnDeleteFriend cursor dropdownHidden fw-bold text-danger">Xóa bạn</div>
                                     </div>
                                 </div>`;
                             }
                             else if(i%2==0 && i==listFriends.length-1){
                                 strTotal+=`<div class="friendItems mb-4 mb-md-0 mb-lg-0 d-flex align-items-center col-md-6 justify-content-between">
                                     <div class="d-flex align-items-center">
-                                        <img src="${friend.avatarFriend}" alt="" style="width:80px;height:80px;" class="rounded">
+                                        <img src="${friend.avatar}" alt="" style="width:80px;height:80px;" class="rounded">
                                         <div class="ms-3">
                                             <div class="displayName">
-                                                ${friend.displayNameFriend}
+                                                ${friend.displayName}
                                             </div>
                                             <div class="statusOnline">
                                                 Bạn bè
@@ -115,7 +124,7 @@
                                     </div>
                                     <div class="wrapDeleteFriend">
                                         <i class="fas fa-ellipsis-h iconTripleDotted cursor"></i>
-                                        <div id=${friend.idFriend} class="btnDeleteFriend cursor dropdownHidden fw-bold text-danger">Xóa bạn</div>
+                                        <div id=${friend._id} class="btnDeleteFriend cursor dropdownHidden fw-bold text-danger">Xóa bạn</div>
                                     </div>
                                 </div>
                                 </div>`;
@@ -135,17 +144,22 @@
                                             </div>
                                             <div class="wrapDeleteFriend">
                                                 <i class="fas fa-ellipsis-h iconTripleDotted cursor"></i>
-                                                <div id=${friend.idFriend} class="btnDeleteFriend cursor dropdownHidden fw-bold text-danger">Xóa bạn</div>
+                                                <div id=${friend._id} class="btnDeleteFriend cursor dropdownHidden fw-bold text-danger">Xóa bạn</div>
                                             </div>
                                         </div>
                                     </div>`;
                                 strTotal+=`<div class="row mb-4">`;
                             }
                         });
-                    $('#findFriendInList').append(strTotal);
+                    $('#findFriendInListAfterEnter').append(strTotal);
+                    if($(this).val().length ==0){
+                        $('#findFriendInList').removeClass('d-none');
+                        $('#findFriendInListAfterEnter').html('');
+                    }
                 }
                 else{
-                    $('#findFriendInList').html('<h2>Không tìm thấy</h2>')
+                    $('#findFriendInListAfterEnter').html('<h2 class="text-center">Không tìm thấy</h2>');
+                   
                 }
             });
         }

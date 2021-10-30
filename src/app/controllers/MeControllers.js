@@ -24,17 +24,53 @@ class MeControllers {
         })
         
     }
+    async test(req, res, next) {
+        var acc = await Account.findOne({googleId:'116050248282285785128'}).populate('arrPop');
+        res.json(acc);
+        console.log(acc);
+    }
     async chat(req, res, next) {
         var token = req.cookies.token;
         var dataToken = jwt.verify(token,'mk');
-        var acc = await Account.findById(dataToken._id);
+        var acc = await Account.findById(dataToken._id).populate('arrayIdChat1v1._id').populate('arrayIdChat1v1.idFriend').populate('friends');
+        // console.log(acc.friends);
         var isSocialAccount =false;
+        var listChat = acc.arrayIdChat1v1;
+        var lastChat = acc.arrayIdChat1v1[acc.arrayIdChat1v1.length-1];
+        var arrContentLastChat = [];
+        var infoFriendLastChat={};
+        console.log(lastChat);
+        if(lastChat) {
+            arrContentLastChat=lastChat._id.arrayContent1v1;
+            infoFriendLastChat.displayName = lastChat.idFriend.displayName;
+            infoFriendLastChat.avatar = lastChat.idFriend.avatar;
+            infoFriendLastChat._id = lastChat.idFriend._id;
+        }
+        var you = acc.displayName;
+        console.log(arrContentLastChat);
         if(acc.googleId!='' || acc.facebookId!='') isSocialAccount = true;
+
         if(acc){
-            res.render('chat',{
-                user: mongooseToObject(acc),
-                isSocialAccount
-            });
+            if(infoFriendLastChat){
+                res.render('chat',{
+                    user: mongooseToObject(acc),
+                    friend: infoFriendLastChat,
+                    isSocialAccount,
+                    arrContentChat: arrContentLastChat,
+                    you,
+                    listChat
+                });
+            }
+            else{
+                res.render('chat',{
+                    user: mongooseToObject(acc),
+                    friend:null,
+                    isSocialAccount,
+                    arrContentChat: arrContentLastChat,
+                    you,
+                    listChat
+                });
+            }
         }
         else{
             res.render('chat');
@@ -85,7 +121,7 @@ class MeControllers {
     async friends(req, res, next) {
         var token = req.cookies.token;
         var dataToken = jwt.verify(token,'mk');
-        var listFriends = await Account.findById(dataToken._id);
+        var listFriends = await Account.findById(dataToken._id).populate('friends');
         var isSocialAccount =false;
         if(listFriends.googleId!='' || listFriends.facebookId!='') isSocialAccount = true;
         // console.log(listFriends);
@@ -101,7 +137,7 @@ class MeControllers {
 
         var token = req.cookies.token;
         var dataToken = jwt.verify(token,'mk');
-        var acc = await Account.findById(dataToken._id);
+        var acc = await Account.findById(dataToken._id).populate('waitAcceptFriends');
         var listRequest =acc.waitAcceptFriends;
         var isSocialAccount =false;
         if(acc.googleId!='' || acc.facebookId!='') isSocialAccount = true;
@@ -120,13 +156,13 @@ class MeControllers {
         var accFind = await Account.findById(idFriend);
         var accFind1 = await Account.findById(dataToken._id);
         var infoDelete ={};
-        infoDelete.idFriend=friendObjectId;
-        infoDelete.displayNameFriend=accFind.displayName;
-        infoDelete.avatarFriend=accFind.avatar;
+        infoDelete=friendObjectId;
+        // infoDelete.displayNameFriend=accFind.displayName;
+        // infoDelete.avatarFriend=accFind.avatar;
         var infoDelete1 ={};
-        infoDelete1.idFriend=accFind1._id;
-        infoDelete1.displayNameFriend=accFind1.displayName;
-        infoDelete1.avatarFriend=accFind1.avatar;
+        infoDelete1=accFind1._id;
+        // infoDelete1.displayNameFriend=accFind1.displayName;
+        // infoDelete1.avatarFriend=accFind1.avatar;
         // console.log(infoDelete);
         try {
             var accUpdate = await Account.findByIdAndUpdate(dataToken._id, {$pull: {friends: infoDelete}});
@@ -141,29 +177,30 @@ class MeControllers {
         var token = req.cookies.token;
         var dataToken = jwt.verify(token,'mk');
         var idRequestFriend = req.body.idRequest;
+        console.log(idRequestFriend);
         const requestFriendObjectId = new mongoose.Types.ObjectId(idRequestFriend);
         var accFind = await Account.findById(idRequestFriend);
         var accFind1 = await Account.findById(dataToken._id);
         
         var infoWait ={};
         var infoFriend = {};
-        infoWait.idWaitAcceptFriend=requestFriendObjectId;
-        infoWait.displayNameWaitAcceptFriend=accFind.displayName;
-        infoWait.avatarWaitAcceptFriend=accFind.avatar;
+        infoWait=requestFriendObjectId;
+        // infoWait.displayNameWaitAcceptFriend=accFind.displayName;
+        // infoWait.avatarWaitAcceptFriend=accFind.avatar;
         //
-        infoFriend.idFriend=requestFriendObjectId;
-        infoFriend.displayNameFriend=accFind.displayName;
-        infoFriend.avatarFriend=accFind.avatar;
+        infoFriend=requestFriendObjectId;
+        // infoFriend.displayNameFriend=accFind.displayName;
+        // infoFriend.avatarFriend=accFind.avatar;
         //
         var infoRequest ={};
         var infoFriend1 = {};
-        infoRequest.idRequestFriend=accFind1._id;
-        infoRequest.displayNameRequestFriend=accFind1.displayName;
-        infoRequest.avatarRequestFriend=accFind1.avatar;
+        infoRequest=accFind1._id;
+        // infoRequest.displayNameRequestFriend=accFind1.displayName;
+        // infoRequest.avatarRequestFriend=accFind1.avatar;
         //
-        infoFriend1.idFriend=accFind1._id;
-        infoFriend1.displayNameFriend=accFind1.displayName;
-        infoFriend1.avatarFriend=accFind1.avatar;
+        infoFriend1=accFind1._id;
+        // infoFriend1.displayNameFriend=accFind1.displayName;
+        // infoFriend1.avatarFriend=accFind1.avatar;
         try{
             var accUpdate = await Account.findByIdAndUpdate(dataToken._id, {$push: {friends: infoFriend},$pull: {waitAcceptFriends: infoWait}});
             var accUpdate2 = await Account.findByIdAndUpdate(idRequestFriend, {$pull:{requestFriends: infoRequest},$push: {friends: infoFriend1}});
@@ -185,23 +222,23 @@ class MeControllers {
         
         var infoWait ={};
         var infoFriend = {};
-        infoWait.idWaitAcceptFriend=requestFriendObjectId;
-        infoWait.displayNameWaitAcceptFriend=accFind.displayName;
-        infoWait.avatarWaitAcceptFriend=accFind.avatar;
+        infoWait=requestFriendObjectId;
+        // infoWait.displayNameWaitAcceptFriend=accFind.displayName;
+        // infoWait.avatarWaitAcceptFriend=accFind.avatar;
         //
-        infoFriend.idFriend=requestFriendObjectId;
-        infoFriend.displayNameFriend=accFind.displayName;
-        infoFriend.avatarFriend=accFind.avatar;
+        infoFriend=requestFriendObjectId;
+        // infoFriend.displayNameFriend=accFind.displayName;
+        // infoFriend.avatarFriend=accFind.avatar;
         //
         var infoRequest ={};
         var infoFriend1 = {};
-        infoRequest.idRequestFriend=accFind1._id;
-        infoRequest.displayNameRequestFriend=accFind1.displayName;
-        infoRequest.avatarRequestFriend=accFind1.avatar;
+        infoRequest=accFind1._id;
+        // infoRequest.displayNameRequestFriend=accFind1.displayName;
+        // infoRequest.avatarRequestFriend=accFind1.avatar;
         //
-        infoFriend1.idFriend=accFind1._id;
-        infoFriend1.displayNameFriend=accFind1.displayName;
-        infoFriend1.avatarFriend=accFind1.avatar;
+        infoFriend1=accFind1._id;
+        // infoFriend1.displayNameFriend=accFind1.displayName;
+        // infoFriend1.avatarFriend=accFind1.avatar;
         try{
             var accUpdate = await Account.findByIdAndUpdate(dataToken._id, {$pull: {waitAcceptFriends: infoWait}});
             var accUpdate2 = await Account.findByIdAndUpdate(idRequestFriend, {$pull:{requestFriends: infoRequest}});
@@ -218,11 +255,11 @@ class MeControllers {
         var findRequestFriend = req.body.findRequestFriend;
         var regexFindRequestFriends = new RegExp(findRequestFriend, "i");
         try{
-            var acc = await Account.findById(dataToken._id);
+            var acc = await Account.findById(dataToken._id).populate('waitAcceptFriends');
             var listRequest =acc.waitAcceptFriends;
             var arrData=[];
             listRequest.forEach(element => {
-                if(regexFindRequestFriends.test(element)) arrData.push(element);
+                if(regexFindRequestFriends.test(element.displayName)) arrData.push(element);
             });
             res.send(arrData);
         }
@@ -236,11 +273,11 @@ class MeControllers {
         var findFriend = req.body.findFriend;
         var regexFindFriend = new RegExp(findFriend, "i");
         try{
-            var acc = await Account.findById(dataToken._id);
+            var acc = await Account.findById(dataToken._id).populate('friends');
             var listFriends =acc.friends;
             var arrData=[];
             listFriends.forEach(element => {
-                if(regexFindFriend.test(element)) arrData.push(element);
+                if(regexFindFriend.test(element.displayName)) arrData.push(element);
             });
             console.log(arrData);
             res.send(arrData);

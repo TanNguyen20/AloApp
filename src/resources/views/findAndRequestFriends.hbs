@@ -13,13 +13,17 @@
     </div>
     <div class="row border-top">
         <div class="col-xs-12 col-lg-4 scrollable-col" id="colLeft">
-            {{{renderRequestFriends listRequest}}}
+            <div class="renderColLeft">
+                {{{renderRequestFriends listRequest}}}
+            </div>
+            
         </div>
         <div class="col-lg-8 col-md-12 scrollable-col d-none d-lg-block" id="colRight">
            
         </div>
     </div>
 </div>
+<script src="/assets/js/validator.js"></script>
 <script>
     $(document).ready(function(){
         //$('header').css('display','none');
@@ -86,6 +90,13 @@
         });
     });
     $('#inputSeach').keyup(function(e){
+        var lengthSearch =$(this).val().length;
+        if(lengthSearch>0){
+            $('.renderColLeft').hide();
+        }
+        else{
+            $('.renderColLeft').show();
+        }
         if(e.keyCode == 13){
             var findRequestFriend = $(this).val();
             $('#colRight').html('');
@@ -95,25 +106,73 @@
                     data.forEach(function(element){
                         strTotal+=`<div class="friendItems d-flex align-items-center justify-content-between border-bottom pb-2 pt-2">
                                     <div class="d-flex align-items-center">
-                                        <img src="${element.avatarWaitAcceptFriend}" alt="hinh anh" style="width:80px;height:80px;" class="rounded">
+                                        <img src="${element.avatar}" alt="hinh anh" style="width:80px;height:80px;" class="rounded">
                                         <div class="ms-3">
                                             <div class="displayName">
-                                                ${element.displayNameWaitAcceptFriend}
+                                                ${element.displayName}
                                             </div>
                                             <div class="d-flex wrapBtnRequest">
-                                                <button type="submit" class="btnAccept btn btn-primary mt-3 me-3" id="${element.idWaitAcceptFriend}">Chấp nhận</button>
-                                                <button type="button" class="btnDelete btn btn-secondary mt-3" id1="${element.idWaitAcceptFriend}">Xóa lời mời</button>
+                                                <button type="submit" class="btnAccept btn btn-primary mt-3 me-3" id="${element._id}">Chấp nhận</button>
+                                                <button type="button" class="btnDelete btn btn-secondary mt-3" id1="${element._id}">Xóa lời mời</button>
                                             </div>
                                         </div>
                                     </div>
                                 </div>`;
                     });
                     $('#colRight').html(strTotal);
+                    $('.btnAccept').click(function(e){
+                        var wrapBtnThis = $(this).parent();
+                        var idRequest = $(this).attr('id');
+                        $.post('/me/acceptRequestFriend',{idRequest:idRequest}, function(data,status){
+                            if(data!='err'){
+                                wrapBtnThis.html('<p>Đã chấp nhận yêu cầu kết bạn</p>');
+                            }
+                            else{
+                                wrapBtnThis.html('<p>Có lỗi xảy ra, thử lại sau!</p>');
+                            }
+                        });
+                    });
+                    $('.btnDelete').click(function(e){
+                        var wrapBtnThis = $(this).parent();
+                        var idRequest = $(this).attr('id1');
+                        swal({
+                            title: "Cảnh báo!",
+                            text: "Bạn có chắc muốn xóa lời mời?",
+                            icon: "warning",
+                            buttons: ["Hủy bỏ", "Xóa"],
+                            dangerMode: true,
+                        })
+                        .then((willDelete) => {
+                            if (willDelete) {
+                                $.post('/me/deleteRequestFriend',{idRequest:idRequest},function(data,status){
+                                    if(data!='err'){
+                                        swal("Đã xóa thành công!", {
+                                            icon: "success",
+                                        })
+                                        .then(()=>{
+                                            wrapBtnThis.html('<p>Đã xóa lời mời kết bạn</p>');
+                                        })
+                                    }
+                                    else{
+                                        swal("Có lỗi xảy ra khi xóa!", {
+                                            icon: "error",
+                                        });
+                                    }
+                                });
+                            } 
+                            else {
+                                swal("Đã hủy xóa!");
+                            }
+                        });
+                    });
                 }
                 else{
                     $('#colRight').html('<h2 class="text-center">Không tìm thấy yêu cầu khớp với tìm kiếm!</h2>');
                 }
             });
+        }
+        if($(this).val().length==0){
+            $('#colRight').html('');
         }
     });
     

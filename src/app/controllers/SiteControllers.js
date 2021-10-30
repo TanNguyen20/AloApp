@@ -30,9 +30,6 @@ class SiteControllers {
             res.render('home');
         }
     }
-    forgotPassword(req, res, next) {
-
-    }
     forgotPasswordMethodGet(req, res, next) {
         var token = req.query.id;
         if (token) {

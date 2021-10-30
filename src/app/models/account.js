@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const ObjectId = Schema.ObjectId;
 const slug = require('mongoose-slug-generator');
-
+const messages = require('./messages');
 const accountSchema = new Schema({
     username: {type: String, required: true, unique: true},
     password: {type: String, default: ""},
@@ -16,15 +16,17 @@ const accountSchema = new Schema({
         type: Boolean,
         default: false,
     },
-    arrayIdChat1v1: [{type: ObjectId, ref: 'messages1v1'}],
-    arrayIdChatGroup: [{type: ObjectId, ref: 'messagesGroup'}],
-    friends: [{ _id:false,idFriend:{type: ObjectId}, displayNameFriend: String, avatarFriend: String}],
-    requestFriends: [{ _id:false, idRequestFriend:{type: ObjectId}, displayNameRequestFriend: String, avatarRequestFriend: String}],
-    waitAcceptFriends: [{ _id:false, idWaitAcceptFriend:{type: ObjectId}, displayNameWaitAcceptFriend: String, avatarWaitAcceptFriend: String}],
+    // truong ref cua 2 model phai giong nhau thi moi populate duoc
+    // neu thay _id cua arrayIdChat1v1 thanh idMess thi se khong populate duoc
+    arrayIdChat1v1: [{_id:{type:ObjectId, ref:messages}, idFriend: {type:ObjectId, ref:'account'},/*displayNameFriend: String, avatarFriend: String*/}],
+    //arrPop:{type:ObjectId, ref:'account'},
+    arrayIdChatGroup: [{_id:{type:ObjectId, ref:messages}}],
+    friends: [{type:ObjectId, ref:'account'}/*{ _id:false,idFriend:{type: ObjectId}, displayNameFriend: String, avatarFriend: String}*/],
+    requestFriends: [{type:ObjectId, ref:'account'}/*{ _id:false, idRequestFriend:{type: ObjectId}, displayNameRequestFriend: String, avatarRequestFriend: String}*/],
+    waitAcceptFriends: [{type:ObjectId, ref:'account'}/*{ _id:false, idWaitAcceptFriend:{type: ObjectId}, displayNameWaitAcceptFriend: String, avatarWaitAcceptFriend: String}*/],
 }, {
     collection: 'account',
     timestamps: true,
 });
 mongoose.plugin(slug);
-
 module.exports =  mongoose.model('account',accountSchema);

@@ -137,7 +137,7 @@ class AuthControllers {
             });
         }
         else{
-            res.send('Khong ton tai token');
+            res.send('Hết phiên đăng nhập về trang chủ để đăng nhập\n<a href="/" style="text-decoration: none;">Về trang chủ</a>');
         }
     }
 

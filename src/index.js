@@ -8,6 +8,7 @@ const MongoStore = require('connect-mongo');
 const route = require('./routes');
 const path = require('path');
 const morgan = require('morgan');
+const message = require('./app/models/messages');
 const bodyParser = require('body-parser');
 const passport = require('passport');
 const methodOverride = require('method-override');
@@ -106,10 +107,10 @@ app.engine(
                     if(i%2==0 && i!=listFriends.length-1){
                         strTotal+=`<div class="friendItems mb-4 mb-md-0 mb-lg-0 d-flex align-items-center col-md-6 justify-content-between">
                             <div class="d-flex align-items-center">
-                                <img src="${friend.avatarFriend}" alt="" style="width:80px;height:80px;" class="rounded">
+                                <img src="${friend.avatar}" alt="" style="width:80px;height:80px;" class="rounded">
                                 <div class="ms-3">
                                     <div class="displayName">
-                                        ${friend.displayNameFriend}
+                                        ${friend.displayName}
                                     </div>
                                     <div class="statusOnline">
                                         Bạn bè
@@ -118,17 +119,17 @@ app.engine(
                             </div>
                             <div class="wrapDeleteFriend">
                                 <i class="fas fa-ellipsis-h iconTripleDotted cursor"></i>
-                                <div id=${friend.idFriend} class="btnDeleteFriend cursor dropdownHidden fw-bold text-danger">Xóa bạn</div>
+                                <div id=${friend._id} class="btnDeleteFriend cursor dropdownHidden fw-bold text-danger">Xóa bạn</div>
                             </div>
                         </div>`;
                     }
                     else if(i%2==0 && i==listFriends.length-1){
                         strTotal+=`<div class="friendItems mb-4 mb-md-0 mb-lg-0 d-flex align-items-center col-md-6 justify-content-between">
                             <div class="d-flex align-items-center">
-                                <img src="${friend.avatarFriend}" alt="" style="width:80px;height:80px;" class="rounded">
+                                <img src="${friend.avatar}" alt="" style="width:80px;height:80px;" class="rounded">
                                 <div class="ms-3">
                                     <div class="displayName">
-                                        ${friend.displayNameFriend}
+                                        ${friend.displayName}
                                     </div>
                                     <div class="statusOnline">
                                         Bạn bè
@@ -137,7 +138,7 @@ app.engine(
                             </div>
                             <div class="wrapDeleteFriend">
                                 <i class="fas fa-ellipsis-h iconTripleDotted cursor"></i>
-                                <div id=${friend.idFriend} class="btnDeleteFriend cursor dropdownHidden fw-bold text-danger">Xóa bạn</div>
+                                <div id=${friend._id} class="btnDeleteFriend cursor dropdownHidden fw-bold text-danger">Xóa bạn</div>
                             </div>
                         </div>
                         </div>`;
@@ -145,10 +146,10 @@ app.engine(
                     else if(i==listFriends.length-1){
                         strTotal+=`<div class="friendItems d-flex align-items-center col-md-6 justify-content-between">
                                     <div class="d-flex align-items-center">
-                                        <img src="${friend.avatarFriend}" alt="" style="width:80px;height:80px;" class="rounded">
+                                        <img src="${friend.avatar}" alt="" style="width:80px;height:80px;" class="rounded">
                                         <div class="ms-3">
                                             <div class="displayName">
-                                                ${friend.displayNameFriend}
+                                                ${friend.displayName}
                                             </div>
                                             <div class="statusOnline">
                                                 Bạn bè
@@ -157,7 +158,7 @@ app.engine(
                                     </div>
                                     <div class="wrapDeleteFriend">
                                         <i class="fas fa-ellipsis-h iconTripleDotted cursor"></i>
-                                        <div id=${friend.idFriend} class="btnDeleteFriend cursor dropdownHidden fw-bold text-danger">Xóa bạn</div>
+                                        <div id=${friend._id} class="btnDeleteFriend cursor dropdownHidden fw-bold text-danger">Xóa bạn</div>
                                     </div>
                                 </div>
                             </div>`;
@@ -165,10 +166,10 @@ app.engine(
                     else{
                         strTotal+=`<div class="friendItems d-flex align-items-center col-md-6 justify-content-between">
                                     <div class="d-flex align-items-center">
-                                        <img src="${friend.avatarFriend}" alt="" style="width:80px;height:80px;" class="rounded">
+                                        <img src="${friend.avatar}" alt="" style="width:80px;height:80px;" class="rounded">
                                         <div class="ms-3">
                                             <div class="displayName">
-                                                ${friend.displayNameFriend}
+                                                ${friend.displayName}
                                             </div>
                                             <div class="statusOnline">
                                                 Bạn bè
@@ -177,7 +178,7 @@ app.engine(
                                     </div>
                                     <div class="wrapDeleteFriend">
                                         <i class="fas fa-ellipsis-h iconTripleDotted cursor"></i>
-                                        <div id=${friend.idFriend} class="btnDeleteFriend cursor dropdownHidden fw-bold text-danger">Xóa bạn</div>
+                                        <div id=${friend._id} class="btnDeleteFriend cursor dropdownHidden fw-bold text-danger">Xóa bạn</div>
                                     </div>
                                 </div>
                             </div>`;
@@ -192,14 +193,14 @@ app.engine(
                 listRequest.forEach(function (request, i) {
                     strTotal+=`<div class="mb-4 friendItems">
                                     <div class="d-flex justify-content-md-evenly justify-content-lg-start">
-                                        <img src="${request.avatarWaitAcceptFriend}" alt="hinh anh" style="width:80px;height:80px;" class="rounded">
+                                        <img src="${request.avatar}" alt="hinh anh" style="width:80px;height:80px;" class="rounded">
                                         <div class="ms-3">
                                             <div class="displayName">
-                                                ${request.displayNameWaitAcceptFriend}
+                                                ${request.displayName}
                                             </div>
                                             <div class="d-flex wrapBtnRequest">
-                                                <button type="submit" class="btnAccept btn btn-primary mt-3 me-3" id="${request.idWaitAcceptFriend}">Chấp nhận</button>
-                                                <button type="button" class="btnDelete btn btn-secondary mt-3" id1="${request.idWaitAcceptFriend}">Xóa lời mời</button>
+                                                <button type="submit" class="btnAccept btn btn-primary mt-3 me-3" id="${request._id}">Chấp nhận</button>
+                                                <button type="button" class="btnDelete btn btn-secondary mt-3" id1="${request._id}">Xóa lời mời</button>
                                             </div>
                                         </div>
                                     </div>
@@ -207,6 +208,46 @@ app.engine(
                 });
                 return strTotal;
             },
+            renderContentLastChat:(arrChat,you)=>{
+                var totalStr =``;
+                for(var element of arrChat){
+                    if(element.from==you){
+                        totalStr+=`<p class='message__container'>
+                                    <span class='content-message rounded-pill' style='background-color:rgb(0, 66, 233);'>${element.content}</span> :Bạn
+                                </p><br>`;
+                    }
+                    else{
+                        totalStr+=` <p class='message__container-1'>${element.from} :
+                                    <span class='content-message-1'>${element.content}</span>
+                                </p><br>`
+                    }
+                }
+                return totalStr;
+            },
+            renderCol1: (listChat)=>{
+                var totalStr =``;
+                for(var element of listChat){
+                    totalStr+=`<div class="wrapPreview d-flex align-items-center mb-2" id=${element.idFriend._id}>
+                                    <div class="logoAndMessagePreview ms-2 d-flex mt-1">
+                                        <img src="${element.idFriend.avatar}" alt="logoGroup" class="avatarCol1 rounded-circle">
+                                        <div class="">
+                                            <h6>${element.idFriend.displayName}</h6>
+                                            <span>Trò chuyện ngay nào!</span>
+                                        </div>
+                                    </div>
+                                    <div class="detailAndStatusMessenge d-flex">
+                                        <div class="me-2">
+                                            <i class="fas fa-ellipsis-h border rounded-circle p-1 backGroundWhite"> </i>
+                                        </div>
+                                        <div class="">
+                                            <i class="far fa-check-circle"></i>
+                                        </div>
+                                    </div>
+                                </div>`;
+                }
+                return totalStr;
+
+            }
         }
     }),
 );
@@ -234,6 +275,7 @@ app.use(express.json());//json parser
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public/')));
 app.set('views', path.join(__dirname, 'resources/views'));
+app.use('/scriptsLibary', express.static(path.join(__dirname, '/../node_modules')));
 // If they join the base link, generate a random UUID and send them to a new room with said UUID
 // app.get('/videoCall', (req, res) => {
 //     res.redirect(`/${uuidV4()}`)
@@ -264,9 +306,9 @@ app.set('views', path.join(__dirname, 'resources/views'));
 // });
 //#
 const mainServer = serverHttp.listen(portHttp); // Run the server on the 3000 port
-server.listen(portHttps); // Run the server on the 3443 port
+const serverHttps = server.listen(portHttps); // Run the server on the 3443 port
 //
-const io = require('socket.io')(mainServer);
+const io = require('socket.io')(mainServer || serverHttps);
 io.on('connection', function (socket) {
     console.log(`...........................Welcome socket ${socket.id}...........................`);
     socket.on("disconnect", (reason) => {
@@ -286,16 +328,20 @@ io.on('connection', function (socket) {
         notify.from = data.from;
         notify.to = data.to;
         notify.typeNotification ='tin nhắn';
-        var notificationSave = new notification(notify);
-        notificationSave.save()
-        .then(()=>{
-            console.log('Created notify sucess!!!');
-        })
-        .catch((err)=>{
-            console.log('Co loi xay ra trong khi tao thong bao, thong tin loi: '+err);
-        })
+        // console.log(notify);
+        // var notificationSave = new notification(notify);
+        // notificationSave.save()
+        // .then(()=>{
+        //     console.log('Created notify sucess!!!');
+        // })
+        // .catch((err)=>{
+        //     console.log('Co loi xay ra trong khi tao thong bao, thong tin loi: '+err);
+        // })
+        var dataSave ={from: data.from, to: data.to, content: data.content, typeMess: data.typeMess};
+        var arrayContent1v1 = [dataSave];
         console.log(JSON.stringify(data)+'....');
-        var  messageSave= new message(data);
+        var  messageSave= new message({arrayContent1v1: arrayContent1v1});
+        console.log(messageSave);
         messageSave.save()
         .then(()=>{
             console.log("Created message and save into database!!!")
@@ -306,6 +352,7 @@ io.on('connection', function (socket) {
     });
     socket.on('send', function (data) {
         const roomSize = io.of("/").adapter.rooms.get(data.usernameUrl);
+        console.log(data);
         data.size = roomSize.size;
         console.log(`...........................room size: ${roomSize.size}...........................`);
         io.sockets.emit('send', data);//gui data qua socket

@@ -23,12 +23,14 @@
         {{/if}}
     </div>
 </div>
+<script src="/assets/js/validator.js"></script>
 <script>
     $(document).ready(function(){
-        //alert(window.location.href.substring(23));
-        if(window.location.href.substring(23)=='findFriends/facebook'){
+        {{!-- alert(window.location.href.substring(22)); --}}
+        if(window.location.href.substring(22)=='findFriends/facebook'){
             $('.btnRequestAddFriend').click(function(e){
                 var idRequestFriend = $(this).attr('id');
+                //alert(idRequestFriend);
                 var thisbtnRequestAddFriend = $(this);
                 $.post('/findFriends/sendRequestFriends',{idRequestFriend:idRequestFriend},function(data,status){
                     if(data=='1') thisbtnRequestAddFriend.html('<i class="fas fa-user-clock"></i>');
@@ -37,63 +39,66 @@
             });
         }
         $('#findFriends').keyup(function(e){
+            $('#wrapFindFriends').html('');
             if(e.keyCode == 13){
                 var findFriends = $(this).val();
-                $('#wrapFindFriends').html('');
                 $.post('/findFriends/Default',{findFriends}, function(data,status){
                     if(status == 'success'){
-                        var strTotal=`<div class="row mb-lg-4 mb-md-4 mb-0 mb-sm-0">`;
-                        data.forEach(function (element, i) {
-                            strTotal+=`<div class="friendItems d-flex align-items-center col-md-6 mb-lg-0 mb-md-0 mb-sm-4 mb-4 justify-content-between">
-                                    <div class="d-flex align-items-center">
-                                        <img src="${element.avatarFriend}" alt="" style="width:80px;height:80px;" class="rounded">
-                                        <div class="ms-3">
-                                            <div class="displayName">
-                                                ${element.displayNameFriend}
-                                            </div>`;
-                            if(element.statusFriend == 0){
-                                strTotal+=`<div class="statusFriend">
-                                                Chưa là bạn bè
+                        if(data=='') $('#wrapFindFriends').html('<h3 class="text-center">Không tìm thấy người nào có tên này!</h3>');
+                        else {
+                            var strTotal=`<div class="row mb-lg-4 mb-md-4 mb-0 mb-sm-0">`;
+                            data.forEach(function (element, i) {
+                                strTotal+=`<div class="friendItems d-flex align-items-center col-md-6 mb-lg-0 mb-md-0 mb-sm-4 mb-4 justify-content-between">
+                                        <div class="d-flex align-items-center">
+                                            <img src="${element.avatarFriend}" alt="" style="width:80px;height:80px;" class="rounded">
+                                            <div class="ms-3">
+                                                <div class="displayName">
+                                                    ${element.displayNameFriend}
+                                                </div>`;
+                                if(element.statusFriend == 0){
+                                    strTotal+=`<div class="statusFriend">
+                                                    Chưa là bạn bè
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div class="btnRequestAddFriend" id="${element.idFriend}">
-                                        <i class="fas fa-user-plus cursor"></i>
-                                    </div>
-                                </div>`;
-                            }
-                            else if(element.statusFriend == 2){
-                                strTotal+=`<div class="statusFriend">
-                                                Đã gửi yêu cầu kết bạn
+                                        <div class="btnRequestAddFriend" id="${element.idFriend}">
+                                            <i class="fas fa-user-plus cursor"></i>
+                                        </div>
+                                    </div>`;
+                                }
+                                else if(element.statusFriend == 2){
+                                    strTotal+=`<div class="statusFriend">
+                                                    Đã gửi yêu cầu kết bạn
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    <i class="fas fa-user-clock"></i>
-                                </div>`;
-                            }
-                            else{
-                                strTotal+=`<div class="statusFriend">
-                                                Đã là bạn bè
+                                        <i class="fas fa-user-clock"></i>
+                                    </div>`;
+                                }
+                                else{
+                                    strTotal+=`<div class="statusFriend">
+                                                    Đã là bạn bè
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    <i class="fas fa-user-check"></i>
-                                </div>`;
-                            }
+                                        <i class="fas fa-user-check"></i>
+                                    </div>`;
+                                }
 
-                            if(i%2!=0 || i%2==0 && i==data.length-1){
-                                strTotal+=`</div>`;
-                                $('#wrapFindFriends').append(strTotal);
-                                strTotal=`<div class="row mb-lg-4 mb-md-4 mb-0 mb-sm-0">`;
-                            }
-                        });
-                        $('.btnRequestAddFriend').click(function(e){
-                            var idRequestFriend = $(this).attr('id');
-                            var thisbtnRequestAddFriend = $(this);
-                            $.post('/findFriends/sendRequestFriends',{idRequestFriend:idRequestFriend},function(data,status){
-                                if(data=='1') thisbtnRequestAddFriend.html('<i class="fas fa-user-clock"></i>')
+                                if(i%2!=0 || i%2==0 && i==data.length-1){
+                                    strTotal+=`</div>`;
+                                    $('#wrapFindFriends').append(strTotal);
+                                    strTotal=`<div class="row mb-lg-4 mb-md-4 mb-0 mb-sm-0">`;
+                                }
                             });
-                        });
+                            $('.btnRequestAddFriend').click(function(e){
+                                var idRequestFriend = $(this).attr('id');
+                                var thisbtnRequestAddFriend = $(this);
+                                $.post('/findFriends/sendRequestFriends',{idRequestFriend:idRequestFriend},function(data,status){
+                                    if(data=='1') thisbtnRequestAddFriend.html('<i class="fas fa-user-clock"></i>')
+                                });
+                            });
+                        }
                     }
                 });
             }

@@ -17,12 +17,9 @@ router.get('/', async (req, res) => {
                 isSocialAccount
             });
         }
-        else{
-            res.render('aboutAloApp');
-        }
     }
     catch(err){
-        res.sendStatus(403).send('Có lỗi xảy ra thử lại sau');
+        res.render('aboutAloApp');
         console.log('Thong tin loi khi render trang about: ',err);
     }
 });
