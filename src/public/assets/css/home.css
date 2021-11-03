@@ -57,8 +57,8 @@ body{
     height: 25%;
 }
 .avatarSmallSize{
-    width:8%;
-    height: 8%;
+    width: 40px;
+    height: 40px;
 }
 .avatarCol1{
     width: 18%;

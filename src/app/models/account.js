@@ -10,6 +10,7 @@ const accountSchema = new Schema({
     email: {type: String, default:""},
     numberPhone: {type: String, default:""},
     avatar: {type: String, default:"https://res.cloudinary.com/dq7zeyepu/image/upload/v1633701290/avatar/images_qnphd9.png"},
+    imageBackground: {type: String, default:"https://res.cloudinary.com/dq7zeyepu/image/upload/v1635671045/background/background_spr1c3.jpg"},
     googleId: {type: String, default:""},
     facebookId: {type: String, default:""},
     isVerified: {

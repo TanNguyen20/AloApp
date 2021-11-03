@@ -8,7 +8,8 @@ const MongoStore = require('connect-mongo');
 const route = require('./routes');
 const path = require('path');
 const morgan = require('morgan');
-const message = require('./app/models/messages');
+const Messages = require('./app/models/messages');
+const Account = require('./app/models/account');
 const bodyParser = require('body-parser');
 const passport = require('passport');
 const methodOverride = require('method-override');
@@ -212,8 +213,13 @@ app.engine(
                 var totalStr =``;
                 for(var element of arrChat){
                     if(element.from==you){
+                        var contentFormat =``;
+                        if(element.typeMess=='image' || element.typeMess=='video'){
+                            contentFormat=`<span class='content-message rounded' style='background-color:rgb(0, 66, 233);'>${element.content}</span> :Bạn`;
+                        }
+                        else contentFormat=`<span class='content-message rounded-pill' style='background-color:rgb(0, 66, 233);'>${element.content}</span> :Bạn`;
                         totalStr+=`<p class='message__container'>
-                                    <span class='content-message rounded-pill' style='background-color:rgb(0, 66, 233);'>${element.content}</span> :Bạn
+                                    ${contentFormat}
                                 </p><br>`;
                     }
                     else{
@@ -247,6 +253,31 @@ app.engine(
                 }
                 return totalStr;
 
+            },
+            renderListMediaLastChat: (listMedia)=>{
+                var totalStr =``;
+                for(var element of listMedia){
+                    if(element.typeMess=='image'){
+                        var split1 =element.content.split('href=')[1];
+                        var link =``;
+                        if(split1) link = split1.split(' target="_blank">');
+                        totalStr+=`<a href=${link[0]} target="_blank">
+                            <img src=${link[0]} width="50px" height="50px" alt="" class="img-thumbnail">
+                        </a>`;
+                    }
+                    else{
+                        totalStr+=`${element.content.replace('text-white','text-primary')}`;
+                    }
+                }
+
+                return totalStr;
+            },
+            renderListDocument: (listDocument)=>{
+                var totalStr =``;
+                for(var element of listDocument){
+                    totalStr+=`<div>${element.content.replace('text-white','text-primary')}</div>`;
+                }
+                return totalStr;
             }
         }
     }),
@@ -314,53 +345,45 @@ io.on('connection', function (socket) {
     socket.on("disconnect", (reason) => {
       console.log(`...........................Socket ${socket.id} exit because ${reason}...........................`);
     });
-    socket.on('joinroom',(data)=>{
-      socket.join(data);
-      console.log(`...........................socket ${socket.id} has joined room ${data}...........................`);
+    socket.on('joinroom',(idRoom)=>{
+      socket.join(idRoom);
+      console.log(`...........................socket ${socket.id} has joined room ${idRoom}...........................`);
     });
-    //luu vao db
-    var from = "";
-    var content = "";
-    var to="";
-    socket.on('receiver',(data)=>{
-        // console.log(JSON.stringify(data)+'....');
-        var notify={};
-        notify.from = data.from;
-        notify.to = data.to;
-        notify.typeNotification ='tin nhắn';
-        // console.log(notify);
-        // var notificationSave = new notification(notify);
-        // notificationSave.save()
-        // .then(()=>{
-        //     console.log('Created notify sucess!!!');
-        // })
-        // .catch((err)=>{
-        //     console.log('Co loi xay ra trong khi tao thong bao, thong tin loi: '+err);
-        // })
-        var dataSave ={from: data.from, to: data.to, content: data.content, typeMess: data.typeMess};
-        var arrayContent1v1 = [dataSave];
-        console.log(JSON.stringify(data)+'....');
-        var  messageSave= new message({arrayContent1v1: arrayContent1v1});
-        console.log(messageSave);
-        messageSave.save()
-        .then(()=>{
-            console.log("Created message and save into database!!!")
-        })
-        .catch((err)=>{
-            console.log("Co loi xay ra, thong tin loi: "+ err);
-        })
-    });
-    socket.on('send', function (data) {
-        const roomSize = io.of("/").adapter.rooms.get(data.usernameUrl);
+    ////
+    socket.on('send',async function (data) {
         console.log(data);
+        const roomSize = io.of("/").adapter.rooms.get(data.idRoom);
+        var idYou = data.idRoom.split(data.idFriend);
+        idYou = idYou[0]+idYou[1];
+        var dataMessSave = {from: data.from, to: data.to, content: data.content, typeMess: data.typeMess};
+        console.log(roomSize);
+        try{
+            var yourMessUpdate = await Messages.findByIdAndUpdate(data.idMess, {$push: {arrayContent1v1: dataMessSave}});
+            var acc = await Account.findById(data.idFriend);
+            var messFriend = acc.arrayIdChat1v1.find(item => item.idFriend.toString() == idYou);
+            //console.log(messFriend);
+            var existMessFriend = acc.arrayIdChat1v1.some( item => item.idFriend.toString() == data.idFriend);
+            if(messFriend){
+                var messFriendUpdate = await Messages.findByIdAndUpdate(messFriend._id, {$push: {arrayContent1v1: dataMessSave}});
+                // console.log(messFriendUpdate);
+            }
+            else{
+                //tao moi
+                var messFriendSave = await new Messages({arrayContent1v1: dataMessSave});
+                var messSaveIntoDb = await messFriendSave.save();
+                console.log(messSaveIntoDb);
+                var idMessFriend = messFriendSave._id;
+                var accFriendUpdate = await Account.findByIdAndUpdate(data.idFriend, {$push: {arrayIdChat1v1: {idFriend: idYou, _id: idMessFriend}}});
+                console.log(accFriendUpdate);
+            }
+        }
+        catch(err){
+            console.log('co loi khi luu messages, thong tin loi: \n'+err);
+        }
         data.size = roomSize.size;
         console.log(`...........................room size: ${roomSize.size}...........................`);
-        io.sockets.emit('send', data);//gui data qua socket
+        io.sockets.in(data.idRoom).emit('send', data);//gui data qua socket
     });
-    // socket.on("someevent", (data) => {// someevent =  send
-    //   console.log(data.username+"#....................");
-    //   io.sockets.emit('someevent', data);//gui data di
-    // });
 });
 //
 app.use(cookieParser('mk'));

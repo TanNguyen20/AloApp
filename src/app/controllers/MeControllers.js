@@ -6,7 +6,7 @@ const mongoose = require('mongoose');
 //const {MongooseToObject} = require('../../util/mongoose')
 class MeControllers {
     changeInfo(req, res, next){
-        console.log(req.body);
+        // console.log(req.body);
         var dataUpdate = req.body;
         var numberPhone =  req.body.numberPhone;
         var displayName = req.body.displayName;
@@ -16,8 +16,46 @@ class MeControllers {
         console.log(dataToken._id)
         Account.updateOne({_id: dataToken._id},{numberPhone, displayName, email})
         .then((dt)=>{
-            console.log(dt);
+            // console.log(dt);
             res.send('1');
+        })
+        .catch((err)=>{
+            res.send('0');
+        })
+        
+    }
+    changeAvatar(req, res, next){
+        // console.log(req.body);
+        var avatar =  req.body.avatar;
+        var urlSplit = avatar.split('/upload');
+        var newUrl = urlSplit[0]+'/upload/c_scale,h_200,w_200'+urlSplit[1];
+        // console.log(newUrl);
+        avatar = newUrl;
+        var token = req.cookies.token;
+        var dataToken = jwt.verify(token,'mk');
+        // console.log(dataToken._id);
+        Account.updateOne({_id: dataToken._id},{avatar})
+        .then((dt)=>{
+            // console.log(dt);
+            res.send(newUrl);
+        })
+        .catch((err)=>{
+            res.send('0');
+        })
+        
+    }
+    changeBackground(req, res, next){
+        var imageBackground =  req.body.imageBackground;
+        var urlSplit = imageBackground.split('/upload');
+        var newUrl = urlSplit[0]+'/upload/c_scale,h_280'+urlSplit[1];
+        imageBackground = newUrl;
+        var token = req.cookies.token;
+        var dataToken = jwt.verify(token,'mk');
+        // console.log(dataToken._id);
+        Account.updateOne({_id: dataToken._id},{imageBackground})
+        .then((dt)=>{
+            console.log(dt);
+            res.send(newUrl);
         })
         .catch((err)=>{
             res.send('0');
@@ -33,13 +71,20 @@ class MeControllers {
         var token = req.cookies.token;
         var dataToken = jwt.verify(token,'mk');
         var acc = await Account.findById(dataToken._id).populate('arrayIdChat1v1._id').populate('arrayIdChat1v1.idFriend').populate('friends');
-        // console.log(acc.friends);
+        // console.log(acc);
+        var existFriend = acc.friends.length;
+        var haveFriend = false;
+        if(existFriend>0) haveFriend = true;
+        // console.log('exis:', haveFriend)
         var isSocialAccount =false;
         var listChat = acc.arrayIdChat1v1;
         var lastChat = acc.arrayIdChat1v1[acc.arrayIdChat1v1.length-1];
         var arrContentLastChat = [];
         var infoFriendLastChat={};
-        console.log(lastChat);
+        var listMediaInLastChat = [];
+        var listDocument = [];
+        listMediaInLastChat = lastChat._id.arrayContent1v1.filter(element => (element.typeMess=='image' || element.typeMess=='video'));
+        listDocument = lastChat._id.arrayContent1v1.filter(element => (element.typeMess=='document'));
         if(lastChat) {
             arrContentLastChat=lastChat._id.arrayContent1v1;
             infoFriendLastChat.displayName = lastChat.idFriend.displayName;
@@ -47,18 +92,25 @@ class MeControllers {
             infoFriendLastChat._id = lastChat.idFriend._id;
         }
         var you = acc.displayName;
-        console.log(arrContentLastChat);
+        // console.log(lastChat._id._id);
         if(acc.googleId!='' || acc.facebookId!='') isSocialAccount = true;
 
         if(acc){
-            if(infoFriendLastChat){
+            // console.log(infoFriendLastChat);
+            var idMessLastChat ='';
+            if(lastChat) idMessLastChat = lastChat._id._id;
+            if(haveFriend){
                 res.render('chat',{
                     user: mongooseToObject(acc),
                     friend: infoFriendLastChat,
+                    existFriend: haveFriend,
                     isSocialAccount,
                     arrContentChat: arrContentLastChat,
+                    idMessLastChat,
                     you,
-                    listChat
+                    listChat,
+                    listMediaInLastChat,
+                    listDocument
                 });
             }
             else{

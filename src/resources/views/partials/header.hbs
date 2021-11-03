@@ -44,6 +44,8 @@
     </div>
 </header>
 <div class="">
+    {{#if user}}
+    {{else}}
     <!-- Modal login -->
     <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
         <form class="modal-dialog modal-dialog-centered" id="formLogin" method="POST" action="/login">
@@ -75,6 +77,9 @@
             </div>
         </form>
     </div>
+    {{/if}}
+    {{#if user}}
+    {{else}}
     {{!-- Modal registers --}}
     <div class="modal fade" id="registersModal" tabindex="-1" aria-labelledby="registersModalLabel" aria-hidden="true">
         <form class="modal-dialog modal-dialog-centered" id="formRegister" method="POST" action="/register">
@@ -106,10 +111,10 @@
             </div>
         </form>
     </div>
-    {{!--  --}}
-    <!-- Modal forgot password -->
+    {{/if}}
     {{#if user}}
     {{else}}
+    <!-- Modal forgot password -->
     <div class="modal fade" id="forgotPasswordModal" tabindex="-1" aria-labelledby="forgotPasswordModalLabel" aria-hidden="true">
         <form class="modal-dialog modal-dialog-centered" id="formForgotPassword" method="POST" action="/forgotPassword">
             <div class="modal-content">
@@ -133,8 +138,8 @@
         </form>
     </div>
     {{/if}}
-    {{!-- Modal change password --}}
     {{#if user}}
+    {{!-- Modal change password --}}
     <div class="modal fade" id="changePasswordModal" tabindex="-1" aria-labelledby="changePasswordModalLabel" aria-hidden="true">
         <form class="modal-dialog modal-dialog-centered" id="formChangePassword" method="POST" action="/login/changePassword">
             <div class="modal-content">

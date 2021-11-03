@@ -11,6 +11,8 @@ router.get('/profile', AuthController.checkTokenUser, MeController.profile);
 router.get('/friends',AuthController.checkTokenUser, MeController.friends);
 router.get('/requestFriends',AuthController.checkTokenUser, MeController.findFriends);
 router.post('/changeInfo',MeController.changeInfo);
+router.post('/changeAvatar',MeController.changeAvatar);
+router.post('/changeBackground',MeController.changeBackground);
 router.post('/deleteFriend',AuthController.checkTokenUser,MeController.deleteFriend);
 router.post('/acceptRequestFriend',AuthController.checkTokenUser,MeController.acceptRequestFriend);
 router.post('/deleteRequestFriend',AuthController.checkTokenUser,MeController.deleteRequestFriend);

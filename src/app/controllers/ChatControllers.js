@@ -15,12 +15,13 @@ class ChatControllers {
             //populate lay data render ra
             var mess = await Account.findOne({_id: decode._id}).populate('arrayIdChat1v1._id').populate('arrayIdChat1v1.idFriend');
             var arrChat1v1 = mess.arrayIdChat1v1;
-            console.log(arrChat1v1);
+            console.log(mess);
             // trong arrChat1v1 chua nhieu doan chat voi nhieu nguoi nen phai find ra 
             // nguoi co idFriend trung voi idFriend trong req.body
             var item = arrChat1v1.find(item => item.idFriend._id.toString() == idFriend);
-            res.send(item);
-
+            var dataSend = mongooseToObject(item);
+            dataSend.idFriend = {displayName: item.idFriend.displayName, avatar: item.idFriend.avatar, idFriend: item.idFriend._id};
+            res.send(dataSend);
         }
         else{
             // them moi va add id Messanges nay vao arrayIdChat1v1
@@ -30,10 +31,10 @@ class ChatControllers {
                 var newMess = await messages.save();
                 var findFriend = await Account.findById(idFriend);
                 var idMess = newMess._id;
-                // var displayName = findFriend.displayName;
-                // var avatar = findFriend.avatar;
+                var friend = mongooseToObject(findFriend);
+                var dataFriend = {'displayName': friend.displayName, 'avatar': friend.avatar, 'idFriend': idFriend, 'idMess': idMess, 'statusMess':'taomoi'};
                 var accUpdate = await Account.findByIdAndUpdate(decode._id, {$push: {arrayIdChat1v1: {_id: idMess, idFriend: idFriend}}});
-                res.send(exisMess);
+                res.send(dataFriend);
             }
             catch(err){
                 console.log(err);

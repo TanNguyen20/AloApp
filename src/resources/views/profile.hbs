@@ -1,51 +1,51 @@
 
-<header>
-    <div class="">
-        <div class="container-fluid">
-            <img src="/assets/images/background.jpg" class="rounded-bottom w-sm-100 w-xs-100 w-md-100 w-lg-75 w-xl-75 d-block mx-auto mb-auto h-xs-30 h-sm-30 h-md-40 h-lg-40 h-xl-40" alt="Ảnh bìa">
-            <div class="wrapAvatarAndIconProfile">
-                <img src="{{info.avatar}}" class="avatarProfile rounded-circle w-sm-25 w-xs-25 w-md-25 w-lg-15 w-xl-15 d-block mx-auto mb-auto" alt="Ảnh bìa">
-                <i class="fas fa-camera rounded-circle iconPhoto"></i>
-
-               <div class="wrapEditProfile rounded">
-                    <i class="fas fa-camera"></i>
-                    <div class="d-none d-sm-none d-md-none d-lg-inline-block d-xl-inline-block">Chỉnh sửa ảnh bìa</div>
-                </div>
+<header>  
+    <div class="container-fluid">
+        <img src="{{info.imageBackground}}" id="backgroundImage" class="rounded-bottom w-sm-100 w-xs-100 w-md-100 w-lg-75 w-xl-75 d-block mx-auto mb-auto img-fluid" alt="Ảnh bìa">
+        <input type="file" name="imageBackground" id="fileBackground" hidden accept=".jpeg, .jpg, .png">
+        <div class="wrapAvatarAndIconProfile">
+            <img src="{{info.avatar}}" id="avatarInProfile" class="avatarProfile rounded-circle w-sm-25 w-xs-25 w-md-25 w-lg-15 w-xl-15 d-block mx-auto mb-auto img-fluid" alt="Ảnh đại diện">
+            <i class="fas fa-camera rounded-circle iconPhoto" id="btnChangeAvatar"></i>
+            <input type="file" name="avatar" id="fileAvatar" hidden accept=".jpeg, .jpg, .png">
+            <div class="wrapEditProfile rounded cursor" id ="btnChangeBackground" >
+                <i class="fas fa-camera"></i>
+                <div class="d-none d-sm-none d-md-none d-lg-inline-block d-xl-inline-block">Đổi ảnh bìa</div>
             </div>
-            <div class="d-flex justify-content-center mt-4 pt-4">
-                <h3>{{info.displayName}}</h3>
-            </div>
+            <input type="file" name="imageBackground" id="fileBackground" hidden accept=".jpeg, .jpg, .png">
+        </div>
+        <div class="d-flex justify-content-center mt-4 pt-4">
+            <h3>{{info.displayName}}</h3>
         </div>
     </div>
 </header>
 
-<div class="container border-top  w-sm-100 w-xs-100 w-md-100 w-lg-75 w-xl-75 d-block mx-auto mb-auto h-xs-30 h-sm-30 h-md-40 h-lg-40 h-xl-40">
-    <div class="d-lg-flex d-sm-block d-md-block justify-content-between" >
-        <div class="itemsInfomation">
-            <div class="headerInfoLeft">Thông tin cá nhân</div>
-            <div class="contentInfo contentInfoLeft">
+<div class="container border-top border-4 w-sm-100 w-xs-100 w-md-100 w-lg-75 w-xl-75 d-block mx-auto mb-auto h-xs-30 h-sm-30 h-md-40 h-lg-40 h-xl-40">
+    <div class="d-lg-flex d-sm-block d-md-block justify-content-between mb-2" >
+        <div class="">
+            <div class="headerInfoLeft text-center fw-bold itemsInfomation">Thông tin cá nhân</div>
+            <div class="contentInfo contentInfoLeft text-center">
                 <div class="">Tên người dùng: {{info.displayName}}</div>
                 <div class="">Email: {{info.email}}</div>
                 <div class="mb-2">Số điện thoại: {{info.numberPhone}}</div>
             </div>
         </div>
-        <form class="itemsInfomation" id="formChangeInfo" method="post">
-            <div class="headerInfoRight">
+        <form class="" id="formChangeInfo" method="post">
+            <div class="headerInfoRight text-center fw-bold itemsInfomation">
                 Chỉnh sửa thông tin cá nhân
             </div>
-            <div class="contentInfo contentInfoRight d-table form-group" style="display: none;">
+            <div class="contentInfo contentInfoRight d-table form-group" style="display: none !important;">
                 <div class="d-table-row auth-form__group">
-                    <label for="displayName" class="d-table-cell pe-2">Tên người dùng: </label>
-                    <input type="text" name="displayName" rules="required" id="displayName" class="form-control shadow-none d-table-cell" value="{{info.displayName}}">
+                    <label for="displayName" class="d-table-cell pe-2 text-sm-left">Tên người dùng: </label>
+                    <input type="text" name="displayName" rules="required" id="displayNameChangeInfo" class="form-control shadow-none d-table-cell" value="{{info.displayName}}">
                     <span class="form-message"></span>
                 </div>
                 <div class="d-table-row auth-form__group">
-                    <label for="displayName" class="d-table-cell">Email: </label>
-                    <input type="text" rules="required" name="email" id="email" class="form-control shadow-none d-table-cell" value="{{info.email}}">
+                    <label for="displayName" class="d-table-cell text-sm-left">Email: </label>
+                    <input type="text" rules="required" name="email" id="emailChangeInfo" class="form-control shadow-none d-table-cell" value="{{info.email}}">
                     <span class="form-message"></span>
                 </div>
                 <div class="d-table-row">
-                    <label for="displayName" class="d-table-cell">Số điện thoại: </label>
+                    <label for="displayName" class="d-table-cell text-sm-left">Số điện thoại: </label>
                     <input type="text" id="numberPhone" name="numberPhone" class="form-control shadow-none d-table-cell" value="{{info.numberPhone}}">
                     <span class="form-message"></span>
                 </div>
@@ -57,10 +57,29 @@
         </form>
     </div>
 </div>
+
+<!-- Modal upload avatar image-->
+<div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="imageModalLabel">Modal title</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body text-center">
+          <img src="" alt="" id="previewImage" class="img-thumbnail">
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy bỏ</button>
+        <button type="button" class="btn btn-primary" id="btnUploadImageInProfile">Lưu thay đổi</button>
+      </div>
+    </div>
+  </div>
+</div>
 <script src="/assets/js/validator.js"></script>
 <script>
-    $('.contentInfoRight').removeClass('d-table');
-    $('.contentInfoRight').addClass('d-none');
+    
+    $('.contentInfoRight').children().hide();
     $('.contentInfoLeft').show();
     $('.itemsInfomation').each(function(){
         $(this).click(function(){
@@ -70,12 +89,10 @@
     });
     $('.headerInfoRight').click(function(e){
         $('.contentInfoLeft').hide();
-        $('.contentInfoRight').removeClass('d-none');
-        $('.contentInfoRight').addClass('d-table');
+        $('.contentInfoRight').attr('style', 'display: ');
     });
     $('.headerInfoLeft').click(function(e){
-        $('.contentInfoRight').removeClass('d-table');
-        $('.contentInfoRight').addClass('d-none');
+        $('.contentInfoRight').attr('style', 'display: none !important');
         $('.contentInfoLeft').show();
     });
     var formChangeInfoCheck = new Validator("#formChangeInfo");
@@ -83,8 +100,8 @@
         var formChangeInfoCheck = Validator("#formChangeInfo");
         if(formChangeInfoCheck){
             e.preventDefault();
-            var displayName = $('#displayName').val();
-            var email = $('#email').val();
+            var displayName = $('#displayNameChangeInfo').val();
+            var email = $('#emailChangeInfo').val();
             var numberPhone = $('#numberPhone').val();
             $.post('/me/changeInfo',{displayName, email, numberPhone},function(data,status){
                 if(data=='1' && status=='success'){
@@ -110,4 +127,109 @@
         }
       
     });
+    $('#btnChangeAvatar').on('click', function(e){
+        e.preventDefault();
+        $('#fileAvatar').click();
+    });
+    $('#btnChangeBackground').on('click', function(e){
+        e.preventDefault();
+        $('#fileBackground').click();
+    });
+    $('#fileAvatar').change(function(){
+        var files = document.querySelector("#fileAvatar").files;
+        $('#imageModal').modal('show');
+        $('#previewImage').attr('src', URL.createObjectURL(files[0]));
+    });
+    $('#fileBackground').change(function(){
+        var files = document.querySelector("#fileBackground").files;
+        $('#imageModal').modal('show');
+        $('#previewImage').attr('src', URL.createObjectURL(files[0]));
+    });
+    $('#btnUploadImageInProfile').on('click', function(e){
+        var url = "https://api.cloudinary.com/v1_1/dq7zeyepu/image/upload";
+        var files = document.querySelector("#fileAvatar").files;
+        var fileBackground = document.querySelector("#fileBackground").files;
+        console.log(fileBackground.length);
+        var formData = new FormData();
+        if(files.length>0){
+            async function uploadImage() {
+                var file = files[0];
+                formData.append("file", file);
+                formData.append("upload_preset", "kkurekfz");
+                formData.append("folder", "avatar");
+                await fetch(url, {
+                    method: "POST",
+                    body: formData
+                })
+                .then(async function(response){
+                    var data = await response.text();
+                    var dataJson = await JSON.parse(data);
+                    console.log(dataJson);
+                    $.post('/me/changeAvatar',{avatar: dataJson.secure_url},function(data){
+                        if(data!='0'){
+                            swal({
+                                title: "Thông báo",
+                                text: "Cập nhật ảnh đại diện thành công!",
+                                icon: "success",
+                                button: "Đóng",
+                            })
+                            .then(()=>{
+                                $('#avatarInProfile').attr('src',data);
+                                $('#imageModal').modal('hide');
+                            });
+                        }
+                        else{
+                            swal({
+                                title: "Thông báo",
+                                text: "Cập nhật ảnh đại diện thất bại!",
+                                icon: "error",
+                                button: "Đóng",
+                            });
+                        }
+                    });
+                });
+            }
+            uploadImage();
+        }
+        if(fileBackground.length > 0){
+            async function uploadBackgroundImage() {
+                var file = fileBackground[0];
+                formData.append("file", file);
+                formData.append("upload_preset", "kkurekfz");
+                formData.append("folder", "background");
+                await fetch(url, {
+                    method: "POST",
+                    body: formData
+                })
+                .then(async function(response){
+                    var data = await response.text();
+                    var dataJson = await JSON.parse(data);
+                    $.post('/me/changeBackground',{imageBackground: dataJson.secure_url},function(data){
+                        if(data!='0'){
+                            swal({
+                                title: "Thông báo",
+                                text: "Cập nhật ảnh nền thành công!",
+                                icon: "success",
+                                button: "Đóng",
+                            })
+                            .then(()=>{
+                                $('#backgroundImage').attr('src',data);
+                                $('#imageModal').modal('hide');
+                            });
+                        }
+                        else{
+                            swal({
+                                title: "Thông báo",
+                                text: "Cập nhật ảnh nền thất bại!",
+                                icon: "error",
+                                button: "Đóng",
+                            });
+                        }
+                    });
+                });
+            }
+            uploadBackgroundImage();
+        }
+    });
+    
 </script>
