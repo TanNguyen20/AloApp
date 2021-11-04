@@ -5,8 +5,8 @@
 <script src="https://cdn.lordicon.com/libs/mssddfmo/lord-icon-2.1.0.js"></script>
 <div class="overlayImg">
     <div class="row marginEndRow-0">
-        <div class="col-lg-3 border col-md-4">
-            <header class="mt-3 ms-2 d-flex">
+        <div class="col-lg-3 border col-md-4" id="wrapCol1">
+            <header class="mt-3 ms-2 d-flex justify-content-between">
                 <div class="">
                     <div class="d-flex align-items-center">
                         <img src="{{user.avatar}}" alt="anh dai dien" class="avatarMe rounded-circle border"> 
@@ -31,12 +31,17 @@
         <div class="col-lg-6 col-md-8 border d-none d-md-flex flex-column min-vh-100" id="wrapCol2">
             <header class="mt-2 border-bottom p-2 headerCol2">
                 <div class="d-flex align-items-center justify-content-between">
-                    <div class="logoAndMessagePreview">
-                        <div class="d-sm-flex">
-                            <img src="{{friend.avatar}}" alt="avatar" class="avatarSmallSize rounded-circle border" id="avatarCol2">
-                            <div class="d-sm-block">
-                                <h6 id="nameFriendCol2">{{friend.displayName}}</h6>
-                                <span>Online</span>
+                    <div class="logoAndMessagePreview d-flex align-items-center">
+                        <i class="fas fa-long-arrow-alt-left d-block d-md-none ms-1 me-2 fa-lg mb-1 text-primary cursor" id="btnCloseChat"></i>
+                        <div class="">
+                            <div class="d-flex">
+                                <div class="">
+                                    <img src="{{friend.avatar}}" alt="avatar" class="avatarSmallSize rounded-circle border" id="avatarCol2">
+                                </div>
+                                <div class="d-sm-block">
+                                    <h6 id="nameFriendCol2">{{friend.displayName}}</h6>
+                                    <span>Online</span>
+                                </div>
                             </div>
                         </div>
                         
@@ -73,7 +78,7 @@
                 <div id="listDocument"></div>
                 <div id="listImg"></div>
                 <div class="d-flex align-items-center">
-                    <form action="" id="formUploadDocument" method="post" enctype="multipart/form-data">
+                    <form action="" id="formUploadDocument" method="post" enctype="multipart/form-data"class="ms-1">
                         <a href="#" id="btnUploadDocument"><i class="fas fa-plus-circle me-2 iconFooterCol2"></i></a>
                         <input type="file" name="files[]" id="fileDocument" hidden multiple>
                     </form>
@@ -114,10 +119,11 @@
                             <div class="iconOptionDropdown"><a class="btnDropdown"><i class="fas fa-chevron-down"></i></a></div>
                         </div>
                         <div class="dropdownCol3 dropdownHidden">
-                            <div class="col3DeleteChat">Xóa đoạn chat</div>
-                            <div class="col3FindMessage">Tìm kiếm tin nhắn</div>
+                            <div class="text-danger fw-bold" id="col3DeleteChat">Xóa đoạn chat</div>
+                            <div class="" id="col3FindMessage">Tìm kiếm tin nhắn</div>
                         </div>
                     </div>
+                    <input type="text" class="form-control" id="inputFindMessage" placeholder="Nội dung tin nhắn" required style="display: none;" value=''>
                     <div class="wrapItemsCol3">
                         {{!-- <div class="itemsCol3 d-flex justify-content-between align-items-center mt-3 mb-3">
                             <div class="options">Thành viên trong đoạn chat</div>
@@ -220,9 +226,20 @@
             }
         })
     });
+    $('#btnCloseChat').on('click',function(){
+        $('#wrapCol1').removeClass('d-sm-none d-none d-md-block');
+        $('#wrapCol2').addClass('d-none d-md-flex');
+    });
     var lastClicked = 0;
     $('.wrapPreview').click(function(e){
         e.preventDefault();
+        $('#wrapCol1').addClass('d-sm-none d-none d-md-block');
+        $('#wrapCol2').removeClass('d-none d-md-flex');
+        var heightHeader = $('.headerCol2').outerHeight();
+        var heightFooter = $('.footerCol2').outerHeight();
+        var heightBrowser = $(window).outerHeight();
+        var heightContenCol2 = heightBrowser - heightHeader - heightFooter-20;
+        $('.contentCol2').css("height", heightContenCol2+'px');
         $('#listImg').html('');
         $('#listDocument').html('');
         $("#inputMessage").val('');
@@ -273,7 +290,7 @@
 
                             }
                             else{
-                                $('#listDocumentInCol3').append(`<div>${element.content.replace('text-white','text-primary')}</div>`);
+                                if(element.typeMess=='document') $('#listDocumentInCol3').append(`<div>${element.content.replace('text-white','text-primary')}</div>`);
                             }
                             if(element.from==you){
                                 totalStr=`<p class='message__container'>
@@ -288,6 +305,9 @@
                             }
                             $('.contentCol2').append(totalStr);
                         }
+                        $(".contentCol2").animate({
+                            scrollTop: $('.contentCol2').get(0).scrollHeight
+                        }, 1);
                     }
                 }
                 else{
@@ -378,7 +398,13 @@
                     });
                     $('.wrapPreviewNew').click(function(e){
                         e.preventDefault();
-                        
+                        $('#wrapCol1').addClass('d-sm-none d-none d-md-block');
+                        $('#wrapCol2').removeClass('d-none d-md-flex');
+                        var heightHeader = $('.headerCol2').outerHeight();
+                        var heightFooter = $('.footerCol2').outerHeight();
+                        var heightBrowser = $(window).outerHeight();
+                        var heightContenCol2 = heightBrowser - heightHeader - heightFooter-20;
+                        $('.contentCol2').css("height", heightContenCol2+'px');
                         var timeNow = (new Date()).getTime();
                         if (timeNow > (lastClicked + 1000)) {
                             var idFriend = $(this).attr('id');
@@ -426,6 +452,9 @@
                                         }
                                         $('.contentCol2').append(totalStr);
                                     }
+                                    $(".contentCol2").animate({
+                                        scrollTop: $('.contentCol2').get(0).scrollHeight
+                                    }, 1);
                                 }
                             });
                         }
@@ -435,6 +464,79 @@
             }
         }
     });
+    $('#col3DeleteChat').on('click', function(e){
+        e.preventDefault();
+        var idMess = $('#idMess').val();
+        swal({
+            title: "Cảnh báo!",
+            text: "Bạn có chắc muốn xóa đoạn chat này?",
+            icon: "warning",
+            buttons: ["Hủy bỏ", "Đồng ý"],
+            dangerMode: true,
+        })
+        .then((willDelete) => {
+            if (willDelete) {
+                $.post('/me/deleteChat',{idMess},function(data){
+                    if(data=='xoathanhcong'){
+                        swal({
+                            title: "Thông báo",
+                            text: "Xoá cuộc trò chuyện thành công!",
+                            icon: "success",
+                            button: "Đóng",
+                        })
+                        .then(()=>{
+                            location.reload();
+                        });
+                    }
+                    else{
+                        swal({
+                            title: "Thông báo",
+                            text: "Xóa cuộc trò chuyện thất bại!",
+                            icon: "error",
+                            button: "Đóng",
+                        });
+                    }
+                });
+            } 
+            else {
+                swal("Đã hủy xóa");
+            }
+        });
+        
+    });
+    var statusInputFindMess = 0;
+    $('#col3FindMessage').on('click', function(e){
+        e.preventDefault();
+        $('#inputFindMessage').val('');
+        if(statusInputFindMess==0){
+            $('#inputFindMessage').show();
+            statusInputFindMess=1;
+        }
+        else{
+            $('#inputFindMessage').hide();
+            statusInputFindMess=0;
+        }
+    });
+    $('#inputFindMessage').on('keyup', function(e){
+        $('.content-message').css('background-color','rgb(0, 66, 233)');
+        if(e.keyCode==13){
+            var dataFind = $(this).val();
+            var isExistMess = [];
+            $('.content-message').each(function(index,element){
+                if($(element).text().indexOf(dataFind)>=0){
+                    isExistMess.push(index);
+                }
+            });
+            if(isExistMess.length>0){
+                $('.content-message').eq(isExistMess[0]).attr('id','firstFind');
+                location.href = "#";
+                location.href = "#firstFind";
+                for(var position in isExistMess){
+                    $('.content-message').eq(isExistMess[position]).css('background-color','gold');
+                }
+            }
+        }
+    })
     
 </script>
 {{else}}

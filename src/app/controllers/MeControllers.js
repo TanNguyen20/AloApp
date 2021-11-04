@@ -24,6 +24,27 @@ class MeControllers {
         })
         
     }
+    async deleteChat(req, res, next) {
+        var idMess = req.body.idMess;
+        var token = req.cookies.token;
+        var dataToken = jwt.verify(token,'mk');
+        try{
+            var acc = await Account.findById(dataToken._id);
+            var existMess = acc.arrayIdChat1v1.filter(element => (element._id.toString() == idMess));
+            if(existMess.length>0){
+                var accUpdate = await Account.updateOne({_id: dataToken._id},{$pull: {arrayIdChat1v1: {_id: idMess}}});
+                res.send('xoathanhcong');
+            }
+            else{
+                res.send('thatbai');
+            }
+            
+        }
+        catch(err){
+            console.log('co loi khi xoa chat: ',err);
+        }
+
+    }
     changeAvatar(req, res, next){
         // console.log(req.body);
         var avatar =  req.body.avatar;
@@ -83,9 +104,10 @@ class MeControllers {
         var infoFriendLastChat={};
         var listMediaInLastChat = [];
         var listDocument = [];
-        listMediaInLastChat = lastChat._id.arrayContent1v1.filter(element => (element.typeMess=='image' || element.typeMess=='video'));
-        listDocument = lastChat._id.arrayContent1v1.filter(element => (element.typeMess=='document'));
+
         if(lastChat) {
+            listMediaInLastChat = lastChat._id.arrayContent1v1.filter(element => (element.typeMess=='image' || element.typeMess=='video'));
+            listDocument = lastChat._id.arrayContent1v1.filter(element => (element.typeMess=='document'));
             arrContentLastChat=lastChat._id.arrayContent1v1;
             infoFriendLastChat.displayName = lastChat.idFriend.displayName;
             infoFriendLastChat.avatar = lastChat.idFriend.avatar;

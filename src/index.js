@@ -215,9 +215,9 @@ app.engine(
                     if(element.from==you){
                         var contentFormat =``;
                         if(element.typeMess=='image' || element.typeMess=='video'){
-                            contentFormat=`<span class='content-message rounded' style='background-color:rgb(0, 66, 233);'>${element.content}</span> :Bạn`;
+                            contentFormat=`<span class='content-message' style='background-color:rgb(0, 66, 233);'>${element.content}</span> :Bạn`;
                         }
-                        else contentFormat=`<span class='content-message rounded-pill' style='background-color:rgb(0, 66, 233);'>${element.content}</span> :Bạn`;
+                        else contentFormat=`<span class='content-message' style='background-color:rgb(0, 66, 233);'>${element.content}</span> :Bạn`;
                         totalStr+=`<p class='message__container'>
                                     ${contentFormat}
                                 </p><br>`;

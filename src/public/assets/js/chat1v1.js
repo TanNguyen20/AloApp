@@ -1,6 +1,25 @@
 $(function () {
     //Kết nối tới server socket đang lắng nghe
     var socket = io();
+
+    $('.wrapPreview').on('click', function () {
+        var idYou = $('#idYou').val();
+        var idFriend = $('#idFriend').val();
+        var idRoom ='';
+        if(idYou.localeCompare(idFriend)==1) idRoom=idFriend+idYou;
+        else idRoom=idYou+idFriend;
+        // console.log(socket.id);
+        socket.emit("joinroom",idRoom);
+    });
+    $('.wrapPreviewNew').on('click', function () {
+        var idYou = $('#idYou').val();
+        var idFriend = $('#idFriend').val();
+        var idRoom ='';
+        if(idYou.localeCompare(idFriend)==1) idRoom=idFriend+idYou;
+        else idRoom=idYou+idFriend;
+        // console.log(socket.id);
+        socket.emit("joinroom",idRoom);
+    });
     //Socket nhận data và append vào giao diện
     socket.on("connect", () => {
         var idYou = $('#idYou').val();
@@ -39,7 +58,7 @@ $(function () {
 
         }
         else{
-            $('#listDocumentInCol3').append(`<div>${element.content.replace('text-white','text-primary')}</div>`);
+            if(element.typeMess=='document') $('#listDocumentInCol3').append(`<div>${element.content.replace('text-white','text-primary')}</div>`);
         }
         // alert(JSON.stringify(username));
         if(usernameYou==data.from){
