@@ -24,7 +24,8 @@
                 .end();
             $('.form-message').text('');
         });
-
+        {{#if noHeader}}
+        {{else}}
         var formChangePasswordCheck = Validator("#formChangePassword");
         $('#btnChangePassword').click(function(ev){
             var formChangePasswordCheck =  Validator("#formChangePassword");
@@ -56,6 +57,7 @@
                 });
             }
         });
+        {{/if}}
         {{/if}}
         {{/if}}
         {{#if user}}    

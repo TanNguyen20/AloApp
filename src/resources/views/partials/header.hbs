@@ -1,3 +1,5 @@
+{{#if noHeader}}
+{{else}}
 <header class="containerHeader sticky-top" id="headerMain">
     <div class="container">
         <nav class="navbar navbar-expand-lg navbar-light">
@@ -139,12 +141,14 @@
     </div>
     {{/if}}
     {{#if user}}
+    {{#if noHeader}}
+    {{else}}
     {{!-- Modal change password --}}
     <div class="modal fade" id="changePasswordModal" tabindex="-1" aria-labelledby="changePasswordModalLabel" aria-hidden="true">
         <form class="modal-dialog modal-dialog-centered" id="formChangePassword" method="POST" action="/login/changePassword">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="changePassword">Thay đổi mật khẩu</h5>
+                    <h5 class="modal-title" id="changePassword">Thay đổi mật khẩu {{noHeader}}</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -163,4 +167,6 @@
         </form>
     </div>
     {{/if}}
+    {{/if}}
 </div>
+{{/if}}

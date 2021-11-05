@@ -132,7 +132,8 @@ class MeControllers {
                     you,
                     listChat,
                     listMediaInLastChat,
-                    listDocument
+                    listDocument,
+                    noHeader: true
                 });
             }
             else{
@@ -142,7 +143,8 @@ class MeControllers {
                     isSocialAccount,
                     arrContentChat: arrContentLastChat,
                     you,
-                    listChat
+                    listChat,
+                    noHeader: true
                 });
             }
         }
