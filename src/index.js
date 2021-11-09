@@ -339,7 +339,7 @@ app.use('/scriptsLibary', express.static(path.join(__dirname, '/../node_modules'
 const mainServer = serverHttp.listen(portHttp); // Run the server on the 3000 port
 const serverHttps = server.listen(portHttps); // Run the server on the 3443 port
 //
-const io = require('socket.io')(/*mainServer ||*/ serverHttps);
+const io = require('socket.io')(mainServer );
 io.on('connection', function (socket) {
     console.log(`...........................Welcome socket ${socket.id}...........................`);
     socket.on("disconnect", (reason) => {
