@@ -339,17 +339,23 @@ app.use('/scriptsLibary', express.static(path.join(__dirname, '/../node_modules'
 const mainServer = serverHttp.listen(portHttp); // Run the server on the 3000 port
 const serverHttps = server.listen(portHttps); // Run the server on the 3443 port
 //
-const io = require('socket.io')(mainServer || serverHttps);
+const io = require('socket.io')(/*mainServer ||*/ serverHttps);
 io.on('connection', function (socket) {
     console.log(`...........................Welcome socket ${socket.id}...........................`);
     socket.on("disconnect", (reason) => {
-      console.log(`...........................Socket ${socket.id} exit because ${reason}...........................`);
+        console.log(`...........................Socket ${socket.id} exit because ${reason}...........................`);
     });
     socket.on('joinroom',(idRoom)=>{
       socket.join(idRoom);
       console.log(`...........................socket ${socket.id} has joined room ${idRoom}...........................`);
     });
     ////
+    socket.on('sendRoomSize',function(data){
+        console.log('nhan id room :', data)
+        var roomSize = io.of("/").adapter.rooms.get(data);
+        console.log('roomsize: ', roomSize.size);
+        socket.emit('roomSize',roomSize.size);
+    });
     socket.on('send',async function (data) {
         console.log(data);
         const roomSize = io.of("/").adapter.rooms.get(data.idRoom);

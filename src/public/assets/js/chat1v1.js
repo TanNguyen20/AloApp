@@ -1,7 +1,6 @@
 $(function () {
     //Kết nối tới server socket đang lắng nghe
     var socket = io();
-
     $('.wrapPreview').on('click', function () {
         var idYou = $('#idYou').val();
         var idFriend = $('#idFriend').val();
@@ -9,8 +8,10 @@ $(function () {
         if(idYou.localeCompare(idFriend)==1) idRoom=idFriend+idYou;
         else idRoom=idYou+idFriend;
         // console.log(socket.id);
+        socket.emit('sendRoomSize',idRoom);
         socket.emit("joinroom",idRoom);
     });
+    
     $('.wrapPreviewNew').on('click', function () {
         var idYou = $('#idYou').val();
         var idFriend = $('#idFriend').val();
@@ -18,6 +19,7 @@ $(function () {
         if(idYou.localeCompare(idFriend)==1) idRoom=idFriend+idYou;
         else idRoom=idYou+idFriend;
         // console.log(socket.id);
+        socket.emit('sendRoomSize',idRoom);
         socket.emit("joinroom",idRoom);
     });
     //Socket nhận data và append vào giao diện
@@ -29,16 +31,21 @@ $(function () {
         else idRoom=idYou+idFriend;
         // console.log(socket.id);
         socket.emit("joinroom",idRoom);
+        socket.emit('sendRoomSize',idRoom);
+        socket.on("roomSize", (data) => {
+            if(data==1){
+                $('#statusOnlineCol2').text('Không online');
+                $('#iconStatusOnline').removeClass('green');
+                $('#iconStatusOnline').addClass('text-secondary');
+            }
+            
+        });
     });
     socket.on("send", function (data) {
         console.log(data);
         var usernameYou = $('#usernameYou').val();
         console.log(usernameYou);
-        var objMessage={};
         var url = window.location.href;
-        var urlSplit =url.split('/');
-        var usernameUrl = urlSplit[urlSplit.length-1];
-        var usernameReceive = $('#usernameYou').val();
         var element = data;
         if(element.typeMess=='image' || element.typeMess=='video'){
             var listMediaCol3 = ``;

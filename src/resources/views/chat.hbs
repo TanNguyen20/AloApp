@@ -2,8 +2,57 @@
 {{#if existFriend}}
 <script src="/socket.io/socket.io.js"></script>
 <script src="/assets/js/chat1v1.js"></script>
+<script src="/assets/js/peer.min.js"></script>
 <script src="https://cdn.lordicon.com/libs/mssddfmo/lord-icon-2.1.0.js"></script>
 <div class="overlayImg">
+    <!-- Modal -->
+    <div class="modal fade" id="videoCallModal" tabindex="-1" aria-labelledby="videoCallModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-fullscreen">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="videoCallModalLabel">Trò chuyện</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body" id="wrapModalCall">
+            <h2 class="text-center d-none" id="notifyCantCall">Người gọi chưa online</h2>
+            <div class="pure-g">
+
+                <!-- Video area -->
+                <div class="iconWaitCall">
+                    <lord-icon
+                        class="w-100"
+                        src="https://cdn.lordicon.com/ymrqtsej.json"
+                        trigger="loop"
+                        colors="primary:#121331"
+                        style="width:250px;height:250px;">
+                    </lord-icon>
+                    <p class="text-center fw-bold">Đang gọi đến {{friend.displayName}}</p>
+                </div>
+                <div class="row" id="video-container">
+                    <div class="col-lg-6 col-sm-12 border">
+                        <video id="my-video" class="w-100 h-75" muted="true" autoplay></video>
+                    </div>
+                    <div class="col-lg-6 col-sm-12 border">
+                        <video id="their-video" class="w-100 h-75" autoplay></video>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            {{!-- <div id="step2">
+                <div class="d-flex justify-content-evenly">
+                    <p>Your id: <span id="my-id">...</span></p>
+                    <div class="pure-form">
+                        <input type="text" placeholder="Call user id..." id="callto-id">
+                        <a href="#" class="pure-button pure-button-success btn btn-primary" id="make-call">Call</a>
+                    </div>
+                </div>
+            </div> --}}
+            <button type="button" id="btnCloseCall" class="btn btn-danger rounded-pill">Kết thúc cuộc gọi</button>
+        </div>
+        </div>
+    </div>
+    </div>
     <div class="row marginEndRow-0">
         <div class="col-lg-3 border col-md-4" id="wrapCol1">
             <header class="mt-3 ms-2 d-flex justify-content-between">
@@ -40,7 +89,7 @@
                                 </div>
                                 <div class="d-sm-block">
                                     <h6 id="nameFriendCol2">{{friend.displayName}}</h6>
-                                    <span>Online</span>
+                                    <span id="statusOnlineCol2">Online</span>
                                 </div>
                             </div>
                         </div>
@@ -89,7 +138,7 @@
                     <div class="form-inline mt-2 mb-1 w-100">
                         <textarea class="form-control shadow-none rounded-pill me-sm-2" id="inputMessage" rows="1"></textarea>
                     </div>
-                    <button id="btnSendMessage" class="btn btn-primary ms-2 rounded-circle"><i class="fas fa-thumbs-up ms-2 iconFooterCol2"></i></button>
+                    <button id="btnSendMessage" style="border: none; background-color: transparent; outline: none;" class="btn btn-primary ms-2"><i class="fas fa-thumbs-up ms-2 iconFooterCol2 text-primary"></i></button>
                 </div>
                 
             </footer>
@@ -106,7 +155,7 @@
                         {{friend.displayName}}
                     </div>
                     <div>
-                        <i class="fas fa-circle green"></i>
+                        <i class="fas fa-circle green" id="iconStatusOnline"></i>
                     </div>
                 </div>
             </header>
@@ -559,13 +608,15 @@
             }
         }
     });
-    $('#btnCall').on('click',function(){
+    /*$('#btnCall').on('click',function(){
         alert('ok');
     });
     $('#btnVideoCall').on('click',function(){
-        alert('ok');
-    });
+        $('#videoCallModal').modal('show');
+    });*/
 </script>
+<script src="/assets/js/turnAndStunServer.js"></script>
+
 {{else}}
 <div class="text-center">
     <h2>Bạn chưa có bạn bè hãy kết bạn để trò chuyện nào!</h2>
