@@ -24,36 +24,113 @@ async function Setup() {
         $('#my-id').text(peer.id);
       });
       var constraints = { audio: false, video: true };
-      var constraintsCall = { audio: true, video: false };
       var streamLocal = null;
       var vidLocal = await document.getElementById("my-video");
       var socket =io();
-      $('#btnCall').on('click',function(){
+      $('#btnCall').on('click',async function(){
+          var dataConnection1 = await peer.connect($('#idFriend').val());
+          peer.on('connection',function(){
+            alert('ket noi thanh cong');
+          })
+          dataConnection1.on('open', function(id){
+            dataConnection1.send('audio');
+          });
+          dataConnection1.on('data', function(data){
+            alert(data);
+          });
+          constraints = { audio: true, video: false };
           var idYou = $('#idYou').val();
           var idFriend = $('#idFriend').val();
           var idRoom ='';
           if(idYou.localeCompare(idFriend)==1) idRoom=idFriend+idYou;
           else idRoom=idYou+idFriend;
-          // console.log(socket.id);
           socket.emit('sendRoomSize',idRoom);
-          socket.on('roomSize',async function(data){
-              if(data==2){
-                  
+          socket.once('roomSize',async function(data){
+              if(data<2){
+                  $('#notifyCantCall').removeClass('d-none');
+                  $('.iconWaitCall').hide();
+                  $('#btnCloseCall').hide();
+                  $('#videoCallModal').modal('show');
+                  $('#statusOnlineCol2').text('Không online');
+                  $('#iconStatusOnline').removeClass('green');
+                  $('#iconStatusOnline').addClass('text-secondary');
+              }
+              else{
+                  $('.iconWaitCall').show();
+                  $('#notifyCantCall').addClass('d-none');
                   $('#statusOnlineCol2').text('Online');
                   $('#iconStatusOnline').addClass('green');
                   $('#iconStatusOnline').removeClass('text-secondary');
-                  streamLocal = await navigator.mediaDevices.getUserMedia(constraintsCall);
+                  streamLocal = await navigator.mediaDevices.getUserMedia(constraints);
                   $('#videoCallModal').modal('show');
                   vidLocal.srcObject = streamLocal;
                   window.localStream = streamLocal;
                   vidLocal.onloadedmetadata = function (e) {
                     vidLocal.play();
                   }
-              }
-              else{
-                  $('#statusOnlineCol2').text('Không online');
-                  $('#iconStatusOnline').removeClass('green');
-                  $('#iconStatusOnline').addClass('text-secondary');
+        
+                  var dataConnection = peer.connect($('#idFriend').val());
+                  dataConnection.on('data', async function(data) {
+                    if(data=='cancel'){
+                      swal("Người được gọi đã từ chối cuộc gọi")
+                      .then(()=>{
+                        $('#videoCallModal').modal('hide');
+                        $('#videoCallModal').on('hidden.bs.modal',async function (e) {
+                          var tracks = await streamLocal.getTracks();
+                          tracks.forEach(function(track) {
+                            track.stop();
+                          });
+                          vidLocal.srcObject = null;
+                          window.localStream = null;
+                          // alert('da gan null');
+                        });
+                      })
+                    }
+                    if(data=='closeCall'){
+                      swal("Người được gọi đã kết thúc cuộc gọi")
+                      .then(()=>{
+                        $('#videoCallModal').modal('hide');
+                        $('#videoCallModal').on('hidden.bs.modal',async function (e) {
+                          var tracks = await streamLocal.getTracks();
+                          tracks.forEach(function(track) {
+                            track.stop();
+                          });
+                          vidLocal.srcObject = null;
+                          window.localStream = null;
+                          var vid = document.getElementById("their-video");
+                          vid.srcObject = null;
+                        });
+                      })
+                    }
+                  });
+                  //
+                  var call = peer.call($('#idFriend').val(), streamLocal);
+                  call.on('stream',async function (stream1) {
+                    var vid = document.getElementById("their-video");
+                    $('.iconWaitCall').addClass('d-none');
+                    vid.srcObject = stream1;
+                    vid.onloadedmetadata = function (e) {
+                      vid.play();
+                    };
+                    //call = mediaConnection
+
+                    $('#btnCloseCall').on('click',async function(e){
+                      e.preventDefault();
+                      dataConnection.send('closeCall');
+                      $('#videoCallModal').modal('hide');
+                      var tracks =await streamLocal.getTracks();
+                      tracks.forEach(function(track) {
+                        track.stop();
+                      });
+                      vidLocal.srcObject = null;
+                      window.localStream = null;
+                      var vid = document.getElementById("their-video");
+                      vid.srcObject = null;
+                    });
+                  });
+                  call.on('close', function(){
+                    alert('close');
+                  });
               }
           });
       });
@@ -61,14 +138,13 @@ async function Setup() {
       //// nguoi gui ////
 
       $('#btnVideoCall').on('click',function(){
-        
         var idYou = $('#idYou').val();
         var idFriend = $('#idFriend').val();
         var idRoom ='';
         if(idYou.localeCompare(idFriend)==1) idRoom=idFriend+idYou;
         else idRoom=idYou+idFriend;
         socket.emit('sendRoomSize',idRoom);
-        socket.on('roomSize',async function(data){
+        socket.once('roomSize',async function(data){
             if(data<2){
                 $('#notifyCantCall').removeClass('d-none');
                 $('.iconWaitCall').hide();
@@ -93,9 +169,7 @@ async function Setup() {
                 }
       
                 var dataConnection = peer.connect($('#idFriend').val());
-                dataConnection.send('hihi');
                 dataConnection.on('data', async function(data) {
-                  alert(data);
                   if(data=='cancel'){
                     swal("Người được gọi đã từ chối cuộc gọi")
                     .then(()=>{
@@ -107,6 +181,7 @@ async function Setup() {
                         });
                         vidLocal.srcObject = null;
                         window.localStream = null;
+                        // alert('da gan null');
                       });
                     })
                   }
@@ -130,13 +205,9 @@ async function Setup() {
                 //
                 var call = peer.call($('#idFriend').val(), streamLocal);
                 call.on('stream',async function (stream1) {
-                  // $('#their-video');
                   var vid = document.getElementById("their-video");
                   $('.iconWaitCall').addClass('d-none');
-                  // alert("nhan stream(ban la nguoi goi): " + stream1);
                   vid.srcObject = stream1;
-                  // $('#video-container').removeClass('d-none');
-                  // vid.play();
                   vid.onloadedmetadata = function (e) {
                     vid.play();
                   };
@@ -147,10 +218,13 @@ async function Setup() {
                     dataConnection.send('closeCall');
                     $('#videoCallModal').modal('hide');
                     var tracks =await streamLocal.getTracks();
-                    // alert(tracks);
                     tracks.forEach(function(track) {
                       track.stop();
                     });
+                    vidLocal.srcObject = null;
+                    window.localStream = null;
+                    var vid = document.getElementById("their-video");
+                    vid.srcObject = null;
                   });
                 });
                 call.on('close', function(){
@@ -160,11 +234,16 @@ async function Setup() {
         });
       });
       ////nguoi nhan////
-      peer.on('connection', function(dataConnection) { 
-
+      peer.on('connection',async function(dataConnection) { 
+        alert('co ket noi');
+        dataConnection.on('open', async function(data) {
+          dataConnection.send('audio');
+        });
         dataConnection.on('data', function(data) {
+          alert(data);
+          if(data=='audio') constraints = { audio: true, video: false };
           if(data=='closeCall'){
-            swal("Người được gọi đã kết thúc cuộc gọi")
+            swal("Người gọi đã kết thúc cuộc gọi")
             .then(()=>{
               $('#videoCallModal').modal('hide');
               $('#videoCallModal').on('hidden.bs.modal',async function (e) {
@@ -224,6 +303,7 @@ async function Setup() {
                 });
               } 
               else {
+                
                 dataConnection.send('cancel');
                 swal("Đã từ chối cuộc gọi");
               }
