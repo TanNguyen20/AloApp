@@ -29,15 +29,15 @@ async function Setup() {
       var socket =io();
       $('#btnCall').on('click',async function(){
           var dataConnection1 = await peer.connect($('#idFriend').val());
-          peer.on('connection',function(){
-            alert('ket noi thanh cong');
-          })
+          // peer.on('connection',function(){
+          //   alert('ket noi thanh cong');
+          // })
           dataConnection1.on('open', function(id){
             dataConnection1.send('audio');
           });
-          dataConnection1.on('data', function(data){
-            alert(data);
-          });
+          // dataConnection1.on('data', function(data){
+          //   alert(data);
+          // });
           constraints = { audio: true, video: false };
           var idYou = $('#idYou').val();
           var idFriend = $('#idFriend').val();
@@ -137,12 +137,17 @@ async function Setup() {
       
       //// nguoi gui ////
 
-      $('#btnVideoCall').on('click',function(){
+      $('#btnVideoCall').on('click',async function(){
         var idYou = $('#idYou').val();
         var idFriend = $('#idFriend').val();
         var idRoom ='';
         if(idYou.localeCompare(idFriend)==1) idRoom=idFriend+idYou;
         else idRoom=idYou+idFriend;
+        constraints = { audio: false, video: true };
+        var dataConnection1 = await peer.connect($('#idFriend').val());
+        dataConnection1.on('open', function(id){
+          dataConnection1.send('video');
+        });
         socket.emit('sendRoomSize',idRoom);
         socket.once('roomSize',async function(data){
             if(data<2){
@@ -235,13 +240,14 @@ async function Setup() {
       });
       ////nguoi nhan////
       peer.on('connection',async function(dataConnection) { 
-        alert('co ket noi');
+        // alert('co ket noi');
         dataConnection.on('open', async function(data) {
           dataConnection.send('audio');
         });
         dataConnection.on('data', function(data) {
-          alert(data);
+          // alert(data);
           if(data=='audio') constraints = { audio: true, video: false };
+          if(data=='video') constraints = { audio: false, video: true };
           if(data=='closeCall'){
             swal("Người gọi đã kết thúc cuộc gọi")
             .then(()=>{
