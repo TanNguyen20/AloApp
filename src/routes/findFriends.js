@@ -7,5 +7,6 @@ router.post('/default',AuthController.checkTokenUser ,FindFriendsControllers.def
 router.get('/facebook', AuthController.checkTokenUser,FindFriendsControllers.facebookFindFriends);
 router.post('/sendRequestFriends',AuthController.checkTokenUser ,FindFriendsControllers.sendRequestFriends);
 router.post('/chat1v1',AuthController.checkTokenUser ,FindFriendsControllers.chat1v1);
+router.post('/chatGroup',AuthController.checkTokenUser ,FindFriendsControllers.chatGroup);
 
 module.exports = router;

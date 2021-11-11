@@ -85,6 +85,35 @@ class FindFriendsControllers {
             }
         }
     }
+    async chatGroup(req, res){
+        // console.log(req.body);
+        var findGroup = req.body.findGroup;
+        if(findGroup==''){
+            res.send([]);
+        }
+        else{
+            var regexFindGroup = new RegExp(findGroup, "i");
+            var token = req.cookies.token;
+            var decode = jwt.verify(token,'mk');
+            try {
+
+                var yourAcc = await Account.findById(decode._id).populate('arrayIdChatGroup._id');
+                //console.log(yourAcc.populate('messages.arrayIdChat1v1'));
+                var listGroup =  yourAcc.arrayIdChatGroup;
+                var arr=[];
+                // console.log(listGroup);
+                for(var element of listGroup){
+                    if(element._id.groupName.match(regexFindGroup)){
+                        arr.push({groupName: element._id.groupName, idGroup: element._id._id, avatarGroup: element._id.avatarGroup});
+                    }
+                }
+                console.log(arr);
+                res.send(arr);
+            } catch (error) {
+                console.log('thong tin loi: ',error);
+            }
+        }
+    }
     async defaultFindFriends(req, res, next) {
         // console.log(req.body);
         var findFriends = req.body.findFriends;

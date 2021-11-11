@@ -15,6 +15,7 @@ router.post('/addMember',AuthController.checkTokenUser, MeController.addMember);
 router.post('/changeInfo',AuthController.checkTokenUser, MeController.changeInfo);
 router.post('/changeAvatar',AuthController.checkTokenUser, MeController.changeAvatar);
 router.post('/deleteChat',AuthController.checkTokenUser, MeController.deleteChat);
+router.post('/deleteGroupChat',AuthController.checkTokenUser, MeController.deleteGroupChat);
 router.post('/changeBackground',MeController.changeBackground);
 router.post('/deleteFriend',AuthController.checkTokenUser,MeController.deleteFriend);
 router.post('/acceptRequestFriend',AuthController.checkTokenUser,MeController.acceptRequestFriend);

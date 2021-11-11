@@ -31,10 +31,11 @@ class MeControllers {
         //co thoi gian sua lai them avatar khi tao group
         var avatarGroup = 'https://res.cloudinary.com/dq7zeyepu/image/upload/v1635935296/avatar/owg5qlrubhdfufvwocrw.jpg';
         try{
-            var messNew =new Message({});
+            var messNew =new Message({avatarGroup:avatarGroup, groupName: groupName, statusDelete: false,friendInGroup:[]});
             messNew.save();
             console.log(messNew._id);
-            var accUpdate = await Account.findByIdAndUpdate(dataToken._id,{$push: {arrayIdChatGroup: {_id: messNew._id,avatarGroup:avatarGroup, groupName: groupName, statusDelete: false,friendInGroup:[]}}});
+            var idMess = await messNew._id;
+            var accUpdate = await Account.findByIdAndUpdate(dataToken._id,{$push: {arrayIdChatGroup: {_id: idMess}}});
             if(accUpdate) res.send('thanhcong');
             else res.send('thatbai');
 
@@ -46,20 +47,26 @@ class MeControllers {
     async addMember(req, res, next) {
         var idMember = req.body.idMember;
         var idMess = req.body.idMess;
-        var token = req.cookies.token;
-        var dataToken = jwt.verify(token,'mk');
-        var acc = await Account.findById(dataToken._id);
-        var groupInfo  = acc.arrayIdChatGroup.filter(element => (element._id.toString() == idMess));
+        var mess = await Message.findById(idMess);
         var existMember =false;
-        
-        existMember = groupInfo[0].friendInGroup.filter(element => (element.idFriend.toString() == idMember));
+        existMember  = mess.friendInGroup.filter(element => (element._id.toString() == idMember));
         if(existMember.length>0){
             res.send('datontai');
         }
         else{
-            //var accUpdate = await Account.findByIdAndUpdate(dataToken._id,{ $push: {arrayIdChatGroup: {$elemMatch: {_id: idMess}, friendInGroup: {$each: [{idFriend: idMember, statusDelete: false}]}}}});
-            res.send('thanhcong');
-            // else res.send('thatbai');
+            var toInsert = {statusDelete:false,_id:idMember};
+            var messUpdate = await Message.updateOne({_id: idMess},{$push: {friendInGroup: toInsert}});
+            if(messUpdate){
+                var inforAddToGroup = await Account.findById(idMember);
+                var accUpdate = await Account.updateOne({_id: idMember},{$push: {arrayIdChatGroup: {_id: idMess}}});
+                if(accUpdate){
+                    res.send({displayName: inforAddToGroup.displayName, avatar: inforAddToGroup.avatar, idFriend: inforAddToGroup._id});
+                }
+                
+            }
+            else{
+                res.send('thatbai');
+            }
         }
     }
     async deleteChat(req, res, next) {
@@ -72,6 +79,29 @@ class MeControllers {
             if(existMess.length>0){
                 var accUpdate = await Account.updateOne({_id: dataToken._id},{$pull: {arrayIdChat1v1: {_id: idMess}}});
                 res.send('xoathanhcong');
+            }
+            else{
+                res.send('thatbai');
+            }
+            
+        }
+        catch(err){
+            console.log('co loi khi xoa chat: ',err);
+        }
+
+    }
+    async deleteGroupChat(req, res, next) {
+        var idMess = req.body.idMess;
+        var token = req.cookies.token;
+        var dataToken = jwt.verify(token,'mk');
+        try{
+            var acc = await Account.findById(dataToken._id);
+            var existMess = acc.arrayIdChatGroup.filter(element => (element._id.toString() == idMess));
+            if(existMess.length>0){
+                var messDelete = await Message.findByIdAndDelete(idMess);
+                var accUpdate = await Account.updateOne({_id: dataToken._id},{$pull: {arrayIdChatGroup: {_id: idMess}}});
+                if(messDelete && accUpdate) res.send('xoathanhcong');
+                else res.send('thatbai');
             }
             else{
                 res.send('thatbai');
@@ -224,30 +254,38 @@ class MeControllers {
     async groupChat(req, res, next) {
         var token = req.cookies.token;
         var dataToken = jwt.verify(token,'mk');
-        var acc = await Account.findById(dataToken._id).populate('arrayIdChatGroup._id').populate('arrayIdChatGroup.friendInGroup.idFriend').populate('friends');
-        // console.log(acc);
+        var acc = await Account.findById(dataToken._id).populate('arrayIdChatGroup._id');
         var existFriend = acc.friends.length;
         var existGroup = acc.arrayIdChatGroup.length;
         var haveFriend = false;
         var haveGroup = false;
         var lastChat = {};
+        var listMember = [];
         if(existFriend>0) haveFriend = true;
         if(existGroup>0) {
             haveGroup = true;
             lastChat = acc.arrayIdChatGroup[acc.arrayIdChatGroup.length-1];
         }
-        // console.log('exis:', haveFriend)
         var isSocialAccount =false;
         var listChat = acc.arrayIdChatGroup;
         var arrContentLastChat = [];
         var listMediaInLastChat = [];
         var listDocument = [];
-        // console.log(lastChat);
+        var groupNameLastChat = '';
+        var avatarLastChat = '';
+        var friendInGroupLastChat = [];
+        // console.log('cc');
         if(lastChat) {
             if(lastChat._id){
                 listMediaInLastChat = lastChat._id.arrayContentGroup.filter(element => (element.typeMess=='image' || element.typeMess=='video'));
                 listDocument = lastChat._id.arrayContentGroup.filter(element => (element.typeMess=='document'));
                 arrContentLastChat=lastChat._id.arrayContentGroup;
+                var messFind = await Message.findById(lastChat._id._id).populate('friendInGroup._id')
+                groupNameLastChat = messFind.groupName;
+                avatarLastChat = messFind.avatarGroup;
+                // console.log(messFind);
+                listMember = messFind.friendInGroup;
+                console.log(listMember);
             }
         }
         var you = acc.displayName;
@@ -271,7 +309,6 @@ class MeControllers {
                         arrContentChat: arrContentLastChat,
                         idMessLastChat,
                         you,
-                        listChat,
                         listMediaInLastChat,
                         listDocument,
                         noHeader: true,
@@ -290,7 +327,10 @@ class MeControllers {
                         listMediaInLastChat,
                         listDocument,
                         noHeader: true,
-                        lastChat:mongooseToObject(lastChat)
+                        lastChat:mongooseToObject(lastChat),
+                        listMember,
+                        groupNameLastChat,
+                        avatarLastChat
                     });
                 }
             }

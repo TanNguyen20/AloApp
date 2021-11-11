@@ -42,6 +42,30 @@ class ChatControllers {
 
         }
     }
+    async checkGroup(req, res){
+        var idMess = req.body.idMess;
+        var infoMessGroup = await Messages.findById(idMess).populate('friendInGroup._id');
+        var dataSend = {};
+        var listFriendLInGroup = [];
+        var temp={};
+        if(infoMessGroup){
+            console.log(infoMessGroup);
+            dataSend['contentChatGroup'] = infoMessGroup.arrayContentGroup;
+            dataSend['groupName'] = infoMessGroup.groupName;
+            dataSend['avatarGroup'] = infoMessGroup.avatarGroup;
+            dataSend['idGroup'] = infoMessGroup._id;
+            for(var element of infoMessGroup.friendInGroup){
+                temp = {'displayName': element._id.displayName, 'avatar': element._id.avatar, 'idFriend': element._id._id};
+                listFriendLInGroup.push(temp);
+            }
+            dataSend['infoFriend'] = listFriendLInGroup;
+            console.log(dataSend);
+            res.send(dataSend);
+        }
+        else{
+            res.send('id not found');
+        }
+    }
 }
 
 module.exports = new ChatControllers();

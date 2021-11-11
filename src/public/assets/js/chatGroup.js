@@ -2,47 +2,32 @@ $(function () {
     //Kết nối tới server socket đang lắng nghe
     var socket = io();
     $('.wrapPreview').on('click', function () {
-        var idYou = $('#idYou').val();
-        var idFriend = $('#idFriend').val();
-        var idRoom ='';
-        if(idYou.localeCompare(idFriend)==1) idRoom=idFriend+idYou;
-        else idRoom=idYou+idFriend;
+        var idRoom =$(this).attr('id');
         socket.emit("joinroom",idRoom);
         socket.emit('sendRoomSize',idRoom);
     });
     
     $('.wrapPreviewNew').on('click', function () {
-        var idYou = $('#idYou').val();
-        var idFriend = $('#idFriend').val();
-        var idRoom ='';
-        if(idYou.localeCompare(idFriend)==1) idRoom=idFriend+idYou;
-        else idRoom=idYou+idFriend;
+        var idRoom =$(this).attr('id');
         socket.emit("joinroom",idRoom);
         socket.emit('sendRoomSize',idRoom);
     });
     //Socket nhận data và append vào giao diện
     socket.on("connect", () => {
-        var idYou = $('#idYou').val();
-        var idFriend = $('#idFriend').val();
-        var idRoom ='';
-        if(idYou.localeCompare(idFriend)==1) idRoom=idFriend+idYou;
-        else idRoom=idYou+idFriend;
+        var idRoom =$('#idMess').val();
         socket.emit("joinroom",idRoom);
         socket.emit('sendRoomSize',idRoom);
         socket.on("roomSize", (data) => {
             if(data==1){
-                $('#statusOnlineCol2').text('Không online');
                 $('#iconStatusOnline').removeClass('green');
                 $('#iconStatusOnline').addClass('text-secondary');
             }
             
         });
     });
-    socket.on("send", function (data) {
-        console.log(data);
+    socket.on("sendGroup", function (data) {
+        // console.log(data);
         var usernameYou = $('#usernameYou').val();
-        console.log(usernameYou);
-        var url = window.location.href;
         var element = data;
         if(element.typeMess=='image' || element.typeMess=='video'){
             var listMediaCol3 = ``;
@@ -97,22 +82,17 @@ $(function () {
 
     //Bắt sự kiện click gửi message
     $("#btnSendMessage").on('click', function () {
-        var idYou = $('#idYou').val();
         var idMess = $('#idMess').val();
-        var idFriend = $('#idFriend').val();
-        var idRoom ='';
-        if(idYou.localeCompare(idFriend)==1) idRoom=idFriend+idYou;
-        else idRoom=idYou+idFriend;
+        var nameGroup = $('#nameFriendCol2').text();
+        var idRoom=idMess;
         socket.emit("joinroom",idRoom);
-        // alert($('#contentCol2')[0].scrollHeight);
         var usernameYou = $('#usernameYou').val();
-        var usernameFriend = $('#usernameFriend').val();
         var message = '<i class="fas fa-thumbs-up ms-2 iconFooterCol2"></i>';
         if (message == '') {
             alert('Please enter message!!');
         } else {
             //Gửi dữ liệu cho socket
-            socket.emit('send', {from: usernameYou, to:usernameFriend, content: message,typeMess:'iconLike', idRoom, idFriend,idMess});
+            socket.emit('sendGroup', {from: usernameYou, to: nameGroup, content: message,typeMess:'iconLike', idRoom,idMess});
             $('#inputMessage').val('');
             
         }
@@ -150,19 +130,14 @@ $(function () {
                         totalData+= `<a href="${dataJson.secure_url}" target="_blank"><img src="${dataJson.secure_url}" width="50px" height="50px" class="img-thumbnail cursor listImgAfterUpload m-1"></a>`;
                         if(i==fileLength-1){
                             var usernameYou = $('#usernameYou').val();
-                            var usernameFriend = $('#usernameFriend').val();
+                            var nameGroup = $('#nameFriendCol2').text();
                             var message = totalData;
-                            var idYou = $('#idYou').val();
-                            var idFriend = $('#idFriend').val();
-                            var idMess = $('#idMess').val();
-                            var idRoom ='';
-                            if(idYou.localeCompare(idFriend)==1) idRoom=idFriend+idYou;
-                            else idRoom=idYou+idFriend;
+                            var idRoom =$('#idMess').val();
                             socket.emit("joinroom",idRoom);
 
                             //Gửi dữ liệu cho socket
                             $('.waitImgUpload').remove();
-                            socket.emit('send', {from: usernameYou,to:usernameFriend, content: message, typeMess:'image', idRoom, idFriend,idMess});
+                            socket.emit('sendGroup', {from: usernameYou, to: nameGroup, content: message, typeMess:'image',idMess:idRoom});
                                 $('#inputMessage').val('');
                             }
                     });
@@ -208,31 +183,25 @@ $(function () {
                         totalData+= `<a href="${dataJson.secure_url}" style="font-weight: bold;" class="me-1 listDocAfterUpload text-white" target="_blank">${dataJson.original_filename}.${extendFile}</a>&nbsp;`;
                         if(i==fileDocumentLength-1){
                             var usernameYou = $('#usernameYou').val();
-                            var usernameFriend = $('#usernameFriend').val();
+                            var nameGroup = $('#nameFriendCol2').text();
                             var message = await totalData;
                             //Gửi dữ liệu cho socket
                             $('.waitDocUpload').remove();
-
-                            var idYou = $('#idYou').val();
-                            var idFriend = $('#idFriend').val();
-                            var idMess = $('#idMess').val();
-                            var idRoom ='';
-                            if(idYou.localeCompare(idFriend)==1) idRoom=idFriend+idYou;
-                            else idRoom=idYou+idFriend;
+                            var idRoom =$('#idMess').val();
                             socket.emit("joinroom",idRoom);
                             if(dataJson.resource_type=='video' || dataJson.resource_type=='image'){
                                 if(dataJson.resource_type=='video'){
-                                    socket.emit('send', {from: usernameYou, to:usernameFriend, content: message, typeMess:'video', idRoom, idFriend,idMess});
+                                    socket.emit('sendGroup', {from: usernameYou, to:nameGroup, content: message, typeMess:'video',idMess:idRoom});
                                     $('#inputMessage').val('');
                                 }
                                 if(dataJson.resource_type=='image'){
-                                    socket.emit('send', {from: usernameYou, to:usernameFriend, content: message, typeMess:'image', idRoom, idFriend,idMess});
+                                    socket.emit('sendGroup', {from: usernameYou, to:nameGroup, content: message, typeMess:'image',idMess:idRoom});
                                     $('#inputMessage').val('');
                                 }
                 
                             }
                             else{
-                                socket.emit('send', {from: usernameYou, to:usernameFriend, content: message, typeMess:'document', idRoom, idFriend,idMess});
+                                socket.emit('sendGroup', {from: usernameYou, to:nameGroup, content: message, typeMess:'document',idMess:idRoom});
                                 $('#inputMessage').val('');
                             }
                         }
@@ -249,24 +218,18 @@ $(function () {
             
         }
         else{
-            var url = window.location.href;
             if(event.which===13){
                 var usernameYou = $('#usernameYou').val();
-                var usernameFriend = $('#usernameFriend').val();
+                var nameGroup = $('#nameFriendCol2').text();
                 var message = $('#inputMessage').val();
                 if (message == '\n' || message=='') {
                     alert('Vui lòng nhập nội dung!!');
                     $("#inputMessage").val('')
                 } else {
                     //Gửi dữ liệu cho socket
-                    var idYou = $('#idYou').val();
-                    var idFriend = $('#idFriend').val();
-                    var idMess = $('#idMess').val();
-                    var idRoom ='';
-                    if(idYou.localeCompare(idFriend)==1) idRoom=idFriend+idYou;
-                    else idRoom=idYou+idFriend;
+                    var idRoom =$('#idMess').val();
                     socket.emit("joinroom",idRoom);
-                    socket.emit('send', {from: usernameYou, to:usernameFriend, content: message, typeMess:'text', idRoom, idFriend,idMess});
+                    socket.emit('sendGroup', {from: usernameYou, to:nameGroup, content: message, typeMess:'text',idMess:idRoom});
                     $('#inputMessage').val('');
                 }
             }

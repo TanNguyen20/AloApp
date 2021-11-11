@@ -256,24 +256,27 @@ app.engine(
             },
             renderCol1GroupChat: (listChat)=>{
                 var totalStr =``;
-                for(var element of listChat){
-                    totalStr+=`<div class="wrapPreview d-flex align-items-center justify-content-between mb-2" id=${element._id._id}>
-                                    <div class="logoAndMessagePreview ms-2 d-flex mt-1">
-                                        <img src="${element.avatarGroup}" alt="logoGroup" class="avatarCol1 rounded-circle">
-                                        <div class="">
-                                            <h6>${element.groupName}</h6>
-                                            <span>Trò chuyện ngay nào!</span>
+                if(listChat.length>0){
+                    // console.log(listChat);
+                    for(var element of listChat){
+                        totalStr+=`<div class="wrapPreview d-flex align-items-center justify-content-between mb-2" id=${element._id._id}>
+                                        <div class="logoAndMessagePreview ms-2 d-flex mt-1">
+                                            <img src="${element._id.avatarGroup}" alt="logoGroup" class="avatarCol1 rounded-circle">
+                                            <div class="">
+                                                <h6>${element._id.groupName}</h6>
+                                                <span>Trò chuyện ngay nào!</span>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="detailAndStatusMessenge d-flex">
-                                        <div class="me-2">
-                                            <i class="fas fa-ellipsis-h border rounded-circle p-1 backGroundWhite"> </i>
+                                        <div class="detailAndStatusMessenge d-flex">
+                                            <div class="me-2">
+                                                <i class="fas fa-ellipsis-h border rounded-circle p-1 backGroundWhite"> </i>
+                                            </div>
+                                            <div class="">
+                                                <i class="far fa-check-circle"></i>
+                                            </div>
                                         </div>
-                                        <div class="">
-                                            <i class="far fa-check-circle"></i>
-                                        </div>
-                                    </div>
-                                </div>`;
+                                    </div>`;
+                    }
                 }
                 return totalStr;
 
@@ -302,6 +305,21 @@ app.engine(
                     totalStr+=`<div>${element.content.replace('text-white','text-primary')}</div>`;
                 }
                 return totalStr;
+            },
+            renderListMember: (listMember)=>{
+                var totalStr =``;
+                for(var element of listMember){
+                    totalStr+=`<div class="d-flex align-items-center justify-content-between mb-2 mt-2">
+                                    <div class="d-flex justify-content-start align-items-center">
+                                        <img src="${element._id.avatar}" alt="anh dai dien" class="avatarMe rounded-circle me-2">${element._id.displayName}
+                                    </div>
+                                    <div class="">
+                                        <i class="fas fa-ellipsis-h border rounded-circle p-1 backGroundWhite" id="${element._id._id}"></i>
+                                    </div>
+                                </div>`;
+                }   
+                return totalStr;
+
             }
         }
     }),
@@ -413,6 +431,27 @@ io.on('connection', function (socket) {
         data.size = roomSize.size;
         console.log(`...........................room size: ${roomSize.size}...........................`);
         io.sockets.in(data.idRoom).emit('send', data);//gui data qua socket
+    });
+    socket.on('sendGroup',async function (data) {
+        console.log(data);
+        const roomSize = io.of("/").adapter.rooms.get(data.idMess);
+        var dataMessSave = {from: data.from, to: data.to, content: data.content, typeMess: data.typeMess};
+        console.log(roomSize);
+        try{
+            var messSave = await Messages.findByIdAndUpdate(data.idMess, {$push: {arrayContentGroup: dataMessSave}});
+            if(messSave){
+                console.log('messages save');
+            }
+            else{ 
+                console.log('co loi xay ra trong khi luu tin nhan');
+            }
+        }
+        catch(err){
+            console.log('co loi khi luu messages, thong tin loi: \n'+err);
+        }
+        data.size = roomSize.size;
+        console.log(`...........................room size: ${roomSize.size}...........................`);
+        io.sockets.in(data.idMess).emit('sendGroup', data);//gui data qua socket
     });
 });
 //
