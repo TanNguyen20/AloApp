@@ -21,7 +21,7 @@ const accountSchema = new Schema({
     // neu thay _id cua arrayIdChat1v1 thanh idMess thi se khong populate duoc
     arrayIdChat1v1: [{_id:{type:ObjectId, ref:messages}, idFriend: {type:ObjectId, ref:'account'},/*displayNameFriend: String, avatarFriend: String*/}],
     //arrPop:{type:ObjectId, ref:'account'},
-    arrayIdChatGroup: [{_id:{type:ObjectId, ref:messages}}],
+    arrayIdChatGroup: [{_id:{type:ObjectId, ref:messages},groupName: {type: String, required: true},avatarGroup:{type: String, default: 'https://res.cloudinary.com/dq7zeyepu/image/upload/v1635935296/avatar/owg5qlrubhdfufvwocrw.jpg'} ,friendInGroup: [{idFriend: {type:ObjectId, ref:'account'}, statusDelete:{type:Boolean, default:false}}]}],
     friends: [{type:ObjectId, ref:'account'}/*{ _id:false,idFriend:{type: ObjectId}, displayNameFriend: String, avatarFriend: String}*/],
     requestFriends: [{type:ObjectId, ref:'account'}/*{ _id:false, idRequestFriend:{type: ObjectId}, displayNameRequestFriend: String, avatarRequestFriend: String}*/],
     waitAcceptFriends: [{type:ObjectId, ref:'account'}/*{ _id:false, idWaitAcceptFriend:{type: ObjectId}, displayNameWaitAcceptFriend: String, avatarWaitAcceptFriend: String}*/],

@@ -24,6 +24,44 @@ class MeControllers {
         })
         
     }
+    async createGroup(req, res, next) {
+        var groupName = req.body.groupName;
+        var token = req.cookies.token;
+        var dataToken = jwt.verify(token,'mk');
+        //co thoi gian sua lai them avatar khi tao group
+        var avatarGroup = 'https://res.cloudinary.com/dq7zeyepu/image/upload/v1635935296/avatar/owg5qlrubhdfufvwocrw.jpg';
+        try{
+            var messNew =new Message({});
+            messNew.save();
+            console.log(messNew._id);
+            var accUpdate = await Account.findByIdAndUpdate(dataToken._id,{$push: {arrayIdChatGroup: {_id: messNew._id,avatarGroup:avatarGroup, groupName: groupName, statusDelete: false,friendInGroup:[]}}});
+            if(accUpdate) res.send('thanhcong');
+            else res.send('thatbai');
+
+        }
+        catch(err){
+            console.log('co loi khi tao group moi: ',err);
+        }
+    }
+    async addMember(req, res, next) {
+        var idMember = req.body.idMember;
+        var idMess = req.body.idMess;
+        var token = req.cookies.token;
+        var dataToken = jwt.verify(token,'mk');
+        var acc = await Account.findById(dataToken._id);
+        var groupInfo  = acc.arrayIdChatGroup.filter(element => (element._id.toString() == idMess));
+        var existMember =false;
+        
+        existMember = groupInfo[0].friendInGroup.filter(element => (element.idFriend.toString() == idMember));
+        if(existMember.length>0){
+            res.send('datontai');
+        }
+        else{
+            //var accUpdate = await Account.findByIdAndUpdate(dataToken._id,{ $push: {arrayIdChatGroup: {$elemMatch: {_id: idMess}, friendInGroup: {$each: [{idFriend: idMember, statusDelete: false}]}}}});
+            res.send('thanhcong');
+            // else res.send('thatbai');
+        }
+    }
     async deleteChat(req, res, next) {
         var idMess = req.body.idMess;
         var token = req.cookies.token;
@@ -106,9 +144,12 @@ class MeControllers {
         var listDocument = [];
 
         if(lastChat) {
-            listMediaInLastChat = lastChat._id.arrayContent1v1.filter(element => (element.typeMess=='image' || element.typeMess=='video'));
-            listDocument = lastChat._id.arrayContent1v1.filter(element => (element.typeMess=='document'));
-            arrContentLastChat=lastChat._id.arrayContent1v1;
+            // console.log(lastChat._id);
+            if(lastChat._id){
+                listMediaInLastChat = lastChat._id.arrayContent1v1.filter(element => (element.typeMess=='image' || element.typeMess=='video'));
+                listDocument = lastChat._id.arrayContent1v1.filter(element => (element.typeMess=='document'));
+                arrContentLastChat=lastChat._id.arrayContent1v1;
+            }
             infoFriendLastChat.displayName = lastChat.idFriend.displayName;
             infoFriendLastChat.avatar = lastChat.idFriend.avatar;
             infoFriendLastChat._id = lastChat.idFriend._id;
@@ -120,7 +161,9 @@ class MeControllers {
         if(acc){
             // console.log(infoFriendLastChat);
             var idMessLastChat ='';
-            if(lastChat) idMessLastChat = lastChat._id._id;
+            if(lastChat) {
+                if(lastChat._id) idMessLastChat = lastChat._id._id;
+            }
             if(haveFriend){
                 res.render('chat',{
                     user: mongooseToObject(acc),
@@ -152,10 +195,10 @@ class MeControllers {
             res.render('chat');
         }
     }
-    chat1v1(req, res, next) {
-        var idChat1v1 = req.params.idChat1v1;
-        res.json(req.params.idChat1v1);
-    }
+    // chat1v1(req, res, next) {
+    //     var idChat1v1 = req.params.idChat1v1;
+    //     res.json(req.params.idChat1v1);
+    // }
     profile(req, res, next) {
         var token = req.cookies.token;
         var dataToken = jwt.verify(token,'mk');
@@ -181,17 +224,90 @@ class MeControllers {
     async groupChat(req, res, next) {
         var token = req.cookies.token;
         var dataToken = jwt.verify(token,'mk');
-        var acc = await Account.findById(dataToken._id);
+        var acc = await Account.findById(dataToken._id).populate('arrayIdChatGroup._id').populate('arrayIdChatGroup.friendInGroup.idFriend').populate('friends');
+        // console.log(acc);
+        var existFriend = acc.friends.length;
+        var existGroup = acc.arrayIdChatGroup.length;
+        var haveFriend = false;
+        var haveGroup = false;
+        var lastChat = {};
+        if(existFriend>0) haveFriend = true;
+        if(existGroup>0) {
+            haveGroup = true;
+            lastChat = acc.arrayIdChatGroup[acc.arrayIdChatGroup.length-1];
+        }
+        // console.log('exis:', haveFriend)
         var isSocialAccount =false;
+        var listChat = acc.arrayIdChatGroup;
+        var arrContentLastChat = [];
+        var listMediaInLastChat = [];
+        var listDocument = [];
+        // console.log(lastChat);
+        if(lastChat) {
+            if(lastChat._id){
+                listMediaInLastChat = lastChat._id.arrayContentGroup.filter(element => (element.typeMess=='image' || element.typeMess=='video'));
+                listDocument = lastChat._id.arrayContentGroup.filter(element => (element.typeMess=='document'));
+                arrContentLastChat=lastChat._id.arrayContentGroup;
+            }
+        }
+        var you = acc.displayName;
+        // console.log(lastChat._id._id);
         if(acc.googleId!='' || acc.facebookId!='') isSocialAccount = true;
+
         if(acc){
-            res.render('groupChat',{
-                user: mongooseToObject(acc),
-                isSocialAccount
-            });
+            // console.log(infoFriendLastChat);
+            var idMessLastChat ='';
+            if(lastChat) {
+                if(lastChat._id) idMessLastChat = lastChat._id._id;
+            }
+            if(haveFriend){
+                // console.log(Object.keys(lastChat).length === 0);
+                if(Object.keys(lastChat).length == 0){
+                    res.render('groupChat',{
+                        user: mongooseToObject(acc),
+                        existFriend: haveFriend,
+                        existGroup: haveGroup,
+                        isSocialAccount,
+                        arrContentChat: arrContentLastChat,
+                        idMessLastChat,
+                        you,
+                        listChat,
+                        listMediaInLastChat,
+                        listDocument,
+                        noHeader: true,
+                    });
+                }
+                else{
+                    res.render('groupChat',{
+                        user: mongooseToObject(acc),
+                        existFriend: haveFriend,
+                        existGroup: haveGroup,
+                        isSocialAccount,
+                        arrContentChat: arrContentLastChat,
+                        idMessLastChat,
+                        you,
+                        listChat,
+                        listMediaInLastChat,
+                        listDocument,
+                        noHeader: true,
+                        lastChat:mongooseToObject(lastChat)
+                    });
+                }
+            }
+            else{
+                res.render('groupChat',{
+                    user: mongooseToObject(acc),
+                    friend:null,
+                    isSocialAccount,
+                    arrContentChat: arrContentLastChat,
+                    you,
+                    listChat,
+                    noHeader: true
+                });
+            }
         }
         else{
-            res.render('groupChat');
+            res.render('chat');
         }
     }
     async friends(req, res, next) {

@@ -233,11 +233,35 @@ app.engine(
             renderCol1: (listChat)=>{
                 var totalStr =``;
                 for(var element of listChat){
-                    totalStr+=`<div class="wrapPreview d-flex align-items-center mb-2" id=${element.idFriend._id}>
+                    totalStr+=`<div class="wrapPreview d-flex align-items-center justify-content-between mb-2" id=${element.idFriend._id}>
                                     <div class="logoAndMessagePreview ms-2 d-flex mt-1">
                                         <img src="${element.idFriend.avatar}" alt="logoGroup" class="avatarCol1 rounded-circle">
                                         <div class="">
                                             <h6>${element.idFriend.displayName}</h6>
+                                            <span>Trò chuyện ngay nào!</span>
+                                        </div>
+                                    </div>
+                                    <div class="detailAndStatusMessenge d-flex">
+                                        <div class="me-2">
+                                            <i class="fas fa-ellipsis-h border rounded-circle p-1 backGroundWhite"> </i>
+                                        </div>
+                                        <div class="">
+                                            <i class="far fa-check-circle"></i>
+                                        </div>
+                                    </div>
+                                </div>`;
+                }
+                return totalStr;
+
+            },
+            renderCol1GroupChat: (listChat)=>{
+                var totalStr =``;
+                for(var element of listChat){
+                    totalStr+=`<div class="wrapPreview d-flex align-items-center justify-content-between mb-2" id=${element._id._id}>
+                                    <div class="logoAndMessagePreview ms-2 d-flex mt-1">
+                                        <img src="${element.avatarGroup}" alt="logoGroup" class="avatarCol1 rounded-circle">
+                                        <div class="">
+                                            <h6>${element.groupName}</h6>
                                             <span>Trò chuyện ngay nào!</span>
                                         </div>
                                     </div>

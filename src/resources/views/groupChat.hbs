@@ -1,284 +1,293 @@
 <script src="/assets/js/validator.js"></script>
+{{#if existFriend}}
+{{#if existGroup}}
+<script src="/socket.io/socket.io.js"></script>
+<script src="/assets/js/chat1v1.js"></script>
+<script src="/assets/js/peer.min.js"></script>
+<script src="https://cdn.lordicon.com/libs/mssddfmo/lord-icon-2.1.0.js"></script>
+<div class="overlayImg">
+    <!-- Modal -->
+    <div class="modal fade" id="videoCallModal" tabindex="-1" aria-labelledby="videoCallModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-fullscreen">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="videoCallModalLabel">Trò chuyện</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body" id="wrapModalCall">
+            <h2 class="text-center d-none" id="notifyCantCall">Người gọi chưa online</h2>
+            <div class="pure-g">
 
-
-<div class="row marginEndRow-0">
-
-    <div class="col-lg-3 border col-md-4">
-        <header class="mt-3 ms-2 d-flex">
-            <div class="">
-                <div class="d-flex align-items-center">
-                    <img src="/assets/images/picachu.jpg" alt="anh dai dien" class="avatarMe rounded-circle"> 
-                    <h4>Chats</h4>
+                <!-- Video area -->
+                <div class="iconWaitCall">
+                    <lord-icon
+                        class="w-100"
+                        src="https://cdn.lordicon.com/ymrqtsej.json"
+                        trigger="loop"
+                        colors="primary:#121331"
+                        style="width:250px;height:250px;">
+                    </lord-icon>
+                    <p class="text-center fw-bold">Đang gọi đến {{friend.displayName}}</p>
                 </div>
-            </div>
-            <div class="d-flex justify-content-end">
-                <div class="me-2">
-                    <a href="#" class="rounded-circle border border-secondary borderIcon d-block"><i class="fas fa-ellipsis-h iconTripleDotted"></i></a>&nbsp;
-                </div>
-                <div class="me-2">
-                    <a href="#" class="rounded-circle border border-secondary borderIcon d-block"><i class="fas fa-video iconTripleDotted"></i></a>&nbsp;
-                </div>
-                <div class="me-2">
-                    <a href="#" class="rounded-circle border border-secondary borderIcon d-block"><i class="far fa-edit iconTripleDotted"></i></a>
-                </div>
-            </div>
-        </header>
-        <form class="form-inline mt-4 mb-4 ms-2">
-            <input class="form-control mr-sm-2 rounded-pill shadow-none" type="search" placeholder="Search" aria-label="Search">
-        </form>
-        <div class="wrapPreview d-flex align-items-center mb-3">
-            <div class="logoAndMessagePreview ms-2 d-flex">
-                <img src="/assets/images/picachu.jpg" alt="logoGroup" class="avatarCol1 rounded-circle">
-                <div class="">
-                    <h6>Tên nhóm</h6>
-                    <span>Tin gan nhat</span>
-                </div>
-            </div>
-            <div class="detailAndStatusMessenge d-flex">
-                <div class="me-2">
-                    <i class="fas fa-ellipsis-h border rounded-circle p-1"> </i>
-                </div>
-                <div class="">
-                    {{!-- <i class="fas fa-circle"></i> --}}
-                    <i class="far fa-check-circle"></i>
+                <div class="row" id="video-container">
+                    <div class="col-lg-6 col-sm-12 border">
+                        <video id="my-video" class="w-100 h-75" muted="true" autoplay></video>
+                    </div>
+                    <div class="col-lg-6 col-sm-12 border">
+                        <video id="their-video" class="w-100 h-75" autoplay></video>
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="wrapPreview d-flex align-items-center mb-3">
-            <div class="logoAndMessagePreview ms-2 d-flex">
-                <img src="/assets/images/picachu.jpg" alt="logoGroup" class="avatarCol1 rounded-circle">
-                <div class="">
-                    <h6>Tên nhóm</h6>
-                    <span>Tin gan nhat</span>
+        <div class="modal-footer">
+            {{!-- <div id="step2">
+                <div class="d-flex justify-content-evenly">
+                    <p>Your id: <span id="my-id">...</span></p>
+                    <div class="pure-form">
+                        <input type="text" placeholder="Call user id..." id="callto-id">
+                        <a href="#" class="pure-button pure-button-success btn btn-primary" id="make-call">Call</a>
+                    </div>
                 </div>
-            </div>
-            <div class="detailAndStatusMessenge d-flex">
-                <div class="me-2">
-                    <i class="fas fa-ellipsis-h border rounded-circle p-1"> </i>
-                </div>
-                <div class="">
-                    {{!-- <i class="fas fa-circle"></i> --}}
-                    <i class="far fa-check-circle"></i>
-                </div>
-            </div>
+            </div> --}}
+            <button type="button" id="btnCloseCall" class="btn btn-danger rounded-pill">Kết thúc cuộc gọi</button>
         </div>
-        <div class="wrapPreview d-flex align-items-center mb-3">
-            <div class="logoAndMessagePreview ms-2 d-flex">
-                <img src="/assets/images/picachu.jpg" alt="logoGroup" class="avatarCol1 rounded-circle">
-                <div class="">
-                    <h6>Tên nhóm</h6>
-                    <span>Tin gan nhat</span>
-                </div>
-            </div>
-            <div class="detailAndStatusMessenge d-flex">
-                <div class="me-2">
-                    <i class="fas fa-ellipsis-h border rounded-circle p-1"> </i>
-                </div>
-                <div class="">
-                    {{!-- <i class="fas fa-circle"></i> --}}
-                    <i class="far fa-check-circle"></i>
-                </div>
-            </div>
         </div>
-        <div class="wrapPreview d-flex align-items-center mb-3">
-            <div class="logoAndMessagePreview ms-2 d-flex">
-                <img src="/assets/images/picachu.jpg" alt="logoGroup" class="avatarCol1 rounded-circle">
-                <div class="">
-                    <h6>Tên nhóm</h6>
-                    <span>Tin gan nhat</span>
-                </div>
-            </div>
-            <div class="detailAndStatusMessenge d-flex">
-                <div class="me-2">
-                    <i class="fas fa-ellipsis-h border rounded-circle p-1"> </i>
-                </div>
-                <div class="">
-                    {{!-- <i class="fas fa-circle"></i> --}}
-                    <i class="far fa-check-circle"></i>
-                </div>
-            </div>
-        </div>
-        <div class="wrapPreview d-flex align-items-center mb-3">
-            <div class="logoAndMessagePreview ms-2 d-flex">
-                <img src="/assets/images/picachu.jpg" alt="logoGroup" class="avatarCol1 rounded-circle">
-                <div class="">
-                    <h6>Tên nhóm</h6>
-                    <span>Tin gan nhat</span>
-                </div>
-            </div>
-            <div class="detailAndStatusMessenge d-flex">
-                <div class="me-2">
-                    <i class="fas fa-ellipsis-h border rounded-circle p-1"> </i>
-                </div>
-                <div class="">
-                    {{!-- <i class="fas fa-circle"></i> --}}
-                    <i class="far fa-check-circle"></i>
-                </div>
-            </div>
-        </div>
-        <div class="wrapPreview d-flex align-items-center mb-3">
-            <div class="logoAndMessagePreview ms-2 d-flex">
-                <img src="/assets/images/picachu.jpg" alt="logoGroup" class="avatarCol1 rounded-circle">
-                <div class="">
-                    <h6>Tên nhóm</h6>
-                    <span>Tin gan nhat</span>
-                </div>
-            </div>
-            <div class="detailAndStatusMessenge d-flex">
-                <div class="me-2">
-                    <i class="fas fa-ellipsis-h border rounded-circle p-1"> </i>
-                </div>
-                <div class="">
-                    {{!-- <i class="fas fa-circle"></i> --}}
-                    <i class="far fa-check-circle"></i>
-                </div>
-            </div>
-        </div>
-
     </div>
-
-
-    <div class="col-lg-6 col-md-8 border d-none d-md-flex flex-column min-vh-100">
-        <header class="mt-2 border-bottom p-2 headerCol2">
-            <div class="d-flex align-items-center">
-                <div class="logoAndMessagePreview">
-                    <div class="d-sm-flex">
-                        <img src="/assets/images/picachu.jpg" alt="avatar" class="avatarSmallSize rounded-circle">
-                        <div class="d-sm-block">
-                            <h6>Tên nhóm</h6>
-                            <span>Online</span>
+    </div>
+    <div class="row marginEndRow-0">
+        <div class="col-lg-3 border col-md-4" id="wrapCol1">
+            <header class="mt-3 ms-2 d-flex justify-content-between">
+                <div class="">
+                    <div class="d-flex align-items-center">
+                        <img src="{{user.avatar}}" alt="anh dai dien" class="avatarMe rounded-circle border"> 
+                        <h4> Chats</h4>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-end mt-1">
+                    <div class="me-2">
+                        <a href="#" class="rounded-circle border border-secondary borderIcon d-block"><i class="fas fa-ellipsis-h iconTripleDotted"></i></a>&nbsp;
+                    </div>
+                    <div class="me-2">
+                        <a href="/" class=""><i class="fab fa-facebook-messenger nav-link fa-lg"></i></a>
+                    </div>
+                </div>
+            </header>
+            <input class="form-control mr-sm-2 rounded-pill shadow-none mb-2 ms-1" id="searchFriends" type="search" placeholder="Search" aria-label="Search">
+            <div class="containerWrapPreview" style="user-select: none;">
+                {{{renderCol1GroupChat listChat}}}
+            </div>
+            <div class="containerWrapSearch"></div>
+        </div>
+        <div class="col-lg-6 col-md-8 border d-none d-md-flex flex-column min-vh-100" id="wrapCol2">
+            <header class="mt-2 border-bottom p-2 headerCol2">
+                <div class="d-flex align-items-center justify-content-between">
+                    <div class="logoAndMessagePreview d-flex align-items-center">
+                        <i class="fas fa-long-arrow-alt-left d-block d-md-none ms-1 me-2 fa-lg mb-1 text-primary cursor" id="btnCloseChat"></i>
+                        <div class="">
+                            <div class="d-flex align-items-center">
+                                <div class="me-1">
+                                    <img src="{{lastChat.avatarGroup}}" alt="avatar" class="avatarSmallSize rounded-circle border" id="avatarCol2">
+                                </div>
+                                <div class="d-sm-block">
+                                    <h6 id="nameFriendCol2">{{lastChat.groupName}}</h6>
+                                </div>
+                            </div>
                         </div>
+                        
+                    </div>
+                    <div class="">
+                        <div class="d-flex align-items-center">
+                        <i class="fas fa-phone-alt me-3 text-primary cursor" id="btnCall"></i>
+                        <i class="fas fa-video me-3 text-primary cursor" id="btnVideoCall"></i>
+                        <i class="fas fa-ellipsis-h border rounded-circle p-1 backGroundWhite text-primary cursor" id="btnShowDetailCol3"></i>
+                    </div>
                     </div>
                     
                 </div>
-                <div class="d-flex">
-                    <a href="#"><i class="fas fa-phone-alt me-3"></i></a>
-                    <a href="#"><i class="fas fa-video me-3"></i></a>
-                    <a href="#" class=""><i class="fas fa-ellipsis-h border rounded-circle p-1"></i></a>
-                </div>
+            </header>
+            <input type="text" id="idMess" name="idMessage" value="{{idMessLastChat}}" hidden>
+            <input type="text" id="usernameYou" name="usernameYou" value="{{user.displayName}}" hidden>
+            <input type="text" id="usernameFriend" name="usernameFriend" value="{{friend.displayName}}" hidden>
+            <input type="text" id="idYou" name="idYou" value="{{user._id}}" hidden>
+            <input type="text" id="idFriend" name="idFriend" value="{{friend._id}}" hidden>
+            <div class="contentCol2" id="contentCol2">
+                {{{renderContentLastChat arrContentChat you}}}
+                {{!-- <p class='message__container'>
+                    <span class='content-message rounded-pill' style='background-color:rgb(0, 66, 233);'>SAU NÀY đồng nghĩa với KHÔNG BAO GIỜ!</span> :Bạn
+                </p><br>
+                <p class='message__container-1'>Nhật Tân:
+                    <span class='content-message-1'> quy luật trong những ngày như vậy chúng ta không biết đến quy luật của LeBlanc: SAU NÀY đồng nghĩa với KHÔNG BAO GIỜ!</span>
+                </p><br>
+                <p class='message__container'>
+                    <span class='content-message rounded-pill' style='background-color:rgb(0, 66, 233);'>SAU NÀY đồng nghĩa với KHÔNG BAO GIỜ!</span> :Bạn
+                </p><br> --}}
             </div>
-        </header>
-
-        <div class="contentCol2">
-            <div class="itemsContent border bg-secondary rounded-pill">SAU NÀY đồng nghĩa với KHÔNG BAO GIỜ!</div>
-            <div class="itemsContent border bg-secondary rounded-pill">quy luật của LeBlanc: SAU NÀY đồng nghĩa với KHÔNG BAO GIỜ!</div>
-            <div class="itemsContent border bg-secondary rounded-pill">chúng ta không biết đến quy luật của LeBlanc: SAU NÀY đồng nghĩa với KHÔNG BAO GIỜ!</div>
-            <div class="itemsContent border bg-secondary rounded-pill">Dĩ nhiên, trong những ngày như vậy chúng ta không biết đến quy luật của LeBlanc: SAU NÀY đồng nghĩa với KHÔNG BAO GIỜ!</div>
-            <div class="itemsContent border bg-secondary rounded-pill">Dĩ nhiên, trong những ngày như vậy chúng ta không biết đến quy luật của LeBlanc: SAU NÀY đồng nghĩa với KHÔNG BAO GIỜ!</div>
-            <div class="itemsContent border bg-secondary rounded-pill">Dĩ nhiên, trong những ngày như vậy chúng ta không biết đến quy luật của LeBlanc: SAU NÀY đồng nghĩa với KHÔNG BAO GIỜ!</div>
-            <div class="itemsContent border bg-secondary rounded-pill">Dĩ nhiên, trong những ngày như vậy chúng ta không biết đến quy luật của LeBlanc: SAU NÀY đồng nghĩa với KHÔNG BAO GIỜ!</div>
-            <div class="itemsContent border bg-secondary rounded-pill">Dĩ nhiên, trong những ngày như vậy chúng ta không biết đến quy luật của LeBlanc: SAU NÀY đồng nghĩa với KHÔNG BAO GIỜ!</div>
-            <div class="itemsContent border bg-secondary rounded-pill">Dĩ nhiên, trong những ngày như vậy chúng ta không biết đến quy luật của LeBlanc: SAU NÀY đồng nghĩa với KHÔNG BAO GIỜ!</div>
-            <div class="itemsContent border bg-secondary rounded-pill">Dĩ nhiên, trong những ngày như vậy chúng ta không biết đến quy luật của LeBlanc: SAU NÀY đồng nghĩa với KHÔNG BAO GIỜ!</div>
-            <div class="itemsContent border bg-secondary rounded-pill">Dĩ nhiên, trong những ngày như vậy chúng ta không biết đến quy luật của LeBlanc: SAU NÀY đồng nghĩa với KHÔNG BAO GIỜ!</div>
-            <div class="itemsContent border bg-secondary rounded-pill">Dĩ nhiên, trong những ngày như vậy chúng ta không biết đến quy luật của LeBlanc: SAU NÀY đồng nghĩa với KHÔNG BAO GIỜ!</div>
-            <div class="itemsContent border bg-secondary rounded-pill">Dĩ nhiên, trong những ngày như vậy chúng ta không biết đến quy luật của LeBlanc: SAU NÀY đồng nghĩa với KHÔNG BAO GIỜ!</div>
-            <div class="itemsContent border bg-secondary rounded-pill">Dĩ nhiên, trong những ngày như vậy chúng ta không biết đến quy luật của LeBlanc: SAU NÀY đồng nghĩa với KHÔNG BAO GIỜ!</div>
-            <div class="itemsContent border bg-secondary rounded-pill">Dĩ nhiên, trong những ngày như vậy chúng ta không biết đến quy luật của LeBlanc: SAU NÀY đồng nghĩa với KHÔNG BAO GIỜ!</div>
-            <div class="itemsContent border bg-secondary rounded-pill">Dĩ nhiên, trong những ngày như vậy chúng ta không biết đến quy luật của LeBlanc: SAU NÀY đồng nghĩa với KHÔNG BAO GIỜ!</div>
-            <div class="itemsContent border bg-secondary rounded-pill">Dĩ nhiên, trong những ngày như vậy chúng ta không biết đến quy luật của LeBlanc: SAU NÀY đồng nghĩa với KHÔNG BAO GIỜ!</div>
-            <div class="itemsContent border bg-secondary rounded-pill">Dĩ nhiên, trong những ngày như vậy chúng ta không biết đến quy luật của LeBlanc: SAU NÀY đồng nghĩa với KHÔNG BAO GIỜ!</div>
-            <div class="itemsContent border bg-secondary rounded-pill">Dĩ nhiên, trong những ngày như vậy chúng ta không biết đến quy luật của LeBlanc: SAU NÀY đồng nghĩa với KHÔNG BAO GIỜ!</div>
-            <div class="itemsContent border bg-secondary rounded-pill">Dĩ nhiên, trong những ngày như vậy chúng ta không biết đến quy luật của LeBlanc: SAU NÀY đồng nghĩa với KHÔNG BAO GIỜ!</div>
+            
+            <footer class="mt-auto footerCol2">
+                <div id="listDocument"></div>
+                <div id="listImg"></div>
+                <div class="d-flex align-items-center">
+                    <form action="" id="formUploadDocument" method="post" enctype="multipart/form-data"class="ms-1">
+                        <a href="#" id="btnUploadDocument"><i class="fas fa-plus-circle me-2 iconFooterCol2"></i></a>
+                        <input type="file" name="files[]" id="fileDocument" hidden multiple>
+                    </form>
+                    <form action="" id="formUploadImg" method="post" enctype="multipart/form-data">
+                        <a href="#" id="btnUploadImage"><i class="fas fa-file-upload me-2 iconFooterCol2"></i></a>
+                        <input type="file" name="files[]" id="fileImage" hidden accept=".jpg, .png, .jpeg" multiple>
+                    </form>
+                    <div class="form-inline mt-2 mb-1 w-100">
+                        <textarea class="form-control shadow-none rounded-pill me-sm-2" id="inputMessage" rows="1"></textarea>
+                    </div>
+                    <button id="btnSendMessage" style="border: none; background-color: transparent; outline: none;" class="btn btn-primary ms-2"><i class="fas fa-thumbs-up ms-2 iconFooterCol2 text-primary"></i></button>
+                </div>
+                
+            </footer>
         </div>
 
-        <footer class="mt-auto d-flex align-items-center footerCol2">
-            <i class="fas fa-plus-circle me-2 iconFooterCol2"></i>
-            <i class="far fa-file-image me-2 iconFooterCol2"></i>
-            <i class="fas fa-file-upload me-2 iconFooterCol2"></i>
-            <form class="form-inline mt-2 mb-1 w-100">
-                <input class="form-control mr-sm-2 rounded-pill shadow-none" type="search" placeholder="Search" aria-label="Search">
-            </form>
-            <i class="fas fa-thumbs-up ms-2 iconFooterCol2"></i>
-        </footer>
-    </div>
+        <div class="col-lg-3 border d-none d-sm-none d-md-block d-lg-block align-center min-vh-100" id="wrapCol3">
+            <header class="mt-3">
+                <i class="fas fa-long-arrow-alt-left d-block d-lg-none ms-3 mt-2 me-2 fa-lg mb-1 text-primary cursor" id="btnCloseCol3"></i>
+                <div class="wrapColumn3">
+                    <div>
+                        <img src="{{lastChat.avatarGroup}}" alt="anh dai dien" class="avatarMediumSize rounded-circle border" id="avatarCol3">
+                    </div>
+                    <div id="nameFriendCol3">
+                        {{lastChat.groupName}}
+                    </div>
+                    <div>
+                        <i class="fas fa-circle green" id="iconStatusOnline"></i>
+                    </div>
+                </div>
+            </header>
 
-    <div class="col-lg-3 border d-none d-lg-block align-center">
-        <header class="mt-3">
-            <div class="wrapColumn3">
-                <div>
-                    <img src="/assets/images/picachu.jpg" alt="anh dai dien" class="avatarMediumSize rounded-circle">
-                </div>
-                <div>
-                    Tên nhóm
-                </div>
-                <div>
-                    <i class="fas fa-circle green"></i>
-                </div>
-            </div>
-        </header>
+            <div class="ms-2 ms-md-0">
+                <div class="wrapContentCol3 ms-2 me-2" style="user-select: none">
 
-        <div class="">
-            <div class="wrapContentCol3">
-
-                <div class="wrapItemsCol3">
-                     <div class="itemsCol3 d-flex justify-content-between align-items-center mt-3 mb-3">
-                        <div class="options">Tùy chỉnh đoạn chat</div>
-                        <div class="iconOptionDropdown"><a class="btnDropdown"><i class="fas fa-chevron-down"></i></a></div>
+                    <div class="wrapItemsCol3">
+                        <div class="itemsCol3 d-flex justify-content-between align-items-center mt-3 mb-3">
+                            <div class="options">Cài đặt chat</div>
+                            <div class="iconOptionDropdown"><a class="btnDropdown"><i class="fas fa-chevron-down"></i></a></div>
+                        </div>
+                        <div class="dropdownCol3 dropdownHidden">
+                            <div class="text-primary fw-bold" id="col3AddMember">Thêm thành viên</div>
+                            <div class="text-danger fw-bold" id="col3DeleteChat">Xóa đoạn chat</div>
+                            <div class="" id="col3FindMessage">Tìm kiếm tin nhắn</div>
+                        </div>
                     </div>
-                    <div class="dropdownCol3 dropdownHidden">
-                        <div class="">Đổi chủ đề</div>
-                        <div class="">Thay đổi biểu tượng cảm xúc</div>
-                        <div class="">Chỉnh sửa biệt danh</div>
-                        <div class="">Tìm kiếm tin nhắn</div>
+                    <input type="text" class="form-control" id="inputFindMember" placeholder="Tìm kiếm" required style="display: none;" value=''>
+                    <input type="text" class="form-control" id="inputFindMessage" placeholder="Nội dung tin nhắn" required style="display: none;" value=''>
+                    <div class="listFindMember"></div>
+                    <div class="wrapItemsCol3">
+                        <div class="itemsCol3 d-flex justify-content-between align-items-center mt-3 mb-3">
+                            <div class="options">Thành viên trong đoạn chat</div>
+                            <div class="iconOptionDropdown"><a class="btnDropdown"><i class="fas fa-chevron-down"></i></a></div>
+                        </div>
+                        <div class="dropdownCol3 dropdownHidden">
+                            <div class="d-flex align-items-center justify-content-between mb-2 mt-2">
+                                <div class="d-flex justify-content-start align-items-center">
+                                    <img src="/assets/images/picachu.jpg" alt="anh dai dien" class="avatarMe rounded-circle me-2">Nguyễn Sang
+                                </div>
+                                <div class="">
+                                    <i class="fas fa-ellipsis-h border rounded-circle p-1 backGroundWhite"></i>
+                                </div>
+                            </div>
+                            <div class="d-flex align-items-center justify-content-between mb-2 mt-2">
+                                <div class="d-flex justify-content-start align-items-center">
+                                    <img src="/assets/images/picachu.jpg" alt="anh dai dien" class="avatarMe rounded-circle me-2">Nguyễn Sang
+                                </div>
+                                <div class="">
+                                    <i class="fas fa-ellipsis-h border rounded-circle p-1 backGroundWhite"></i>
+                                </div>
+                            </div>
+                            <div class="d-flex align-items-center justify-content-between mb-2 mt-2">
+                                <div class="d-flex justify-content-start align-items-center">
+                                    <img src="/assets/images/picachu.jpg" alt="anh dai dien" class="avatarMe rounded-circle me-2">Nguyễn Sang
+                                </div>
+                                <div class="">
+                                    <i class="fas fa-ellipsis-h border rounded-circle p-1 backGroundWhite"></i>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                </div>
-               <div class="wrapItemsCol3">
-                   <div class="itemsCol3 d-flex justify-content-between align-items-center mt-3 mb-3">
-                        <div class="options">Quyền riêng tư & hỗ trợ</div>
-                        <div class="iconOptionDropdown"><a class="btnDropdown"><i class="fas fa-chevron-down"></i></a></div>
+                    <div class="wrapItemsCol3">
+                        <div class="itemsCol3 d-flex justify-content-between align-items-center mt-3 mb-3">
+                            <div class="options">Tệp được chia sẻ</div>
+                            <div class="iconOptionDropdown"><a class="btnDropdown"><i class="fas fa-chevron-down"></i></a></div>
+                        </div>
+                        <div class="dropdownCol3 dropdownHidden" id="listDocumentInCol3">
+                            {{{renderListDocument listDocument}}}
+                        </div>
                     </div>
-                    <div class="dropdownCol3 dropdownHidden">
-                        <div class="">Đổi chủ đề</div>
-                        <div class="">Thay đổi biểu tượng cảm xúc</div>
-                        <div class="">Chỉnh sửa biệt danh</div>
-                        <div class="">Tìm kiếm tin nhắn</div>
-                    </div>
-               </div>
-               <div class="wrapItemsCol3">
-                   <div class="itemsCol3 d-flex justify-content-between align-items-center mt-3 mb-3">
-                        <div class="options">Tệp được chia sẻ</div>
-                        <div class="iconOptionDropdown"><a class="btnDropdown"><i class="fas fa-chevron-down"></i></a></div>
-                    </div>
-                    <div class="dropdownCol3 dropdownHidden">
-                        <div class="">Đổi chủ đề</div>
-                        <div class="">Thay đổi biểu tượng cảm xúc</div>
-                        <div class="">Chỉnh sửa biệt danh</div>
-                        <div class="">Tìm kiếm tin nhắn</div>
-                    </div>
-               </div>
-                <div class="wrapItemsCol3">
-                    <div class="itemsCol3 d-flex justify-content-between align-items-center mt-3 mb-3">
-                        <div class="options">File phương tiện được chia sẻ</div>
-                        <div class="iconOptionDropdown"><a class="btnDropdown"><i class="fas fa-chevron-down"></i></a></div>
-                    </div>
-                    <div class="dropdownCol3 dropdownHidden">
-                        <div class="">Đổi chủ đề</div>
-                        <div class="">Thay đổi biểu tượng cảm xúc</div>
-                        <div class="">Chỉnh sửa biệt danh</div>
-                        <div class="">Tìm kiếm tin nhắn</div>
+                    <div class="wrapItemsCol3">
+                        <div class="itemsCol3 d-flex justify-content-between align-items-center mt-3 mb-3">
+                            <div class="options">Video và ảnh được chia sẻ</div>
+                            <div class="iconOptionDropdown"><a class="btnDropdown"><i class="fas fa-chevron-down"></i></a></div>
+                        </div>
+                        <div class="dropdownCol3 dropdownHidden">
+                            <div class="text-break" id="listMediaInCol3">
+                                {{{renderListMediaLastChat listMediaInLastChat}}}
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-        
-    </div>
 
+    </div>
 </div>
 <script>
+    $(document).ready(function(){
+        $('#contentCol2').animate({
+            scrollTop: $('#contentCol2').get(0).scrollHeight
+        }, 1);
+        if($('.containerWrapSearch').html().length==0 && $('.containerWrapPreview').html().length<=30 ){
+            $('#wrapCol2').children().hide();
+            $('#wrapCol3').children().hide();
+        }
+        $('#headerMain').css('display','none');
+        $('#footerMain').css('display','none');
+    });
     var heightHeader = $('.headerCol2').outerHeight();
+    var widthFooterCol2 = $('.footerCol2').innerWidth();
+    //alert(heightHeader);
     var heightFooter = $('.footerCol2').outerHeight();
+    var heightInputMessage = $('#inputMessage').outerHeight();
     var heightBrowser = $(window).outerHeight();
-    var heightContenCol2 = heightBrowser - heightHeader - heightFooter - 10;
+    var heightContenCol2 = heightBrowser - heightHeader - heightFooter-50;
+    const heightDefaults = heightContenCol2;
+    $(".contentCol2").animate({
+        scrollTop: $('.contentCol2').get(0).scrollHeight
+    }, 1);
     $('.contentCol2').css("height", heightContenCol2+'px');
     //alert(heightContenCol2);
     //console.log($('.dropdownShow'));
+    var statusDetailCol3 = 0;
+    $('#btnShowDetailCol3').on('click', function(){
+        if(statusDetailCol3==0){
+            $('#wrapCol2').addClass('col-lg-9 d-none d-md-none d-lg-block');
+            $('#wrapCol2').removeClass('col-lg-6');
+            $('#wrapCol3').removeClass('d-lg-block col-lg-3 d-none d-md-none');
+            $('#wrapCol3').addClass('col-sm-12 col-md-8');
+            statusDetailCol3 = 1;
+        }
+        else{
+            $('#wrapCol2').removeClass('col-lg-9 d-none d-md-block');
+            $('#wrapCol2').addClass('col-lg-6 d-none d-md-none');
+            $('#wrapCol3').addClass('col-sm-12 col-lg-3 d-block col-md-8');
+            $('#wrapCol3').removeClass('d-none d-md-none');
+            statusDetailCol3 = 0;
+        }
+       
+    });
+    $('#btnCloseCol3').on('click', function(){
+        $('#wrapCol2').removeClass('col-lg-9 d-none d-md-none col-md-8');
+        $('#wrapCol2').addClass('col-lg-6 d-md-block col-md-8');
+        $('#wrapCol3').addClass('d-lg-block col-lg-3 d-none d-md-none');
+        $('#wrapCol3').removeClass('col-sm-12 col-md-8');
+    });
     $('.wrapItemsCol3').each(function(){
         var statusDropdown=0;
-        //console.log($(this).parent().parent().parent().children('.dropdownCol3').text());
         $(this).on('click',function(){
-            //console.log($(this).parent().parent().parent().children('.dropdownCol3').text());
-            //alert($(this).text());
             if(statusDropdown==0){
                 $(this).children('.dropdownCol3').removeClass('dropdownHidden');
                 $(this).children('.dropdownCol3').addClass('dropdownShow');
@@ -290,6 +299,506 @@
                 statusDropdown=0;
             }
         })
-    })
-    
+    });
+    $('#btnCloseChat').on('click',function(){
+        $('#wrapCol1').removeClass('d-sm-none d-none d-md-block');
+        $('#wrapCol2').addClass('d-none d-md-flex');
+    });
+    var lastClicked = 0;
+    $('.wrapPreview').click(function(e){
+        e.preventDefault();
+        $('#wrapCol1').addClass('d-sm-none d-none d-md-block');
+        $('#wrapCol2').removeClass('d-none d-md-flex');
+        var heightHeader = $('.headerCol2').outerHeight();
+        var heightFooter = $('.footerCol2').outerHeight();
+        var heightBrowser = $(window).outerHeight();
+        var heightContenCol2 = heightBrowser - heightHeader - heightFooter-20;
+        $('.contentCol2').css("height", heightContenCol2+'px');
+        $('#listImg').html('');
+        $('#listDocument').html('');
+        $("#inputMessage").val('');
+        $('#fileImage').wrap('<form>').closest('form').get(0).reset();
+        $('#fileImage').unwrap();
+        $('#fileDocument').wrap('<form>').closest('form').get(0).reset();
+        $('#fileDocument').unwrap();
+        var timeNow = (new Date()).getTime();
+        if (timeNow > (lastClicked + 1000)) {
+            var idFriend = $(this).attr('id');
+            var totalStr=``;
+            $('.contentCol2').html(``);
+            $.post('/chat/checkMess',{idFriend},function(data){
+                console.log(data);
+                $('#wrapCol2').children().show();
+                $('#wrapCol3').children().show();
+                if(data.idFriend){
+                    //alert(data.idFriend.idFriend);
+                    $('#idMess').attr('value',data._id._id);
+                    $('#idFriend').attr('value',data.idFriend.idFriend);
+                    $('#usernameFriend').attr('value',data.idFriend.displayName);
+                    var arrContentChat = data._id.arrayContent1v1;
+                    var infoFriend =  data.idFriend;
+                    $('#avatarCol2').attr('src',infoFriend.avatar);
+                    $('#avatarCol3').attr('src',infoFriend.avatar);
+                    $('#nameFriendCol2').text(infoFriend.displayName);
+                    $('#nameFriendCol3').text(infoFriend.displayName);
+                    if(arrContentChat.length > 0){
+                        //console.log(infoFriend);
+                        var you = $('#usernameYou').val();
+                        for(var element of arrContentChat){
+                            console.log(you,element);
+                            if(element.typeMess=='image' || element.typeMess=='video'){
+                                var listMediaCol3 = ``;
+                                if(element.typeMess =='image'){
+                                    var split1 =element.content.split('href=')[1];
+                                    var link =``;
+                                    if(split1) link = split1.split(' target="_blank">');
+                                    listMediaCol3 = `<a href=${link[0]} target="_blank">
+                                        <img src=${link[0]} width="50px" height="50px" alt="" class="img-thumbnail">
+                                    </a>`;
+                                }
+                                // video
+                                else{
+                                    listMediaCol3 = `${element.content.replace('text-white','text-primary')}`;
+                                }
+                                $('#listMediaInCol3').append(listMediaCol3);
+
+                            }
+                            else{
+                                if(element.typeMess=='document') $('#listDocumentInCol3').append(`<div>${element.content.replace('text-white','text-primary')}</div>`);
+                            }
+                            if(element.from==you){
+                                totalStr=`<p class='message__container'>
+                                            <span class='content-message rounded-pill' style='background-color:rgb(0, 66, 233);'>${element.content}</span> :Bạn
+                                        </p><br>`;
+                            }
+                            else{
+                                //alert($('#nameFriendCol2').text());
+                                totalStr=` <p class='message__container-1'>${element.from} :
+                                            <span class='content-message-1'>${element.content}</span>
+                                        </p><br>`
+                            }
+                            $('.contentCol2').append(totalStr);
+                        }
+                        $(".contentCol2").animate({
+                            scrollTop: $('.contentCol2').get(0).scrollHeight
+                        }, 1);
+                    }
+                }
+                else{
+                    $('#idMess').attr('value',data.idMess);
+                    $('#idFriend').attr('value',data.idFriend);
+                    $('#usernameFriend').attr('value',data.displayName);
+                    $('#avatarCol2').attr('src',data.avatar);
+                    $('#avatarCol3').attr('src',data.avatar);
+                    $('#nameFriendCol2').text(data.displayName);
+                    $('#nameFriendCol3').text(data.displayName);
+                }
+                
+            });
+        }
+        else{
+            //alert('Bạn chỉ được phép nhắn tin 1 lần trong 1 giây');
+        }
+        lastClicked = timeNow;
+        
+    });
+
+    ////////////////////////////////
+   
+    $('#btnUploadImage').click(function(e){
+        e.preventDefault();
+        $('#fileImage').click();
+    });
+    $('#btnUploadDocument').click(function(e){
+        e.preventDefault();
+        $('#fileDocument').click();
+    });
+    var numberImageInLine = Math.round(widthFooterCol2/50,0);
+    $('#fileImage').change(function(){
+        
+        var lengthFile = $(this)[0].files.length;
+        if(lengthFile>numberImageInLine){
+            var rowImage = Math.ceil(lengthFile/numberImageInLine);
+            heightContenCol2 = heightDefaults - 50*(rowImage); //50 la chieu cao cua image
+            $('.contentCol2').css("height", heightContenCol2+'px');
+            //alert($('.footerCol2').outerHeight());
+        }
+        else{
+            heightContenCol2= (heightDefaults-50);
+            $('.contentCol2').css("height", heightContenCol2+'px');
+        }
+        $("#listImg").html('');
+        for (var i = 0; i < lengthFile; i++) {
+            $("#listImg").append('<img src="'+window.URL.createObjectURL(this.files[i])+'" width="50px" height="50px" class="me-1 border"/>');
+        }
+    });
+    $('#fileDocument').change(function(){
+        //alert($('#fileImage')[0].files.length);
+        var lengthFile = $(this)[0].files.length;
+        var rowDocument = lengthFile;
+        $("#listDocument").html('');
+        for (var i = 0; i < lengthFile; i++) {
+            $("#listDocument").append(`<div class="itemNameDocument">${this.files[i].name}</div>`);
+        }
+        var heightDocument = $('.itemNameDocument').outerHeight();
+        heightContenCol2 =heightDefaults- heightDocument*rowDocument;
+        $('.contentCol2').css("height", heightContenCol2+'px');
+    });
+    $('#searchFriends').on('keyup',function(e){
+        var findFriends = $(this).val(); 
+        if(findFriends.length>0){
+            $('.containerWrapPreview').hide();
+        }
+        else{
+            $('.containerWrapPreview').show();
+        }
+        if(e.keyCode==13){
+            if(findFriends.length>0){
+                $('.containerWrapSearch').html('');
+                $.post('/findFriends/chat1v1',{findFriends:findFriends},function(data){
+                    for(var element of data){
+                        $('.containerWrapSearch').append(`<div class="wrapPreviewNew d-flex align-items-center mb-2" id=${element._id}>
+                                                                <div class="logoAndMessagePreview ms-2 mt-1 mb-1 d-flex">
+                                                                    <img src="${element.avatar}" alt="logoGroup" class="avatarCol1 rounded-circle">
+                                                                    <div class="">
+                                                                        <h6>${element.displayName}</h6>
+                                                                        <span>Trò chuyện ngay nào!</span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>`);
+                    }
+                    $('#searchFriends').on('keyup',function(e){
+                        $('.containerWrapSearch').html('');
+                    });
+                    $('.wrapPreviewNew').click(function(e){
+                        e.preventDefault();
+                        $('#wrapCol1').addClass('d-sm-none d-none d-md-block');
+                        $('#wrapCol2').removeClass('d-none d-md-flex');
+                        var heightHeader = $('.headerCol2').outerHeight();
+                        var heightFooter = $('.footerCol2').outerHeight();
+                        var heightBrowser = $(window).outerHeight();
+                        var heightContenCol2 = heightBrowser - heightHeader - heightFooter-20;
+                        $('.contentCol2').css("height", heightContenCol2+'px');
+                        var timeNow = (new Date()).getTime();
+                        if (timeNow > (lastClicked + 1000)) {
+                            var idFriend = $(this).attr('id');
+                            var totalStr=``;
+                            var you = $('#usernameYou').val();
+                            $('.contentCol2').html(``);
+                            $.post('/chat/checkMess',{idFriend},function(data){
+                                var infoFriend =data.idFriend
+                                console.log(data);
+                                if(data.statusMess=='taomoi'){
+                                    $('#idMess').attr('value',data.idMess);
+                                    $('#idFriend').attr('value',data.idFriend);
+                                    $('#usernameFriend').attr('value',data.displayName);
+                                    $('#wrapCol2').children().show();
+                                    $('#wrapCol3').children().show();
+                                    $('#avatarCol2').attr('src',data.avatar);
+                                    $('#avatarCol3').attr('src',data.avatar);
+                                    $('#nameFriendCol2').text(data.displayName);
+                                    $('#nameFriendCol3').text(data.displayName);
+                                }
+                                else{
+                                    $('#idMess').attr('value',data._id._id);
+                                    $('#idFriend').attr('value',data.idFriend.idFriend);
+                                    $('#usernameFriend').attr('value',data.idFriend.displayName);
+                                    var arrContentChat = data._id.arrayContent1v1;
+                                    var infoFriend = data.idFriend;
+                                    $('#wrapCol2').children().show();
+                                    $('#wrapCol3').children().show();
+                                    $('#avatarCol2').attr('src',infoFriend.avatar);
+                                    $('#avatarCol3').attr('src',infoFriend.avatar);
+                                    $('#nameFriendCol2').text(infoFriend.displayName);
+                                    $('#nameFriendCol3').text(infoFriend.displayName);
+                                    //var it=1;
+                                    for(var element of arrContentChat){
+                                        //alert(it++);
+                                        if(element.from==you){
+                                            totalStr=`<p class='message__container'>
+                                                        <span class='content-message rounded-pill' style='background-color:rgb(0, 66, 233);'>${element.content}</span> :Bạn
+                                                    </p><br>`;
+                                        }
+                                        else{
+                                            totalStr=` <p class='message__container-1'>${element.from} :
+                                                        <span class='content-message-1'>${element.content}</span>
+                                                    </p><br>`;
+                                        }
+                                        $('.contentCol2').append(totalStr);
+                                    }
+                                    $(".contentCol2").animate({
+                                        scrollTop: $('.contentCol2').get(0).scrollHeight
+                                    }, 1);
+                                }
+                            });
+                        }
+                        lastClicked = timeNow;
+                    })
+                });
+            }
+        }
+    });
+    $('#col3DeleteChat').on('click', function(e){
+        e.preventDefault();
+        var idMess = $('#idMess').val();
+        swal({
+            title: "Cảnh báo!",
+            text: "Bạn có chắc muốn xóa đoạn chat này?",
+            icon: "warning",
+            buttons: ["Hủy bỏ", "Đồng ý"],
+            dangerMode: true,
+        })
+        .then((willDelete) => {
+            if (willDelete) {
+                $.post('/me/deleteChat',{idMess},function(data){
+                    if(data=='xoathanhcong'){
+                        swal({
+                            title: "Thông báo",
+                            text: "Xoá cuộc trò chuyện thành công!",
+                            icon: "success",
+                            button: "Đóng",
+                        })
+                        .then(()=>{
+                            location.reload();
+                        });
+                    }
+                    else{
+                        swal({
+                            title: "Thông báo",
+                            text: "Xóa cuộc trò chuyện thất bại!",
+                            icon: "error",
+                            button: "Đóng",
+                        });
+                    }
+                });
+            } 
+            else {
+                swal("Đã hủy xóa");
+            }
+        });
+        
+    });
+    var statusInputFindMess = 0;
+    var statusInputFindMember = 0;
+    $('#col3FindMessage').on('click', function(e){
+        e.preventDefault();
+        $('#inputFindMessage').val('');
+        if(statusInputFindMess==0){
+            $('#inputFindMessage').show();
+            statusInputFindMess=1;
+        }
+        else{
+            $('#inputFindMessage').hide();
+            statusInputFindMess=0;
+        }
+    });
+    $('#col3AddMember').on('click', function(e){
+        e.preventDefault();
+        $('#inputFindMember').val('');
+        if(statusInputFindMember==0){
+            $('#inputFindMember').show();
+            statusInputFindMember=1;
+        }
+        else{
+            $('#inputFindMember').hide();
+            statusInputFindMember=0;
+        }
+    });
+    $('#inputFindMember').keyup(function(e){
+        $('.listFindMember').html('');
+        var findFriend = $(this).val();
+        if(e.keyCode == 13){
+            $.post('/me/findFriendInListFriends',{findFriend}, function(listFriends,status){
+                //alert(listFriends);
+                if(status == 'success' && listFriends.length > 0){
+                    for(var element of listFriends){
+                        var str = `<div class="list-group-item list-group-item-action">
+                                        <div class="row">
+                                            <div class="col-2">
+                                                <img src="${element.avatar}" class="rounded-circle" width="50px" height="50px">
+                                            </div>
+                                            <div class="col-10 d-flex justify-content-between">
+                                                <p class="ms-2 mb-0">${element.displayName}</p>
+                                                <p><i class="fas fa-lg fa-plus-circle iconAddMember" id=${element._id}></i></p>
+                                            </div>
+                                        </div>
+                                    </div>`;
+                        $('.listFindMember').append(str);
+                    }
+                }
+                else{
+                    $('.listFindMember').html(`<p class="mb-0">Không tìm thấy!</p>`);
+                }
+                $('.iconAddMember').on('click', function(){
+                    var idMember = $(this).attr('id');
+                    swal({
+                        title: "Thêm thành viên",
+                        text: "Bạn có chắc muốn thêm người này vào nhóm?",
+                        icon: "info",
+                        buttons: ["Hủy bỏ", "Đồng ý"],
+                        dangerMode: false,
+                    })
+                    .then((willDelete) => {
+                        if (willDelete) {
+                            var idMess = $('#idMess').val();
+                            $.post('/me/addMember',{ idMess , idMember },function(data){
+                                alert(data);
+                            });
+                        }
+                        else {
+                            swal("Đã hủy thêm người này!");
+                        }
+                    });
+                });
+            });
+        }
+    });
+    $('#inputFindMessage').on('keyup', function(e){
+        $('.content-message').css('background-color','rgb(0, 66, 233)');
+        if(e.keyCode==13){
+            var dataFind = $(this).val();
+            var isExistMess = [];
+            $('.content-message').each(function(index,element){
+                if($(element).text().indexOf(dataFind)>=0){
+                    isExistMess.push(index);
+                }
+            });
+            if(isExistMess.length>0){
+                $('.content-message').eq(isExistMess[0]).attr('id','firstFind');
+                location.href = "#";
+                location.href = "#firstFind";
+                for(var position in isExistMess){
+                    $('.content-message').eq(isExistMess[position]).css('background-color','gold');
+                }
+            }
+        }
+    });
+    /*$('#btnCall').on('click',function(){
+        alert('ok');
+    });
+    $('#btnVideoCall').on('click',function(){
+        $('#videoCallModal').modal('show');
+    });*/
 </script>
+<script src="/assets/js/turnAndStunServer.js"></script>
+{{else}}
+<div class="text-center">
+    <h2>Bạn chưa có nhóm nào!</h2>
+    <a href="#" class="text-center text-decoration-none"  data-bs-toggle="modal" data-bs-target="#createGroupModal"><h3>Tạo nhóm mới</h3></a>
+    <!-- Button trigger modal -->
+    <!-- Modal -->
+    <div class="modal fade" id="createGroupModal" tabindex="-1" aria-labelledby="createGroupModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="createGroupModalLabel">Tạo nhóm mới</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+
+            <input type="text" class="form-control" placeholder="Nhập tên group" name="groupName" id="groupName">
+            <span class="text-danger fw-bold" id="errorGroupName"></span>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary" id="btnCreateGroup">Tạo</button>
+        </div>
+        </div>
+    </div>
+    </div>
+</div>
+<script>
+    $('#groupName').on('keyup',function(e){
+        if($('#groupName').val()=='') $('#errorGroupName').text('Tên nhóm không được để trống');
+        else $('#errorGroupName').text('');
+    })
+    $('#btnCreateGroup').on('click', function(){
+        if($('#groupName').val()=='') $('#errorGroupName').text('Tên nhóm không được để trống');
+        else {
+            $('#errorGroupName').text('');
+            $.post('/me/createGroup',{groupName: $('#groupName').val()},function(data){
+                if(data=='thanhcong'){
+                    swal({
+                        title: "Thông báo",
+                        text: "Tạo nhóm thành công!",
+                        icon: "success",
+                        button: "Đóng",
+                    })
+                    .then(()=>{
+                        location.reload();
+                    });
+                }
+                else{
+                    swal({
+                        title: "Thông báo",
+                        text: "Tạo nhóm thất bại!",
+                        icon: "error",
+                        button: "Đóng",
+                    });
+                }
+            });
+        }
+    })
+</script>
+{{/if}}
+{{else}}
+<div class="text-center">
+    <h2>Bạn chưa có bạn bè hãy kết bạn để tạo nhóm mới nào!</h2>
+    <a href="/findFriends" class="text-center text-decoration-none"><h3>Đến trang tìm kiếm bạn bè</h3></a>
+    <a href="#" class="text-center text-decoration-none"  data-bs-toggle="modal" data-bs-target="#createGroupModal"><h3>Tạo nhóm mới</h3></a>
+    <!-- Button trigger modal -->
+    <!-- Modal -->
+    <div class="modal fade" id="createGroupModal" tabindex="-1" aria-labelledby="createGroupModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="createGroupModalLabel">Tạo nhóm mới</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+
+            <input type="text" class="form-control" placeholder="Nhập tên group" name="groupName" id="groupName">
+            <span class="text-danger fw-bold" id="errorGroupName"></span>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary" id="btnCreateGroup">Tạo</button>
+        </div>
+        </div>
+    </div>
+    </div>
+</div>
+<script>
+    $('#groupName').on('keyup',function(e){
+        if($('#groupName').val()=='') $('#errorGroupName').text('Tên nhóm không được để trống');
+        else $('#errorGroupName').text('');
+    })
+    $('#btnCreateGroup').on('click', function(){
+        if($('#groupName').val()=='') $('#errorGroupName').text('Tên nhóm không được để trống');
+        else {
+            $('#errorGroupName').text('');
+            $.post('/me/createGroup',{groupName: $('#groupName').val()},function(data){
+                if(data=='thanhcong'){
+                    swal({
+                        title: "Thông báo",
+                        text: "Tạo nhóm thành công!",
+                        icon: "success",
+                        button: "Đóng",
+                    })
+                    .then(()=>{
+                        location.reload();
+                    });
+                }
+                else{
+                    swal({
+                        title: "Thông báo",
+                        text: "Tạo nhóm thất bại!",
+                        icon: "error",
+                        button: "Đóng",
+                    });
+                }
+            });
+        }
+    })
+</script>
+{{/if}}
