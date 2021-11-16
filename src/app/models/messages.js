@@ -8,7 +8,7 @@ const messagesSchema = new Schema({
     arrayContent1v1:[{_id:false, from: String, to: String, content: String, typeMess: String}],
     arrayContentGroup:[{_id:false,from: String, to: String, content: String, typeMess: String}],
     friendInGroup: [{_id: {type:ObjectId, ref:'account'}, statusDelete:{type:Boolean, default:false}}],
-    groupName: {type: String, required: true},
+    groupName: {type: String, default:'noGroup'},
     avatarGroup:{type: String, default: 'https://res.cloudinary.com/dq7zeyepu/image/upload/v1635935296/avatar/owg5qlrubhdfufvwocrw.jpg'}
     // user1:{type:ObjectId, ref:Account},
     // user2:{type:ObjectId, ref:Account},

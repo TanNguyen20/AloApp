@@ -22,7 +22,6 @@ $(function () {
                 $('#iconStatusOnline').removeClass('green');
                 $('#iconStatusOnline').addClass('text-secondary');
             }
-            
         });
     });
     socket.on("sendGroup", function (data) {

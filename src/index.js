@@ -309,11 +309,11 @@ app.engine(
             renderListMember: (listMember)=>{
                 var totalStr =``;
                 for(var element of listMember){
-                    totalStr+=`<div class="d-flex align-items-center justify-content-between mb-2 mt-2">
+                    totalStr+=`<div class="d-flex align-items-center justify-content-between mb-2 mt-2 wrapMember" idMember="${element._id._id}">
                                     <div class="d-flex justify-content-start align-items-center">
                                         <img src="${element._id.avatar}" alt="anh dai dien" class="avatarMe rounded-circle me-2">${element._id.displayName}
                                     </div>
-                                    <div class="">
+                                    <div class="btnDeleteMember">
                                         <i class="fas fa-ellipsis-h border rounded-circle p-1 backGroundWhite" id="${element._id._id}"></i>
                                     </div>
                                 </div>`;
@@ -349,39 +349,13 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public/')));
 app.set('views', path.join(__dirname, 'resources/views'));
 app.use('/scriptsLibary', express.static(path.join(__dirname, '/../node_modules')));
-// If they join the base link, generate a random UUID and send them to a new room with said UUID
-// app.get('/videoCall', (req, res) => {
-//     res.redirect(`/${uuidV4()}`)
-// })
-// If they join a specific room, then render that room
-// app.get('/:room', (req, res) => {
-//     res.render('videoChat/room', {roomId: req.params.room})
-// })
 
-// app.get('/', (req, res) => {
-//         res.render('signIn')
-//      })
+///---socket io---///
 
-// When someone connects to the server
-//#
-//////////nay dung cho chat video hoac voice chat
-// io.on('connection', socket => {
-//     // When someone attempts to join the room
-//     socket.on('join-room', (roomId, userId) => {
-//         socket.join(roomId)  // Join the room
-//         socket.broadcast.emit('user-connected', userId) // Tell everyone else in the room that we joined
-
-//         // Communicate the disconnection
-//         socket.on('disconnect', () => {
-//             socket.broadcast.emit('user-disconnected', userId)
-//         })
-//     })
-// });
-//#
 const mainServer = serverHttp.listen(portHttp); // Run the server on the 3000 port
 const serverHttps = server.listen(portHttps); // Run the server on the 3443 port
 //
-const io = require('socket.io')(/*mainServer ||*/ serverHttps);
+const io = require('socket.io')(serverHttps);
 io.on('connection', function (socket) {
     console.log(`...........................Welcome socket ${socket.id}...........................`);
     socket.on("disconnect", (reason) => {
@@ -452,6 +426,12 @@ io.on('connection', function (socket) {
         data.size = roomSize.size;
         console.log(`...........................room size: ${roomSize.size}...........................`);
         io.sockets.in(data.idMess).emit('sendGroup', data);//gui data qua socket
+    });
+    socket.on('videoCallGroup',function(idMess){
+        socket.broadcast.emit('videoCallGroup',idMess);
+    });
+    socket.on('voiceCallGroup',function(idMess){
+        socket.broadcast.emit('voiceCallGroup',idMess);
     });
 });
 //

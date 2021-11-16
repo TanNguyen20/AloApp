@@ -44,6 +44,7 @@ async function Setup() {
           var idRoom ='';
           if(idYou.localeCompare(idFriend)==1) idRoom=idFriend+idYou;
           else idRoom=idYou+idFriend;
+          socket.emit("joinroom",idRoom);
           socket.emit('sendRoomSize',idRoom);
           socket.once('roomSize',async function(data){
               if(data<2){
@@ -148,6 +149,7 @@ async function Setup() {
         dataConnection1.on('open', function(id){
           dataConnection1.send('video');
         });
+        socket.emit("joinroom",idRoom);
         socket.emit('sendRoomSize',idRoom);
         socket.once('roomSize',async function(data){
             if(data<2){

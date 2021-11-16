@@ -4,6 +4,7 @@
 <script src="/socket.io/socket.io.js"></script>
 <script src="/assets/js/chatGroup.js"></script>
 <script src="/assets/js/peer.min.js"></script>
+<script src="//sdk.twilio.com/js/video/releases/2.18.1/twilio-video.min.js"></script>
 <script src="https://cdn.lordicon.com/libs/mssddfmo/lord-icon-2.1.0.js"></script>
 <div class="overlayImg">
     <!-- Modal create new group -->
@@ -31,44 +32,27 @@
     <div class="modal-dialog modal-fullscreen">
         <div class="modal-content">
         <div class="modal-header">
-            <h5 class="modal-title" id="videoCallModalLabel">Trò chuyện</h5>
+            <h5 class="modal-title" id="videoCallModalLabel">Trò chuyện nhóm</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body" id="wrapModalCall">
-            <h2 class="text-center d-none" id="notifyCantCall">Người gọi chưa online</h2>
             <div class="pure-g">
-
                 <!-- Video area -->
                 <div class="iconWaitCall">
-                    <lord-icon
-                        class="w-100"
+                    <lord-icon class="w-100"
                         src="https://cdn.lordicon.com/ymrqtsej.json"
                         trigger="loop"
                         colors="primary:#121331"
                         style="width:250px;height:250px;">
                     </lord-icon>
-                    <p class="text-center fw-bold">Đang gọi đến {{friend.displayName}}</p>
                 </div>
                 <div class="row" id="video-container">
-                    <div class="col-lg-6 col-sm-12 border">
-                        <video id="my-video" class="w-100 h-75" muted="true" autoplay></video>
-                    </div>
-                    <div class="col-lg-6 col-sm-12 border">
-                        <video id="their-video" class="w-100 h-75" autoplay></video>
+                    <div id="list-video">
                     </div>
                 </div>
             </div>
         </div>
         <div class="modal-footer">
-            {{!-- <div id="step2">
-                <div class="d-flex justify-content-evenly">
-                    <p>Your id: <span id="my-id">...</span></p>
-                    <div class="pure-form">
-                        <input type="text" placeholder="Call user id..." id="callto-id">
-                        <a href="#" class="pure-button pure-button-success btn btn-primary" id="make-call">Call</a>
-                    </div>
-                </div>
-            </div> --}}
             <button type="button" id="btnCloseCall" class="btn btn-danger rounded-pill">Kết thúc cuộc gọi</button>
         </div>
         </div>
@@ -366,11 +350,11 @@
                     $('#nameFriendCol3').text(data.groupName);
                     var totalStrMember =``;
                     for(var element of data.infoFriend){
-                        totalStrMember+=`<div class="d-flex align-items-center justify-content-between mb-2 mt-2">
+                        totalStrMember+=`<div class="d-flex align-items-center justify-content-between mb-2 mt-2 wrapMember" idMember="${element.idFriend}">
                                         <div class="d-flex justify-content-start align-items-center">
                                             <img src="${element.avatar}" alt="anh dai dien" class="avatarMe rounded-circle me-2">${element.displayName}
                                         </div>
-                                        <div class="">
+                                        <div class="btnDeleteMember">
                                             <i class="fas fa-ellipsis-h border rounded-circle p-1 backGroundWhite" id="${element.idFriend}"></i>
                                         </div>
                                     </div>`;
@@ -532,11 +516,11 @@
                                     $('#nameFriendCol3').text(data.groupName);
                                     var totalStrMember =``;
                                     for(var element of data.infoFriend){
-                                        totalStrMember+=`<div class="d-flex align-items-center justify-content-between mb-2 mt-2">
+                                        totalStrMember+=`<div class="d-flex align-items-center justify-content-between mb-2 mt-2 wrapMember" idMember="${element.idFriend}">
                                                         <div class="d-flex justify-content-start align-items-center">
                                                             <img src="${element.avatar}" alt="anh dai dien" class="avatarMe rounded-circle me-2">${element.displayName}
                                                         </div>
-                                                        <div class="">
+                                                        <div class="btnDeleteMember">
                                                             <i class="fas fa-ellipsis-h border rounded-circle p-1 backGroundWhite" id="${element.idFriend}"></i>
                                                         </div>
                                                     </div>`;
@@ -711,11 +695,11 @@
                             $.post('/me/addMember',{ idMess , idMember },function(data){
                                 if(data=='datontai') swal("Người này đã là thành viên!");
                                 else if(data=='thatbai') swal("Có lỗi xảy ra");
-                                else $('#listMember').append(`<div class="d-flex align-items-center justify-content-between mb-2 mt-2">
+                                else $('#listMember').append(`<div class="d-flex align-items-center justify-content-between mb-2 mt-2 wrapMember" idMember="${data.idFriend}">
                                     <div class="d-flex justify-content-start align-items-center">
                                         <img src="${data.avatar}" alt="anh dai dien" class="avatarMe rounded-circle me-2">${data.displayName}
                                     </div>
-                                    <div class="">
+                                    <div class="btnDeleteMember">
                                         <i class="fas fa-ellipsis-h border rounded-circle p-1 backGroundWhite" id="${data.idFriend}"></i>
                                     </div>
                                 </div>`);
@@ -757,7 +741,7 @@
         $('#videoCallModal').modal('show');
     });*/
 </script>
-<script src="/assets/js/turnAndStunServer.js"></script>
+<script src="/assets/js/turnAndStunServerGroupCall.js"></script>
 {{else}}
 <div class="text-center">
     <h2>Bạn chưa có nhóm nào!</h2>

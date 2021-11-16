@@ -3,6 +3,9 @@ const Account = require('../models/account');
 const Message = require('../models/messages');
 const jwt = require('jsonwebtoken');
 const mongoose = require('mongoose');
+const accountSid = process.env.TWILIO_ACCOUNT_SID;
+const authToken = process.env.TWILIO_AUTH_TOKEN;
+const client = require('twilio')(accountSid, authToken);
 //const {MongooseToObject} = require('../../util/mongoose')
 class MeControllers {
     changeInfo(req, res, next){
@@ -151,10 +154,34 @@ class MeControllers {
         })
         
     }
+    async sendAccessToken(req, res, next) {
+        console.log(req.body.idMess);
+        const AccessToken = require('twilio').jwt.AccessToken;
+        const VideoGrant = AccessToken.VideoGrant;
+        const videoGrant = new VideoGrant({
+            room: req.body.idMess,
+          });          
+        // Used when generating any kind of tokens
+        const twilioAccountSid = accountSid;
+        const twilioApiKey = process.env.TWILIO_API_KEY_VIDEO;
+        const twilioApiSecret = process.env.TWILIO_API_SECRET_VIDEO;
+        const identity = req.body.idMember;
+        // Create an access token which we will sign and return to the client,
+        // containing the grant we just created
+        const token = new AccessToken(
+            twilioAccountSid,
+            twilioApiKey,
+            twilioApiSecret,
+            {identity: identity}
+        );
+        token.addGrant(videoGrant);
+        // Serialize the token to a JWT string
+        // console.log(token.toJwt());
+        res.send(token.toJwt());
+        
+    }
     async test(req, res, next) {
-        var acc = await Account.findOne({googleId:'116050248282285785128'}).populate('arrPop');
-        res.json(acc);
-        console.log(acc);
+        res.render('test');
     }
     async chat(req, res, next) {
         var token = req.cookies.token;
