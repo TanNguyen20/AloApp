@@ -1,7 +1,19 @@
-
+<script>
+    var i=0;
+    function resizeBackgroundImage(){
+        var widthContainer = $('.container-fluid').width();
+        var widthBackgroundImage = 'w_'+widthContainer;
+        var heightBackgroundImage = 'h_300';
+        var srcBackgroundImage = $('#backgroundImage').attr('src');
+        if(srcBackgroundImage.indexOf('h_300')<0){
+            var newSrcBackgroundImage = srcBackgroundImage.replace('dq7zeyepu/image/upload/','dq7zeyepu/image/upload/'+'c_fill,'+heightBackgroundImage+','+widthBackgroundImage+'/');
+            $('#backgroundImage').attr('src',newSrcBackgroundImage);  
+        }
+    }
+</script>
 <header>  
     <div class="container-fluid">
-        <img src="{{info.imageBackground}}" id="backgroundImage" class="rounded-bottom w-sm-100 w-xs-100 w-md-100 w-lg-75 w-xl-75 d-block mx-auto mb-auto img-fluid" alt="Ảnh bìa">
+        <img src="{{info.imageBackground}}" id="backgroundImage" class="rounded-bottom w-sm-100 w-xs-100 w-md-100 w-lg-75 w-xl-75 d-block mx-auto mb-auto img-fluid" alt="Ảnh bìa" onload="resizeBackgroundImage()">
         <input type="file" name="imageBackground" id="fileBackground" hidden accept=".jpeg, .jpg, .png">
         <div class="wrapAvatarAndIconProfile">
             <img src="{{info.avatar}}" id="avatarInProfile" class="avatarProfile rounded-circle w-sm-25 w-xs-25 w-md-25 w-lg-15 w-xl-15 d-block mx-auto mb-auto img-fluid" alt="Ảnh đại diện">
@@ -41,7 +53,7 @@
                 </div>
                 <div class="d-table-row auth-form__group">
                     <label for="displayName" class="d-table-cell text-sm-left">Email: </label>
-                    <input type="text" rules="required" name="email" id="emailChangeInfo" class="form-control shadow-none d-table-cell" value="{{info.email}}">
+                    <input type="text" rules="required" name="email" id="emailChangeInfo" class="form-control shadow-none d-table-cell" value="{{info.email}}" readonly>
                     <span class="form-message"></span>
                 </div>
                 <div class="d-table-row">
@@ -78,7 +90,6 @@
 </div>
 <script src="/assets/js/validator.js"></script>
 <script>
-    
     $('.contentInfoRight').children().hide();
     $('.contentInfoLeft').show();
     $('.itemsInfomation').each(function(){

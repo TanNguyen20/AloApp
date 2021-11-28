@@ -54,6 +54,7 @@ class MeControllers {
         var existMember =false;
         existMember  = mess.friendInGroup.filter(element => (element._id.toString() == idMember));
         if(existMember.length>0){
+            console.log('da ton tai');
             res.send('datontai');
         }
         else{
@@ -116,6 +117,24 @@ class MeControllers {
         }
 
     }
+    async deleteMemberInGroup(req, res, next){
+        var formData = req.body;
+        console.log('data',formData);
+        var idMess = formData.idMess;
+        var idMember = formData.idMember;
+        try{
+            var mess = await Message.findById(idMess);
+            var existMember = mess.friendInGroup.filter(element => (element._id.toString() == idMember));
+            if(existMember.length>0){
+                var messUpdateListMember = await Message.updateOne({_id: idMess},{$pull: {friendInGroup: {_id: idMember}}});
+                res.send('xoathanhcong');
+            }
+        }
+        catch(err){
+            res.send('thatbai');
+            console.log('co loi khi xoa member trong group: ',err);
+        }
+    }
     changeAvatar(req, res, next){
         // console.log(req.body);
         var avatar =  req.body.avatar;
@@ -138,16 +157,13 @@ class MeControllers {
     }
     changeBackground(req, res, next){
         var imageBackground =  req.body.imageBackground;
-        var urlSplit = imageBackground.split('/upload');
-        var newUrl = urlSplit[0]+'/upload/c_scale,h_280'+urlSplit[1];
-        imageBackground = newUrl;
         var token = req.cookies.token;
         var dataToken = jwt.verify(token,'mk');
         // console.log(dataToken._id);
         Account.updateOne({_id: dataToken._id},{imageBackground})
         .then((dt)=>{
             console.log(dt);
-            res.send(newUrl);
+            res.send(imageBackground);
         })
         .catch((err)=>{
             res.send('0');

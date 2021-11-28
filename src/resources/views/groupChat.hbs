@@ -179,14 +179,14 @@
                     <input type="text" class="form-control" id="inputFindMember" placeholder="Tìm kiếm" required style="display: none;" value=''>
                     <input type="text" class="form-control" id="inputFindMessage" placeholder="Nội dung tin nhắn" required style="display: none;" value=''>
                     <div class="listFindMember"></div>
-                    <div class="wrapItemsCol3">
+                    <div class="wrapItemsCol3" id="wrapListMember">
                         <div class="itemsCol3 d-flex justify-content-between align-items-center mt-3 mb-3">
                             <div class="options">Thành viên trong đoạn chat</div>
                             <div class="iconOptionDropdown"><a class="btnDropdown"><i class="fas fa-chevron-down"></i></a></div>
                         </div>
-                        <div class="dropdownCol3 dropdownHidden" id="listMember">
-                            {{{renderListMember listMember}}}
-                        </div>
+                    </div>
+                    <div class="dropdownCol3 dropdownHidden" id="listMember">
+                        {{{renderListMember listMember}}}
                     </div>
                     <div class="wrapItemsCol3">
                         <div class="itemsCol3 d-flex justify-content-between align-items-center mt-3 mb-3">
@@ -298,17 +298,32 @@
     $('.wrapItemsCol3').each(function(){
         var statusDropdown=0;
         $(this).on('click',function(){
-            if(statusDropdown==0){
-                $(this).children('.dropdownCol3').removeClass('dropdownHidden');
-                $(this).children('.dropdownCol3').addClass('dropdownShow');
-                statusDropdown=1;
+            if($(this).attr('id')!='wrapListMember'){
+                if(statusDropdown==0){
+                    $(this).children('.dropdownCol3').removeClass('dropdownHidden');
+                    $(this).children('.dropdownCol3').addClass('dropdownShow');
+                    statusDropdown=1;
+                }
+                else{
+                    $(this).children('.dropdownCol3').removeClass('dropdownShow');
+                    $(this).children('.dropdownCol3').addClass('dropdownHidden');
+                    statusDropdown=0;
+                }
             }
-            else{
-                $(this).children('.dropdownCol3').removeClass('dropdownShow');
-                $(this).children('.dropdownCol3').addClass('dropdownHidden');
-                statusDropdown=0;
-            }
-        })
+        });
+    });
+    var statusDropdownListMember=0;
+    $('#wrapListMember').on('click',function(){
+        if(statusDropdownListMember==0){
+            $('#listMember').removeClass('dropdownHidden');
+            $('#listMember').addClass('dropdownShow');
+            statusDropdownListMember=1;
+        }
+        else{
+            $('#listMember').removeClass('dropdownShow');
+            $('#listMember').addClass('dropdownHidden');
+            statusDropdownListMember=0;
+        }
     });
     $('#btnCloseChat').on('click',function(){
         $('#wrapCol1').removeClass('d-sm-none d-none d-md-block');
@@ -317,6 +332,9 @@
     var lastClicked = 0;
     $('.wrapPreview').click(function(e){
         e.preventDefault();
+        statusDropdownListMember=0;
+        $('#listMember').removeClass('dropdownShow');
+        $('#listMember').addClass('dropdownHidden');
         $('#wrapCol1').addClass('d-sm-none d-none d-md-block');
         $('#wrapCol2').removeClass('d-none d-md-flex');
         var heightHeader = $('.headerCol2').outerHeight();
@@ -354,15 +372,55 @@
                                         <div class="d-flex justify-content-start align-items-center">
                                             <img src="${element.avatar}" alt="anh dai dien" class="avatarMe rounded-circle me-2">${element.displayName}
                                         </div>
-                                        <div class="btnDeleteMember">
-                                            <i class="fas fa-ellipsis-h border rounded-circle p-1 backGroundWhite" id="${element.idFriend}"></i>
+                                        <div class="btnDeleteMember cursor">
+                                            <i class="fas fa-sign-out-alt rounded-circle p-1 backGroundWhite" id="${element.idFriend}"></i>
                                         </div>
                                     </div>`;
                     }   
                     $('#listMember').html(totalStrMember);
+                    $('.btnDeleteMember').on('click',function(){
+                        var idMember = $(this).children().attr('id');
+                        var parentElement = $(this).parent();
+                        var idMess = $('#idMess').val();
+                        swal({
+                            title: "Thông báo",
+                            text: "Bạn có chắc chắn muốn xóa người này khỏi nhóm?",
+                            icon: "warning",
+                            buttons: ["Hủy bỏ", "Đồng ý"],
+                        })
+                        .then((willDelete) => {
+                            if (willDelete) {
+                                $.post('/me/deleteMemberInGroup',{idMember, idMess},function(data){
+                                    if(data=='xoathanhcong'){
+                                        swal({
+                                            title: "Thông báo",
+                                            text: "Đã xóa  người này ra khỏi nhóm!",
+                                            icon: "success",
+                                            button: "Đóng",
+                                        })
+                                        .then(()=>{
+                                            parentElement.remove();
+                                        });
+                                    }
+                                    else{
+                                        swal({
+                                            title: "Thông báo",
+                                            text: "Xóa thất bại, có lỗi xảy ra!",
+                                            icon: "error",
+                                            button: "Đóng",
+                                        });
+                                    }
+                                });
+                            } 
+                            else {
+                                swal("Đã hủy xóa");
+                            }
+                        });
+                    });
                     if(arrContentChat.length > 0){
                         //console.log(infoFriend);
                         var you = $('#usernameYou').val();
+                        var idElement = 0;
                         for(var element of arrContentChat){
                             console.log(you,element);
                             if(element.typeMess=='image' || element.typeMess=='video'){
@@ -386,17 +444,22 @@
                                 if(element.typeMess=='document') $('#listDocumentInCol3').append(`<div>${element.content.replace('text-white','text-primary')}</div>`);
                             }
                             if(element.from==you){
-                                totalStr=`<p class='message__container'>
+                                totalStr=`<p class='message__container' id="${idElement}">
                                             <span class='content-message rounded-pill' style='background-color:rgb(0, 66, 233);'>${element.content}</span> :Bạn
-                                        </p><br>`;
+                                            <br><i class="fas fa-backspace d-none iconDeleteMessage"></i>
+                                        </p>
+                                        <br>`;
                             }
                             else{
                                 //alert($('#nameFriendCol2').text());
-                                totalStr=` <p class='message__container-1'>${element.from} :
+                                totalStr=` <p class='message__container-1' id="${idElement}">${element.from} :
                                             <span class='content-message-1'>${element.content}</span>
-                                        </p><br>`
+                                            <br><i class="fas fa-backspace d-none iconDeleteMessage"></i>
+                                        </p>
+                                        <br>`
                             }
                             $('.contentCol2').append(totalStr);
+                            idElement++;
                         }
                         $(".contentCol2").animate({
                             scrollTop: $('.contentCol2').get(0).scrollHeight
@@ -490,6 +553,9 @@
                     });
                     $('.wrapPreviewNew').click(function(e){
                         e.preventDefault();
+                        statusDropdownListMember=0;
+                        $('#listMember').removeClass('dropdownShow');
+                        $('#listMember').addClass('dropdownHidden');
                         $('#wrapCol1').addClass('d-sm-none d-none d-md-block');
                         $('#wrapCol2').removeClass('d-none d-md-flex');
                         var heightHeader = $('.headerCol2').outerHeight();
@@ -520,15 +586,55 @@
                                                         <div class="d-flex justify-content-start align-items-center">
                                                             <img src="${element.avatar}" alt="anh dai dien" class="avatarMe rounded-circle me-2">${element.displayName}
                                                         </div>
-                                                        <div class="btnDeleteMember">
-                                                            <i class="fas fa-ellipsis-h border rounded-circle p-1 backGroundWhite" id="${element.idFriend}"></i>
+                                                        <div class="btnDeleteMember cursor">
+                                                            <i class="fas fa-sign-out-alt rounded-circle p-1 backGroundWhite" id="${element.idFriend}"></i>
                                                         </div>
                                                     </div>`;
                                     }   
                                     $('#listMember').html(totalStrMember);
+                                    $('.btnDeleteMember').on('click',function(){
+                                        var idMember = $(this).children().attr('id');
+                                        var parentElement = $(this).parent();
+                                        var idMess = $('#idMess').val();
+                                        swal({
+                                            title: "Thông báo",
+                                            text: "Bạn có chắc chắn muốn xóa người này khỏi nhóm?",
+                                            icon: "warning",
+                                            buttons: ["Hủy bỏ", "Đồng ý"],
+                                        })
+                                        .then((willDelete) => {
+                                            if (willDelete) {
+                                                $.post('/me/deleteMemberInGroup',{idMember, idMess},function(data){
+                                                    if(data=='xoathanhcong'){
+                                                        swal({
+                                                            title: "Thông báo",
+                                                            text: "Đã xóa  người này ra khỏi nhóm!",
+                                                            icon: "success",
+                                                            button: "Đóng",
+                                                        })
+                                                        .then(()=>{
+                                                            parentElement.remove();
+                                                        });
+                                                    }
+                                                    else{
+                                                        swal({
+                                                            title: "Thông báo",
+                                                            text: "Xóa thất bại, có lỗi xảy ra!",
+                                                            icon: "error",
+                                                            button: "Đóng",
+                                                        });
+                                                    }
+                                                });
+                                            } 
+                                            else {
+                                                swal("Đã hủy xóa");
+                                            }
+                                        });
+                                    });
                                     if(arrContentChat.length > 0){
                                         //console.log(infoFriend);
                                         var you = $('#usernameYou').val();
+                                        var idElement = 0;
                                         for(var element of arrContentChat){
                                             console.log(you,element);
                                             if(element.typeMess=='image' || element.typeMess=='video'){
@@ -552,15 +658,21 @@
                                                 if(element.typeMess=='document') $('#listDocumentInCol3').append(`<div>${element.content.replace('text-white','text-primary')}</div>`);
                                             }
                                             if(element.from==you){
-                                                totalStr=`<p class='message__container'>
+                                                totalStr=`<p class='message__container' id='${idElement}'>
                                                             <span class='content-message rounded-pill' style='background-color:rgb(0, 66, 233);'>${element.content}</span> :Bạn
-                                                        </p><br>`;
+                                                            <br>
+                                                            <i class="fas fa-backspace d-none iconDeleteMessage"></i>
+                                                        </p>
+                                                        <br>`;
                                             }
                                             else{
                                                 //alert($('#nameFriendCol2').text());
-                                                totalStr=` <p class='message__container-1'>${element.from} :
+                                                totalStr=` <p class='message__container-1' id='${idElement}'>${element.from} :
                                                             <span class='content-message-1'>${element.content}</span>
-                                                        </p><br>`
+                                                            <br>
+                                                            <i class="fas fa-backspace d-none iconDeleteMessage"></i>
+                                                        </p>
+                                                        <br>`
                                             }
                                             $('.contentCol2').append(totalStr);
                                         }
@@ -695,15 +807,56 @@
                             $.post('/me/addMember',{ idMess , idMember },function(data){
                                 if(data=='datontai') swal("Người này đã là thành viên!");
                                 else if(data=='thatbai') swal("Có lỗi xảy ra");
-                                else $('#listMember').append(`<div class="d-flex align-items-center justify-content-between mb-2 mt-2 wrapMember" idMember="${data.idFriend}">
-                                    <div class="d-flex justify-content-start align-items-center">
-                                        <img src="${data.avatar}" alt="anh dai dien" class="avatarMe rounded-circle me-2">${data.displayName}
-                                    </div>
-                                    <div class="btnDeleteMember">
-                                        <i class="fas fa-ellipsis-h border rounded-circle p-1 backGroundWhite" id="${data.idFriend}"></i>
-                                    </div>
-                                </div>`);
-                                swal("Thêm thành công!");
+                                else {
+                                    $('#listMember').append(`<div class="d-flex align-items-center justify-content-between mb-2 mt-2 wrapMember" idMember="${data.idFriend}">
+                                        <div class="d-flex justify-content-start align-items-center">
+                                            <img src="${data.avatar}" alt="anh dai dien" class="avatarMe rounded-circle me-2">${data.displayName}
+                                        </div>
+                                        <div class="btnDeleteMember cursor">
+                                            <i class="fas fa-sign-out-alt rounded-circle p-1 backGroundWhite" id="${data.idFriend}"></i>
+                                        </div>
+                                    </div>`);
+                                    swal("Thêm thành công!");
+                                }
+                                $('.btnDeleteMember').on('click',function(){
+                                    var idMember = $(this).children().attr('id');
+                                    var parentElement = $(this).parent();
+                                    var idMess = $('#idMess').val();
+                                    swal({
+                                        title: "Thông báo",
+                                        text: "Bạn có chắc chắn muốn xóa người này khỏi nhóm?",
+                                        icon: "warning",
+                                        buttons: ["Hủy bỏ", "Đồng ý"],
+                                    })
+                                    .then((willDelete) => {
+                                        if (willDelete) {
+                                            $.post('/me/deleteMemberInGroup',{idMember, idMess},function(data){
+                                                if(data=='xoathanhcong'){
+                                                    swal({
+                                                        title: "Thông báo",
+                                                        text: "Đã xóa  người này ra khỏi nhóm!",
+                                                        icon: "success",
+                                                        button: "Đóng",
+                                                    })
+                                                    .then(()=>{
+                                                        parentElement.remove();
+                                                    });
+                                                }
+                                                else{
+                                                    swal({
+                                                        title: "Thông báo",
+                                                        text: "Xóa thất bại, có lỗi xảy ra!",
+                                                        icon: "error",
+                                                        button: "Đóng",
+                                                    });
+                                                }
+                                            });
+                                        } 
+                                        else {
+                                            swal("Đã hủy xóa");
+                                        }
+                                    });
+                                });
                             });
                         }
                         else {
@@ -734,12 +887,54 @@
             }
         }
     });
-    /*$('#btnCall').on('click',function(){
-        alert('ok');
+
+    $('.btnDeleteMember').on('click',function(){
+        var idMember = $(this).children().attr('id');
+        var parentElement = $(this).parent();
+        var idMess = $('#idMess').val();
+        swal({
+            title: "Thông báo",
+            text: "Bạn có chắc chắn muốn xóa người này khỏi nhóm?",
+            icon: "warning",
+            buttons: ["Hủy bỏ", "Đồng ý"],
+        })
+        .then((willDelete) => {
+            if (willDelete) {
+                $.post('/me/deleteMemberInGroup',{idMember, idMess},function(data){
+                    if(data=='xoathanhcong'){
+                        swal({
+                            title: "Thông báo",
+                            text: "Đã xóa  người này ra khỏi nhóm!",
+                            icon: "success",
+                            button: "Đóng",
+                        })
+                        .then(()=>{
+                            parentElement.remove();
+                        });
+                    }
+                    else{
+                        swal({
+                            title: "Thông báo",
+                            text: "Xóa thất bại, có lỗi xảy ra!",
+                            icon: "error",
+                            button: "Đóng",
+                        });
+                    }
+                });
+            } 
+            else {
+                swal("Đã hủy xóa");
+            }
+        });
     });
-    $('#btnVideoCall').on('click',function(){
-        $('#videoCallModal').modal('show');
-    });*/
+    $('.content-message').on('mouseover', function(){
+        $('.iconDeleteMessage').removeClass('d-none');
+    });
+    $('.content-message').on('mouseout', function(){
+        $('.iconDeleteMessage').addClass('d-none');
+    });
+    $('.content-message-1').on('mouseover', function(){
+    });
 </script>
 <script src="/assets/js/turnAndStunServerGroupCall.js"></script>
 {{else}}
@@ -799,7 +994,8 @@
                 }
             });
         }
-    })
+    });
+    
 </script>
 {{/if}}
 {{else}}

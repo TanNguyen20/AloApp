@@ -96,6 +96,11 @@
             }
         });
         var formLoginCheck = new Validator("#formLogin");
+        $('#btnForgotPasswordInLogin').on('click', function(){
+            $("#loginModal").modal("hide");
+            $("#forgotPasswordModal").modal("show");
+
+        });
         $("#loginModal").on("hidden.bs.modal", function () {
             $(this)
                 .find("input,textarea,select")

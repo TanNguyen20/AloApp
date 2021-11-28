@@ -211,6 +211,7 @@ app.engine(
             },
             renderContentLastChat:(arrChat,you)=>{
                 var totalStr =``;
+                var idElement=0;
                 for(var element of arrChat){
                     if(element.from==you){
                         var contentFormat =``;
@@ -218,15 +219,20 @@ app.engine(
                             contentFormat=`<span class='content-message' style='background-color:rgb(0, 66, 233);'>${element.content}</span> :Bạn`;
                         }
                         else contentFormat=`<span class='content-message' style='background-color:rgb(0, 66, 233);'>${element.content}</span> :Bạn`;
-                        totalStr+=`<p class='message__container'>
+                        totalStr+=`<p class='message__container' id='${idElement}'>
                                     ${contentFormat}
-                                </p><br>`;
+                                    <i class="fas fa-backspace d-none iconDeleteMessage"></i>
+                                </p>
+                                <br>`;
                     }
                     else{
-                        totalStr+=` <p class='message__container-1'>${element.from} :
+                        totalStr+=` <p class='message__container-1' id='${idElement}'>${element.from} :
                                     <span class='content-message-1'>${element.content}</span>
+                                    <br>
+                                    <i class="fas fa-backspace d-none iconDeleteMessage"></i>
                                 </p><br>`
                     }
+                    idElement++;
                 }
                 return totalStr;
             },
@@ -313,8 +319,8 @@ app.engine(
                                     <div class="d-flex justify-content-start align-items-center">
                                         <img src="${element._id.avatar}" alt="anh dai dien" class="avatarMe rounded-circle me-2">${element._id.displayName}
                                     </div>
-                                    <div class="btnDeleteMember">
-                                        <i class="fas fa-ellipsis-h border rounded-circle p-1 backGroundWhite" id="${element._id._id}"></i>
+                                    <div class="btnDeleteMember cursor">
+                                        <i class="fas fa-sign-out-alt rounded-circle p-1 backGroundWhite" id="${element._id._id}"></i>
                                     </div>
                                 </div>`;
                 }   
