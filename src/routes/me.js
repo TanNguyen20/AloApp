@@ -23,5 +23,7 @@ router.post('/acceptRequestFriend',AuthController.checkTokenUser,MeController.ac
 router.post('/deleteRequestFriend',AuthController.checkTokenUser,MeController.deleteRequestFriend);
 router.post('/findRequestFriend',AuthController.checkTokenUser,MeController.findRequestFriend);
 router.post('/deleteMemberInGroup',AuthController.checkTokenUser,MeController.deleteMemberInGroup);
+router.post('/deleteMessage',AuthController.checkTokenUser,MeController.deleteMessage);
+router.post('/deleteMessage1v1',AuthController.checkTokenUser,MeController.deleteMessage1v1);
 router.post('/findFriendInListFriends',AuthController.checkTokenUser,MeController.findFriendInListFriends);
 module.exports = router;

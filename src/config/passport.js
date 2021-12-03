@@ -69,6 +69,7 @@ module.exports = function (passport) {
 
       try {
         //find the user in our database 
+        // console.log(profile.photos[0].value);
         let user = await Account.findOne({ facebookId: profile.id });
         if (user) {
           //If user present in our database.

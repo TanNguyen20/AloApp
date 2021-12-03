@@ -215,6 +215,7 @@
     </div>
 </div>
 <script>
+    var socket = io();
     $(document).ready(function(){
         $('#contentCol2').animate({
             scrollTop: $('#contentCol2').get(0).scrollHeight
@@ -417,6 +418,8 @@
                             }
                         });
                     });
+                    $('#listDocumentInCol3').html(``);
+                    $('#listMediaInCol3').html(``);
                     if(arrContentChat.length > 0){
                         //console.log(infoFriend);
                         var you = $('#usernameYou').val();
@@ -428,10 +431,21 @@
                                 if(element.typeMess =='image'){
                                     var split1 =element.content.split('href=')[1];
                                     var link =``;
-                                    if(split1) link = split1.split(' target="_blank">');
-                                    listMediaCol3 = `<a href=${link[0]} target="_blank">
-                                        <img src=${link[0]} width="50px" height="50px" alt="" class="img-thumbnail">
-                                    </a>`;
+                                    if(split1) link = split1.split(' target="_blank"');
+                                    var classAndIdfile=``;
+                                    console.log(link);
+                                    if(link[1].indexOf('idfile')>=0){
+                                        classAndIdfile = ``+link[1].split('style="font-weight: bold;"')[1];
+                                        classAndIdfile = classAndIdfile.split('>')[0];
+                                    }
+                                    if(element.content.indexOf('img')>=0){
+                                        listMediaCol3+=element.content;
+                                    }
+                                    else{
+                                        listMediaCol3+=`<a href=${link[0]} target="_blank">
+                                            <img src=${link[0]} width="50px" height="50px" ${classAndIdfile}">
+                                        </a>`;
+                                    }
                                 }
                                 // video
                                 else{
@@ -444,21 +458,87 @@
                                 if(element.typeMess=='document') $('#listDocumentInCol3').append(`<div>${element.content.replace('text-white','text-primary')}</div>`);
                             }
                             if(element.from==you){
-                                totalStr=`<p class='message__container' id="${idElement}">
+                                totalStr=`<p class='message__container'>
                                             <span class='content-message rounded-pill' style='background-color:rgb(0, 66, 233);'>${element.content}</span> :Bạn
-                                            <br><i class="fas fa-backspace d-none iconDeleteMessage"></i>
+                                            <br><i class="fas fa-backspace d-none iconDeleteMessage cursor" id="${idElement}"></i>
                                         </p>
                                         <br>`;
                             }
                             else{
                                 //alert($('#nameFriendCol2').text());
-                                totalStr=` <p class='message__container-1' id="${idElement}">${element.from} :
+                                totalStr=` <p class='message__container-1'>${element.from} :
                                             <span class='content-message-1'>${element.content}</span>
-                                            <br><i class="fas fa-backspace d-none iconDeleteMessage"></i>
+                                            <br><i class="fas fa-backspace d-none iconDeleteMessage cursor" id="${idElement}"></i>
                                         </p>
                                         <br>`
                             }
                             $('.contentCol2').append(totalStr);
+                            $('.message__container').on('mouseover', function(){
+                                $(this).children('.iconDeleteMessage').removeClass('d-none');
+                            });
+                            $('.message__container').on('mouseout', function(){
+                                $(this).children('.iconDeleteMessage').addClass('d-none');
+                            });
+                            $('.iconDeleteMessage').on('click',function(){
+                                alert(socket);
+                                var idMess=$('#idMess').val();
+                                var idMessage = $(this).attr('id');
+                                var parentElement = $(this).parent();
+                                swal({
+                                    title: "Thông báo",
+                                    text: "Thu hồi tin nhắn này?",
+                                    icon: "warning",
+                                    dangerMode: true,
+                                    buttons: ["Hủy bỏ", "Đồng ý"],
+                                })
+                                .then((willDelete) => {
+                                    if (willDelete) {
+                                        $.post('/me/deleteMessage',{idMessage, idMess},function(data){
+                                            alert(data);
+                                            if(data=='xoathanhcong'){
+                                                swal({
+                                                    title: "Thông báo",
+                                                    text: "Đã thu hồi",
+                                                    icon: "success",
+                                                    button: "Đóng",
+                                                })
+                                                .then(()=>{
+                                                    parentElement.remove();
+                                                    socket.emit('deleteMessage',{idMessage,idMess});
+                                                });
+                                            }
+                                            else if(data=='xoathanhcongfile'){
+                                                swal({
+                                                    title: "Thông báo",
+                                                    text: "Đã thu hồi",
+                                                    icon: "success",
+                                                    button: "Đóng",
+                                                })
+                                                .then(()=>{
+                                                    var spantag = parentElement.children('span').children('a');
+                                                    parentElement.remove();
+                                                    if(spantag.attr('idfile')){
+                                                        var idFileInCol3 = spantag.attr('idfile');
+                                                        $('.'+idFileInCol3).remove();
+                                                        socket.emit('deleteMessage',{idMessage,idMess,idFileInCol3});
+                                                    }
+                                                });
+                                            }
+                                            else{
+                                                swal({
+                                                    title: "Thông báo",
+                                                    text: "Thu hồi thất bại, có lỗi xảy ra!",
+                                                    icon: "error",
+                                                    button: "Đóng",
+                                                });
+                                            }
+                                        });
+                                    } 
+                                    else {
+                                        swal("Đã hủy xóa");
+                                    }
+                                });
+                            });
                             idElement++;
                         }
                         $(".contentCol2").animate({
@@ -631,6 +711,8 @@
                                             }
                                         });
                                     });
+                                    $('#listDocumentInCol3').html(``);
+                                    $('#listMediaInCol3').html(``);
                                     if(arrContentChat.length > 0){
                                         //console.log(infoFriend);
                                         var you = $('#usernameYou').val();
@@ -658,23 +740,89 @@
                                                 if(element.typeMess=='document') $('#listDocumentInCol3').append(`<div>${element.content.replace('text-white','text-primary')}</div>`);
                                             }
                                             if(element.from==you){
-                                                totalStr=`<p class='message__container' id='${idElement}'>
+                                                totalStr=`<p class='message__container'>
                                                             <span class='content-message rounded-pill' style='background-color:rgb(0, 66, 233);'>${element.content}</span> :Bạn
                                                             <br>
-                                                            <i class="fas fa-backspace d-none iconDeleteMessage"></i>
+                                                            <i class="fas fa-backspace d-none iconDeleteMessage cursor" id="${idElement}"></i>
                                                         </p>
                                                         <br>`;
                                             }
                                             else{
                                                 //alert($('#nameFriendCol2').text());
-                                                totalStr=` <p class='message__container-1' id='${idElement}'>${element.from} :
+                                                totalStr=` <p class='message__container-1'>${element.from} :
                                                             <span class='content-message-1'>${element.content}</span>
                                                             <br>
-                                                            <i class="fas fa-backspace d-none iconDeleteMessage"></i>
+                                                            <i class="fas fa-backspace d-none iconDeleteMessage cursor" id="${idElement}"></i>
                                                         </p>
                                                         <br>`
                                             }
+                                            idElement++;
                                             $('.contentCol2').append(totalStr);
+                                            $('.message__container').on('mouseover', function(){
+                                                $(this).children('.iconDeleteMessage').removeClass('d-none');
+                                            });
+                                            $('.message__container').on('mouseout', function(){
+                                                $(this).children('.iconDeleteMessage').addClass('d-none');
+                                            });
+                                            $('.iconDeleteMessage').on('click',function(){
+                                                alert(socket);
+                                                var idMess=$('#idMess').val();
+                                                var idMessage = $(this).attr('id');
+                                                var parentElement = $(this).parent();
+                                                swal({
+                                                    title: "Thông báo",
+                                                    text: "Thu hồi tin nhắn này?",
+                                                    icon: "warning",
+                                                    dangerMode: true,
+                                                    buttons: ["Hủy bỏ", "Đồng ý"],
+                                                })
+                                                .then((willDelete) => {
+                                                    if (willDelete) {
+                                                        $.post('/me/deleteMessage',{idMessage, idMess},function(data){
+                                                            if(data=='xoathanhcong'){
+                                                                swal({
+                                                                    title: "Thông báo",
+                                                                    text: "Đã thu hồi",
+                                                                    icon: "success",
+                                                                    button: "Đóng",
+                                                                })
+                                                                .then(()=>{
+                                                                    parentElement.remove();
+                                                                    socket.emit('deleteMessage',{idMessage,idMess});
+                                                                });
+                                                            }
+                                                            else if(data=='xoathanhcongfile'){
+                                                                swal({
+                                                                    title: "Thông báo",
+                                                                    text: "Đã thu hồi",
+                                                                    icon: "success",
+                                                                    button: "Đóng",
+                                                                })
+                                                                .then(()=>{
+                                                                    var spantag = parentElement.children('span').children('a');
+                                                                    parentElement.remove();
+                                                                    if(spantag.attr('idfile')){
+                                                                        var idFileInCol3 = spantag.attr('idfile');
+                                                                        $('.'+idFileInCol3).remove();
+                                                                        socket.emit('deleteMessage',{idMessage,idMess,idFileInCol3});
+                                                                    }
+                                                                });
+                                                            }
+                                                            else{
+                                                                swal({
+                                                                    title: "Thông báo",
+                                                                    text: "Thu hồi thất bại, có lỗi xảy ra!",
+                                                                    icon: "error",
+                                                                    button: "Đóng",
+                                                                });
+                                                            }
+                                                        });
+                                                    } 
+                                                    else {
+                                                        swal("Đã hủy xóa");
+                                                    }
+                                                });
+                                            });
                                         }
                                         $(".contentCol2").animate({
                                             scrollTop: $('.contentCol2').get(0).scrollHeight
@@ -887,7 +1035,19 @@
             }
         }
     });
-
+    socket.on('deleteMessage',function(data){
+        if(data.idMess==$('#idMess').val()){
+            var parentContent = $('#'+data.idMessage).parent();
+            if(data.idFileInCol3){
+                $('#'+data.idMessage).remove();
+                $('.'+data.idFileInCol3).remove();
+            }
+            else{
+                $('#'+data.idMessage).remove();
+            }
+            parentContent.children('span').html('<p class="fw-bold">Nội dung bị xóa bởi người gửi</p>');
+        }
+    });
     $('.btnDeleteMember').on('click',function(){
         var idMember = $(this).children().attr('id');
         var parentElement = $(this).parent();
@@ -927,13 +1087,69 @@
             }
         });
     });
-    $('.content-message').on('mouseover', function(){
-        $('.iconDeleteMessage').removeClass('d-none');
+    $('.message__container').on('mouseover', function(){
+        $(this).children('.iconDeleteMessage').removeClass('d-none');
     });
-    $('.content-message').on('mouseout', function(){
-        $('.iconDeleteMessage').addClass('d-none');
+    $('.message__container').on('mouseout', function(){
+        $(this).children('.iconDeleteMessage').addClass('d-none');
     });
-    $('.content-message-1').on('mouseover', function(){
+    $('.iconDeleteMessage').on('click',function(){
+        var idMess=$('#idMess').val();
+        var idMessage = $(this).attr('id');
+        var parentElement = $(this).parent();
+        swal({
+            title: "Thông báo",
+            text: "Thu hồi tin nhắn này?",
+            icon: "warning",
+            dangerMode: true,
+            buttons: ["Hủy bỏ", "Đồng ý"],
+        })
+        .then((willDelete) => {
+            if (willDelete) {
+                $.post('/me/deleteMessage',{idMessage, idMess},function(data){
+                    if(data=='xoathanhcong'){
+                        swal({
+                            title: "Thông báo",
+                            text: "Đã thu hồi",
+                            icon: "success",
+                            button: "Đóng",
+                        })
+                        .then(()=>{
+                            parentElement.remove();
+                            socket.emit('deleteMessage',{idMessage,idMess});
+                        });
+                    }
+                    else if(data=='xoathanhcongfile'){
+                        swal({
+                            title: "Thông báo",
+                            text: "Đã thu hồi",
+                            icon: "success",
+                            button: "Đóng",
+                        })
+                        .then(()=>{
+                            var spantag = parentElement.children('span').children('a');
+                            parentElement.remove();
+                            if(spantag.attr('idfile')){
+                                var idFileInCol3 = spantag.attr('idfile');
+                                $('.'+idFileInCol3).remove();
+                                socket.emit('deleteMessage',{idMessage,idMess,idFileInCol3});
+                            }
+                        });
+                    }
+                    else{
+                        swal({
+                            title: "Thông báo",
+                            text: "Thu hồi thất bại, có lỗi xảy ra!",
+                            icon: "error",
+                            button: "Đóng",
+                        });
+                    }
+                });
+            } 
+            else {
+                swal("Đã hủy xóa");
+            }
+        });
     });
 </script>
 <script src="/assets/js/turnAndStunServerGroupCall.js"></script>

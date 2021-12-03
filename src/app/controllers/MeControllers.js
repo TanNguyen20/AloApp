@@ -94,6 +94,50 @@ class MeControllers {
         }
 
     }
+    async deleteMessage(req, res) {
+        var formData = req.body;
+        var idMess = req.body.idMess;
+        var idMessage = req.body.idMessage;
+        console.log(formData);
+        try{
+            var messFind = await Message.findById(idMess);
+            var typeMess = messFind.arrayContentGroup[idMessage].typeMess;
+            console.log(typeMess);
+            var arrayContentGroup = messFind.arrayContentGroup;
+            arrayContentGroup.splice(idMessage,1);
+            var messUpdate = await Message.findByIdAndUpdate(idMess,{arrayContentGroup: arrayContentGroup});
+            if(messUpdate) {
+                if(typeMess !='text' && typeMess !='iconLike') res.send('xoathanhcongfile');
+                else res.send('xoathanhcong');
+            }
+        }
+        catch(err){
+            console.log('co loi khi xoa tin nhan: ',err);
+            res.send('thatbai');
+        }
+    }
+    async deleteMessage1v1(req, res) {
+        var formData = req.body;
+        var idMess = req.body.idMess;
+        var idMessage = req.body.idMessage;
+        console.log(formData);
+        try{
+            var messFind = await Message.findById(idMess);
+            var typeMess = messFind.arrayContent1v1[idMessage].typeMess;
+            console.log(typeMess);
+            var arrayContent1v1 = messFind.arrayContent1v1;
+            arrayContent1v1.splice(idMessage,1);
+            var messUpdate = await Message.findByIdAndUpdate(idMess,{arrayContent1v1: arrayContent1v1});
+            if(messUpdate) {
+                if(typeMess !='text' && typeMess !='iconLike') res.send('xoathanhcongfile');
+                else res.send('xoathanhcong');
+            }
+        }
+        catch(err){
+            console.log('co loi khi xoa tin nhan: ',err);
+            res.send('thatbai');
+        }
+    }
     async deleteGroupChat(req, res, next) {
         var idMess = req.body.idMess;
         var token = req.cookies.token;

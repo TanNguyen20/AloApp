@@ -219,17 +219,17 @@ app.engine(
                             contentFormat=`<span class='content-message' style='background-color:rgb(0, 66, 233);'>${element.content}</span> :Bạn`;
                         }
                         else contentFormat=`<span class='content-message' style='background-color:rgb(0, 66, 233);'>${element.content}</span> :Bạn`;
-                        totalStr+=`<p class='message__container' id='${idElement}'>
+                        totalStr+=`<p class='message__container'>
                                     ${contentFormat}
-                                    <i class="fas fa-backspace d-none iconDeleteMessage"></i>
+                                    <i class="fas fa-backspace d-none iconDeleteMessage cursor" id='${idElement}'></i>
                                 </p>
                                 <br>`;
                     }
                     else{
-                        totalStr+=` <p class='message__container-1' id='${idElement}'>${element.from} :
+                        totalStr+=` <p class='message__container-1'>${element.from} :
                                     <span class='content-message-1'>${element.content}</span>
                                     <br>
-                                    <i class="fas fa-backspace d-none iconDeleteMessage"></i>
+                                    <i class="fas fa-backspace d-none iconDeleteMessage cursor" id='${idElement}'></i>
                                 </p><br>`
                     }
                     idElement++;
@@ -293,10 +293,22 @@ app.engine(
                     if(element.typeMess=='image'){
                         var split1 =element.content.split('href=')[1];
                         var link =``;
-                        if(split1) link = split1.split(' target="_blank">');
-                        totalStr+=`<a href=${link[0]} target="_blank">
-                            <img src=${link[0]} width="50px" height="50px" alt="" class="img-thumbnail">
-                        </a>`;
+                        console.log(element.content);
+                        if(split1) link = split1.split(' target="_blank"');
+                        var classAndIdfile=``;
+                        if(link[1].indexOf('idfile')>=0){
+                            classAndIdfile = ``+link[1].split('style="font-weight: bold;"')[1];
+                            classAndIdfile = classAndIdfile.split('>')[0];
+                            console.log(classAndIdfile);
+                        }
+                        if(element.content.indexOf('img')>=0){
+                            totalStr+=element.content;
+                        }
+                        else{
+                            totalStr+=`<a href=${link[0]} target="_blank">
+                                <img src=${link[0]} width="50px" height="50px" ${classAndIdfile}">
+                            </a>`;
+                        }
                     }
                     else{
                         totalStr+=`${element.content.replace('text-white','text-primary')}`;
@@ -361,6 +373,7 @@ app.use('/scriptsLibary', express.static(path.join(__dirname, '/../node_modules'
 const mainServer = serverHttp.listen(portHttp); // Run the server on the 3000 port
 const serverHttps = server.listen(portHttps); // Run the server on the 3443 port
 //
+//khi socket io chay tren https se bi loi hien thi khi gui hinh anh
 const io = require('socket.io')(serverHttps);
 io.on('connection', function (socket) {
     console.log(`...........................Welcome socket ${socket.id}...........................`);
@@ -438,6 +451,9 @@ io.on('connection', function (socket) {
     });
     socket.on('voiceCallGroup',function(idMess){
         socket.broadcast.emit('voiceCallGroup',idMess);
+    });
+    socket.on('deleteMessage',function(data){
+        socket.broadcast.emit('deleteMessage',data);
     });
 });
 //
