@@ -374,7 +374,7 @@ const mainServer = serverHttp.listen(portHttp); // Run the server on the 3000 po
 const serverHttps = server.listen(portHttps); // Run the server on the 3443 port
 //
 //khi socket io chay tren https se bi loi hien thi khi gui hinh anh
-const io = require('socket.io')(mainServer);
+const io = require('socket.io')(portHttp);
 io.on('connection', function (socket) {
     console.log(`...........................Welcome socket ${socket.id}...........................`);
     socket.on("disconnect", (reason) => {

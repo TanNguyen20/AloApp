@@ -6,12 +6,36 @@ $(function () {
         var idRoom =$(this).attr('id');
         socket.emit("joinroom",idRoom);
         socket.emit('sendRoomSize',idRoom);
+        socket.once('roomSize',async function(data){
+            if(data<2){
+                $('#statusOnlineCol2').text('Không online');
+                $('#iconStatusOnline').removeClass('green');
+                $('#iconStatusOnline').addClass('text-secondary');
+            }
+            else{
+                $('#statusOnlineCol2').text('Online');
+                $('#iconStatusOnline').addClass('green');
+                $('#iconStatusOnline').removeClass('text-secondary');
+            }
+        });
     });
     
     $('.wrapPreviewNew').on('click', function () {
         var idRoom =$(this).attr('id');
         socket.emit("joinroom",idRoom);
         socket.emit('sendRoomSize',idRoom);
+        socket.once('roomSize',async function(data){
+            if(data<2){
+                $('#statusOnlineCol2').text('Không online');
+                $('#iconStatusOnline').removeClass('green');
+                $('#iconStatusOnline').addClass('text-secondary');
+            }
+            else{
+                $('#statusOnlineCol2').text('Online');
+                $('#iconStatusOnline').addClass('green');
+                $('#iconStatusOnline').removeClass('text-secondary');
+            }
+        });
     });
     //Socket nhận data và append vào giao diện
     socket.on("connect", () => {
@@ -19,7 +43,8 @@ $(function () {
         socket.emit("joinroom",idRoom);
         socket.emit('sendRoomSize',idRoom);
         socket.on("roomSize", (data) => {
-            if(data==1){
+            if(data<2){
+                $('#statusOnlineCol2').text('Không online');
                 $('#iconStatusOnline').removeClass('green');
                 $('#iconStatusOnline').addClass('text-secondary');
             }
@@ -108,7 +133,14 @@ $(function () {
                                 })
                                 .then(()=>{
                                     parentElement.remove();
-                                    socketDeleteMessage.emit('deleteMessage',{idMessage,idMess});
+                                    var idYou = $('#idYou').val();
+                                    socketDeleteMessage.emit('deleteMessage',{idMessage, idYou, idMess});
+                                    $('.iconDeleteMessage').each(function(){
+                                        var idElement = $(this).attr('id');
+                                        if(idElement>idMessage){
+                                            $(this).attr('id',parseInt(idElement)-1);
+                                        }
+                                    });
                                 });
                             }
                             else if(data=='xoathanhcongfile'){
@@ -124,7 +156,14 @@ $(function () {
                                     if(spantag.attr('idfile')){
                                         var idFileInCol3 = spantag.attr('idfile');
                                         $('.'+idFileInCol3).remove();
-                                        socketDeleteMessage.emit('deleteMessage',{idMessage,idMess,idFileInCol3});
+                                        var idYou = $('#idYou').val();
+                                        socketDeleteMessage.emit('deleteMessage',{idMessage,idYou,idMess,idFileInCol3});
+                                        $('.iconDeleteMessage').each(function(){
+                                            var idElement = $(this).attr('id');
+                                            if(idElement>idMessage){
+                                                $(this).attr('id',parseInt(idElement)-1);
+                                            }
+                                        });
                                     }
                                 });
                             }
@@ -186,7 +225,14 @@ $(function () {
                                 })
                                 .then(()=>{
                                     parentElement.remove();
-                                    socketDeleteMessage.emit('deleteMessage',{idMessage,idMess});
+                                    var idYou = $('#idYou').val();
+                                    socketDeleteMessage.emit('deleteMessage',{idMessage, idYou, idMess});
+                                    $('.iconDeleteMessage').each(function(){
+                                        var idElement = $(this).attr('id');
+                                        if(idElement>idMessage){
+                                            $(this).attr('id',parseInt(idElement)-1);
+                                        }
+                                    });
                                 });
                             }
                             else if(data=='xoathanhcongfile'){
@@ -202,7 +248,14 @@ $(function () {
                                     if(spantag.attr('idfile')){
                                         var idFileInCol3 = spantag.attr('idfile');
                                         $('.'+idFileInCol3).remove();
-                                        socketDeleteMessage.emit('deleteMessage',{idMessage,idMess,idFileInCol3});
+                                        var idYou = $('#idYou').val();
+                                        socketDeleteMessage.emit('deleteMessage',{idMessage,idYou,idMess,idFileInCol3});
+                                        $('.iconDeleteMessage').each(function(){
+                                            var idElement = $(this).attr('id');
+                                            if(idElement>idMessage){
+                                                $(this).attr('id',parseInt(idElement)-1);
+                                            }
+                                        });
                                     }
                                 });
                             }
@@ -223,19 +276,25 @@ $(function () {
             });
         }
     });
-    socketDeleteMessage.on('deleteMessage',function(data){
-        if(data.idMess==$('#idMess').val()){
-            var parentContent = $('#'+data.idMessage).parent();
-            if(data.idFileInCol3){
-                $('#'+data.idMessage).remove();
-                $('.'+data.idFileInCol3).remove();
-            }
-            else{
-                $('#'+data.idMessage).remove();
-            }
-            parentContent.children('span').html('<p class="fw-bold">Nội dung bị xóa bởi người gửi</p>');
-        }
-    });
+    // socketDeleteMessage.on('deleteMessage',function(data){
+    //     if(data.idMess==$('#idMess').val() && data.idYou != $('#idYou').val()){
+    //         var parentContent = $('#'+data.idMessage).parent();
+    //         if(data.idFileInCol3){
+    //             $('#'+data.idMessage).remove();
+    //             $('.'+data.idFileInCol3).remove();
+    //         }
+    //         else{
+    //             $('#'+data.idMessage).remove();
+    //         }
+    //         parentContent.children('span').html('<p class="fw-bold">Nội dung bị xóa bởi người gửi</p>');
+    //         $('.iconDeleteMessage').each(function(){
+    //             var idElement = $(this).attr('id');
+    //             if(idElement>data.idMessage){
+    //                 $(this).attr('id',parseInt(idElement)-1);
+    //             }
+    //         });
+    //     }
+    // });
     //Bắt sự kiện click gửi message
     $("#btnSendMessage").on('click', function () {
         var idMess = $('#idMess').val();

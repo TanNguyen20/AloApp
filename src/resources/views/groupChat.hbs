@@ -504,7 +504,14 @@
                                                 })
                                                 .then(()=>{
                                                     parentElement.remove();
-                                                    socket.emit('deleteMessage',{idMessage,idMess});
+                                                    var idYou = $('#idYou').val();
+                                                    socket.emit('deleteMessage',{idMessage, idYou, idMess});
+                                                    $('.iconDeleteMessage').each(function(){
+                                                        var idElement = $(this).attr('id');
+                                                        if(idElement>idMessage){
+                                                            $(this).attr('id',parseInt(idElement)-1);
+                                                        }
+                                                    });
                                                 });
                                             }
                                             else if(data=='xoathanhcongfile'){
@@ -520,7 +527,14 @@
                                                     if(spantag.attr('idfile')){
                                                         var idFileInCol3 = spantag.attr('idfile');
                                                         $('.'+idFileInCol3).remove();
-                                                        socket.emit('deleteMessage',{idMessage,idMess,idFileInCol3});
+                                                        var idYou = $('#idYou').val();
+                                                        socket.emit('deleteMessage',{idMessage,idYou,idMess,idFileInCol3});
+                                                        $('.iconDeleteMessage').each(function(){
+                                                            var idElement = $(this).attr('id');
+                                                            if(idElement>idMessage){
+                                                                $(this).attr('id',parseInt(idElement)-1);
+                                                            }
+                                                        });
                                                     }
                                                 });
                                             }
@@ -765,7 +779,6 @@
                                                 $(this).children('.iconDeleteMessage').addClass('d-none');
                                             });
                                             $('.iconDeleteMessage').on('click',function(){
-                                                alert(socket);
                                                 var idMess=$('#idMess').val();
                                                 var idMessage = $(this).attr('id');
                                                 var parentElement = $(this).parent();
@@ -788,7 +801,14 @@
                                                                 })
                                                                 .then(()=>{
                                                                     parentElement.remove();
-                                                                    socket.emit('deleteMessage',{idMessage,idMess});
+                                                                    var idYou = $('#idYou').val();
+                                                                    socket.emit('deleteMessage',{idMessage, idYou, idMess});
+                                                                    $('.iconDeleteMessage').each(function(){
+                                                                        var idElement = $(this).attr('id');
+                                                                        if(idElement>idMessage){
+                                                                            $(this).attr('id',parseInt(idElement)-1);
+                                                                        }
+                                                                    });
                                                                 });
                                                             }
                                                             else if(data=='xoathanhcongfile'){
@@ -804,7 +824,14 @@
                                                                     if(spantag.attr('idfile')){
                                                                         var idFileInCol3 = spantag.attr('idfile');
                                                                         $('.'+idFileInCol3).remove();
-                                                                        socket.emit('deleteMessage',{idMessage,idMess,idFileInCol3});
+                                                                        var idYou = $('#idYou').val();
+                                                                        socket.emit('deleteMessage',{idMessage,idYou,idMess,idFileInCol3});
+                                                                        $('.iconDeleteMessage').each(function(){
+                                                                            var idElement = $(this).attr('id');
+                                                                            if(idElement>idMessage){
+                                                                                $(this).attr('id',parseInt(idElement)-1);
+                                                                            }
+                                                                        });
                                                                     }
                                                                 });
                                                             }
@@ -1036,7 +1063,8 @@
         }
     });
     socket.on('deleteMessage',function(data){
-        if(data.idMess==$('#idMess').val()){
+        if(data.idMess==$('#idMess').val() && data.idYou != $('#idYou').val()){
+            alert('Bạn đã bị người khác xóa tin nhắn!');
             var parentContent = $('#'+data.idMessage).parent();
             if(data.idFileInCol3){
                 $('#'+data.idMessage).remove();
@@ -1046,6 +1074,12 @@
                 $('#'+data.idMessage).remove();
             }
             parentContent.children('span').html('<p class="fw-bold">Nội dung bị xóa bởi người gửi</p>');
+            $('.iconDeleteMessage').each(function(){
+                var idElement = $(this).attr('id');
+                if(idElement>data.idMessage){
+                    $(this).attr('id',parseInt(idElement)-1);
+                }
+            });
         }
     });
     $('.btnDeleteMember').on('click',function(){
@@ -1116,7 +1150,14 @@
                         })
                         .then(()=>{
                             parentElement.remove();
-                            socket.emit('deleteMessage',{idMessage,idMess});
+                            var idYou = $('#idYou').val();
+                            socket.emit('deleteMessage',{idMessage, idYou, idMess});
+                            $('.iconDeleteMessage').each(function(){
+                                var idElement = $(this).attr('id');
+                                if(idElement>idMessage){
+                                    $(this).attr('id',parseInt(idElement)-1);
+                                }
+                            });
                         });
                     }
                     else if(data=='xoathanhcongfile'){
@@ -1132,7 +1173,14 @@
                             if(spantag.attr('idfile')){
                                 var idFileInCol3 = spantag.attr('idfile');
                                 $('.'+idFileInCol3).remove();
-                                socket.emit('deleteMessage',{idMessage,idMess,idFileInCol3});
+                                var idYou = $('#idYou').val();
+                                socket.emit('deleteMessage',{idMessage,idYou,idMess,idFileInCol3});
+                                $('.iconDeleteMessage').each(function(){
+                                    var idElement = $(this).attr('id');
+                                    if(idElement>idMessage){
+                                        $(this).attr('id',parseInt(idElement)-1);
+                                    }
+                                });
                             }
                         });
                     }

@@ -1,5 +1,6 @@
 async function Setup() {
     try {
+      
       var idYou = $('#idYou').val();
       peer = new Peer(idYou,{
         debug: 3,
@@ -27,6 +28,48 @@ async function Setup() {
       var streamLocal = null;
       var vidLocal = await document.getElementById("my-video");
       var socket =io();
+      $('.wrapPreview').on('click', function () {
+        var idYou = $('#idYou').val();
+        var idFriend = $('#idFriend').val();
+        var idRoom ='';
+        if(idYou.localeCompare(idFriend)==1) idRoom=idFriend+idYou;
+        else idRoom=idYou+idFriend;
+        socket.emit("joinroom",idRoom);
+        socket.emit('sendRoomSize',idRoom);
+        socket.once('roomSize',async function(data){
+            if(data<3){
+                $('#statusOnlineCol2').text('Không online');
+                $('#iconStatusOnline').removeClass('green');
+                $('#iconStatusOnline').addClass('text-secondary');
+            }
+            else{
+                $('#statusOnlineCol2').text('Online');
+                $('#iconStatusOnline').addClass('green');
+                $('#iconStatusOnline').removeClass('text-secondary');
+            }
+          });
+      });
+      $('.wrapPreviewNew').on('click', function () {
+        var idYou = $('#idYou').val();
+        var idFriend = $('#idFriend').val();
+        var idRoom ='';
+        if(idYou.localeCompare(idFriend)==1) idRoom=idFriend+idYou;
+        else idRoom=idYou+idFriend;
+        socket.emit("joinroom",idRoom);
+        socket.emit('sendRoomSize',idRoom);
+        socket.once('roomSize',async function(data){
+            if(data<3){
+                $('#statusOnlineCol2').text('Không online');
+                $('#iconStatusOnline').removeClass('green');
+                $('#iconStatusOnline').addClass('text-secondary');
+            }
+            else{
+                $('#statusOnlineCol2').text('Online');
+                $('#iconStatusOnline').addClass('green');
+                $('#iconStatusOnline').removeClass('text-secondary');
+            }
+          });
+      });
       $('#btnCall').on('click',async function(){
           var dataConnection1 = await peer.connect($('#idFriend').val());
           // peer.on('connection',function(){
@@ -47,8 +90,11 @@ async function Setup() {
           socket.emit("joinroom",idRoom);
           socket.emit('sendRoomSize',idRoom);
           socket.once('roomSize',async function(data){
-              if(data<2){
+              if(data<3){
                   $('#notifyCantCall').removeClass('d-none');
+                  $('.iconVoiceCall').addClass('d-none');
+                  $('.nameInVoiceCall').addClass('d-none');
+                  $('.nameInVoiceCall').hide();
                   $('.iconWaitCall').hide();
                   $('#btnCloseCall').hide();
                   $('#videoCallModal').modal('show');
@@ -57,6 +103,21 @@ async function Setup() {
                   $('#iconStatusOnline').addClass('text-secondary');
               }
               else{
+                  $('#btnCloseCall').show();
+                  $('#btnCloseCall').on('click',async function(e){
+                    e.preventDefault();
+                    dataConnection.send('closeCall');
+                    $('#videoCallModal').modal('hide');
+                    var tracks =await streamLocal.getTracks();
+                    tracks.forEach(function(track) {
+                      track.stop();
+                    });
+                    vidLocal.srcObject = null;
+                    window.localStream = null;
+                    var vid = document.getElementById("their-video");
+                    vid.srcObject = null;
+                  });
+                  
                   $('.iconWaitCall').show();
                   $('#notifyCantCall').addClass('d-none');
                   $('#statusOnlineCol2').text('Online');
@@ -107,8 +168,12 @@ async function Setup() {
                   //
                   var call = peer.call($('#idFriend').val(), streamLocal);
                   call.on('stream',async function (stream1) {
+                    $('.iconVoiceCall').removeClass('d-none');
+                    $('.nameInVoiceCall').removeClass('d-none');
+                    $('.nameInVoiceCall').show();
+                    $('video').hide();
                     var vid = document.getElementById("their-video");
-                    $('.iconWaitCall').addClass('d-none');
+                    $('.iconWaitCall').hide();
                     vid.srcObject = stream1;
                     vid.onloadedmetadata = function (e) {
                       vid.play();
@@ -136,7 +201,7 @@ async function Setup() {
           });
       });
       
-      //// nguoi gui ////
+      //// nguoi gui videocall////
 
       $('#btnVideoCall').on('click',async function(){
         var idYou = $('#idYou').val();
@@ -152,7 +217,7 @@ async function Setup() {
         socket.emit("joinroom",idRoom);
         socket.emit('sendRoomSize',idRoom);
         socket.once('roomSize',async function(data){
-            if(data<2){
+            if(data<3){
                 $('#notifyCantCall').removeClass('d-none');
                 $('.iconWaitCall').hide();
                 $('#btnCloseCall').hide();
@@ -162,6 +227,23 @@ async function Setup() {
                 $('#iconStatusOnline').addClass('text-secondary');
             }
             else{
+                $('.nameInVoiceCall').removeClass('d-none');
+                $('video').show();
+                $('#btnCloseCall').show();
+                $('.iconVoiceCall').addClass('d-none');
+                $('#btnCloseCall').on('click',async function(e){
+                  e.preventDefault();
+                  dataConnection.send('closeCall');
+                  $('#videoCallModal').modal('hide');
+                  var tracks =await streamLocal.getTracks();
+                  tracks.forEach(function(track) {
+                    track.stop();
+                  });
+                  vidLocal.srcObject = null;
+                  window.localStream = null;
+                  var vid = document.getElementById("their-video");
+                  vid.srcObject = null;
+                });
                 $('.iconWaitCall').show();
                 $('#notifyCantCall').addClass('d-none');
                 $('#statusOnlineCol2').text('Online');
@@ -213,7 +295,7 @@ async function Setup() {
                 var call = peer.call($('#idFriend').val(), streamLocal);
                 call.on('stream',async function (stream1) {
                   var vid = document.getElementById("their-video");
-                  $('.iconWaitCall').addClass('d-none');
+                  $('.iconWaitCall').hide();
                   vid.srcObject = stream1;
                   vid.onloadedmetadata = function (e) {
                     vid.play();
@@ -248,8 +330,19 @@ async function Setup() {
         });
         dataConnection.on('data', function(data) {
           // alert(data);
-          if(data=='audio') constraints = { audio: true, video: false };
-          if(data=='video') constraints = { audio: false, video: true };
+          if(data=='audio') {
+            constraints = { audio: true, video: false };
+            $('.nameInVoiceCall').removeClass('d-none');
+            $('.iconVoiceCall').removeClass('d-none');
+            $('.nameInVoiceCall').show();
+            $('video').hide();
+          }
+          if(data=='video') {
+            constraints = { audio: false, video: true };
+            $('video').show();
+            $('.iconVoiceCall').addClass('d-none');
+            $('.nameInVoiceCall').removeClass('d-none');
+          }
           if(data=='closeCall'){
             swal("Người gọi đã kết thúc cuộc gọi")
             .then(()=>{
@@ -269,7 +362,9 @@ async function Setup() {
         });
         //
         peer.on('call', async function (call) {
-        
+          $('#statusOnlineCol2').text('Online');
+          $('#iconStatusOnline').addClass('green');
+          $('#iconStatusOnline').removeClass('text-secondary');
           swal({
               title: "Thông báo",
               text: "Có cuộc gọi đến",
@@ -288,7 +383,7 @@ async function Setup() {
                 call.answer(streamLocal);
                 call.on('stream',async  function (stream1) {
                   // $('#their-video');
-                  $('.iconWaitCall').addClass('d-none');
+                  $('.iconWaitCall').hide();
                   var vid = document.getElementById("their-video");
                   // alert("nhan stream(ban la nguoi duoc goi): " + stream1);
                   $('#videoCallModal').modal('show');
