@@ -15,6 +15,7 @@ module.exports = function (passport) {
       {
         clientID: GOOGLE_CLIENT_ID,
         clientSecret: GOOGLE_CILENT_SECRET,
+		// neu khong chi ro https://example.com thi se bi loi
         callbackURL: 'https://aloappvn.herokuapp.com/auth/google/callback',
       },
       async (accessToken, refreshToken, profile, done) => {
