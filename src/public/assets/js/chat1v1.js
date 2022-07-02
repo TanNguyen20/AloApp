@@ -107,7 +107,7 @@ $(function () {
                 var parentElement = $(this).parent();
                 swal({
                     title: "Thông báo",
-                    text: "Thu hồi tin nhắn này?",
+                    text: "Xóa tin nhắn này?",
                     icon: "warning",
                     dangerMode: true,
                     buttons: ["Hủy bỏ", "Đồng ý"],
@@ -118,7 +118,7 @@ $(function () {
                             if(data=='xoathanhcong'){
                                 swal({
                                     title: "Thông báo",
-                                    text: "Đã thu hồi",
+                                    text: "Đã Xóa",
                                     icon: "success",
                                     button: "Đóng",
                                 })
@@ -129,7 +129,7 @@ $(function () {
                             else if(data=='xoathanhcongfile'){
                                 swal({
                                     title: "Thông báo",
-                                    text: "Đã thu hồi",
+                                    text: "Đã Xóa",
                                     icon: "success",
                                     button: "Đóng",
                                 })
@@ -145,7 +145,7 @@ $(function () {
                             else{
                                 swal({
                                     title: "Thông báo",
-                                    text: "Thu hồi thất bại, có lỗi xảy ra!",
+                                    text: "Xóa thất bại, có lỗi xảy ra!",
                                     icon: "error",
                                     button: "Đóng",
                                 });
@@ -183,7 +183,7 @@ $(function () {
                 var parentElement = $(this).parent();
                 swal({
                     title: "Thông báo",
-                    text: "Thu hồi tin nhắn này?",
+                    text: "Xóa tin nhắn này?",
                     icon: "warning",
                     dangerMode: true,
                     buttons: ["Hủy bỏ", "Đồng ý"],
@@ -194,7 +194,7 @@ $(function () {
                             if(data=='xoathanhcong'){
                                 swal({
                                     title: "Thông báo",
-                                    text: "Đã thu hồi",
+                                    text: "Đã Xóa",
                                     icon: "success",
                                     button: "Đóng",
                                 })
@@ -205,7 +205,7 @@ $(function () {
                             else if(data=='xoathanhcongfile'){
                                 swal({
                                     title: "Thông báo",
-                                    text: "Đã thu hồi",
+                                    text: "Đã Xóa",
                                     icon: "success",
                                     button: "Đóng",
                                 })
@@ -221,7 +221,7 @@ $(function () {
                             else{
                                 swal({
                                     title: "Thông báo",
-                                    text: "Thu hồi thất bại, có lỗi xảy ra!",
+                                    text: "Xóa thất bại, có lỗi xảy ra!",
                                     icon: "error",
                                     button: "Đóng",
                                 });

@@ -340,8 +340,10 @@ $(function () {
                         body: formData
                     })
                     .then(async function(response){
+                        console.log(response);
                         var data = await response.text();
                         var dataJson = await JSON.parse(data);
+                        console.log(dataJson);
                         totalData+= `<a href="${dataJson.secure_url}" target="_blank" class=" ${dataJson.asset_id}" idfile="${dataJson.asset_id}"><img src="${dataJson.secure_url}" width="50px" height="50px" class="img-thumbnail cursor listImgAfterUpload m-1"></a>`;
                         if(i==fileLength-1){
                             var usernameYou = $('#usernameYou').val();
