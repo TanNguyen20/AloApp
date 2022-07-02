@@ -15,7 +15,7 @@ module.exports = function (passport) {
       {
         clientID: GOOGLE_CLIENT_ID,
         clientSecret: GOOGLE_CILENT_SECRET,
-        callbackURL: '/auth/google/callback',
+        callbackURL: 'https://aloappvn.herokuapp.com/auth/google/callback',
       },
       async (accessToken, refreshToken, profile, done) => {
         //get the user data from google 
@@ -52,7 +52,7 @@ module.exports = function (passport) {
       clientID: FACEBOOK_CLIENT_ID,
       clientSecret: FACEBOOK_CLIENT_SECRET,
       // neu khong chi ro https://example.com thi se bi loi https
-      callbackURL: 'https://aloapp.software/auth/facebook/callback',
+      callbackURL: 'https://aloappvn.herokuapp.com/auth/facebook/callback',
       profileFields: ['id', 'displayName', 'emails','name','picture.type(large)'],
     },
     
