@@ -26,7 +26,6 @@ const server = require('https').Server(httpsOptions, app);
 const { v4: uuidV4 } = require('uuid');
 const handlebars = require('express-handlebars');
 const portHttp = process.env.PORT || 3000;
-const portHttps = process.env.SECURE_PORT || 3443;
 const MONGO_STRING_CONNECT_CLUSTER = process.env.MONGO_STRING_CONNECT_CLUSTER;
 const db = require('./config/db');
 app.use(methodOverride('_method'));
@@ -374,7 +373,7 @@ const mainServer = serverHttp.listen(portHttp); // Run the server on the 3000 po
 const serverHttps = server.listen(portHttps); // Run the server on the 3443 port
 //
 //khi socket io chay tren https se bi loi hien thi khi gui hinh anh
-const io = require('socket.io')(serverHttps);
+const io = require('socket.io')(serverHttp);
 io.on('connection', function (socket) {
     console.log(`...........................Welcome socket ${socket.id}...........................`);
     socket.on("disconnect", (reason) => {
